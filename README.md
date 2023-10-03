@@ -7,7 +7,7 @@ NEU Capstone Project Repository, for the Palaver Strings group.
 - Conor Weiss
 
 Google Drive Folder
-https://docs.google.com/document/d/1hYsGzT9LCG59dol33ltgotDtovIdTglI5E1Dn50zfC4/edit?usp=share_link
+https://drive.google.com/drive/folders/16VqerplDzZYMNN5ShL6uLCu42cd_tR1a?usp=sharing
 
 Work Journal
 https://docs.google.com/document/d/1bjeEnaLqsNa2ccqcQhu85wBc0_7zH1GcOxcavYgLayY/edit?usp=share_link
