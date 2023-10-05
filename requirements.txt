@@ -1,0 +1,35 @@
+Requirements: 
+
+Nodejs:
+- Latest LTS Version: 18.18.0 (includes npm 9.8.1)
+- https://nodejs.org/en/download
+
+Backend Packages:
+NOTE: Make sure you are in the root directory of the project when installing packages!!!
+npm install express 
+npm install -g nodemon
+npm install mongodb
+npm install mongoose
+
+Package Descriptions -
+Express: 
+- A lightweight framework for handling routing, specifying what should happen when a user requests certain endpoints.
+- Can handle user authentication, parsing requests, and cookies.
+
+Nodemon:
+A utility that monitors for any changes in your source and automatically restarts your server. 
+
+MongoDB:
+A NoSQL database that stores data in JSON-like documents. 
+Designed for scalability and flexibility.
+
+Mongoose:
+Provides object-data modeling for MongoDB. 
+It wraps MongoDB with an additional layer, allowing for methods to read and write database documents. 
+It also lets us declare models and schemas for a more structured data approach.
+
+Other Devtools:
+Postman:
+https://www.postman.com/
+- We will use this to design, test, and document APIs.
+- Make sure to download the app, so you can send requests locally. 
