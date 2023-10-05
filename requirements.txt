@@ -4,7 +4,7 @@ Nodejs:
 - Latest LTS Version: 18.18.0 (includes npm 9.8.1)
 - https://nodejs.org/en/download
 
-Backend Packages:
+Backend Packages (Updated 10/5/2023 by Jim):
 NOTE: Make sure you are in the root directory of the project when installing packages!!!
 npm install express 
 npm install -g nodemon
