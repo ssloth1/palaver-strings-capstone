@@ -9,6 +9,9 @@ NEU Capstone Project Repository, for the Palaver Strings group.
 Google Drive Folder
 https://drive.google.com/drive/folders/16VqerplDzZYMNN5ShL6uLCu42cd_tR1a?usp=sharing
 
+Figma Project 
+https://www.figma.com/file/UIlrigpvarlJpGOfp6Tqt7/Untitled?type=whiteboard&node-id=0%3A1&t=msfdkafQsTas81H6-1
+
 Work Journal
 https://docs.google.com/document/d/1bjeEnaLqsNa2ccqcQhu85wBc0_7zH1GcOxcavYgLayY/edit?usp=share_link
 
