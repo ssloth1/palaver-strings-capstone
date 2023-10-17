@@ -1,4 +1,4 @@
-const Student = require('../models/StudentModel')
+const Student = require('../models/studentModel')
 const mongoose = require('mongoose')
 
 // Get all students
@@ -31,11 +31,11 @@ const getStudent = async (req, res) => {
 
 // Create a new student
 const createStudent = async (req, res) => {
-    const { firstName, lastName, email, password } = req.body
+    const { firstName, lastName, email, hashedPassword } = req.body
 
     // Add document to database
     try {
-        const student = await Student.create({ firstName, lastName, email, password })
+        const student = await Student.create({ firstName, lastName, email, hashedPassword })
         res.status(200).json(student)
     } catch (err) {
         res.status(400).json({err: err.message})
