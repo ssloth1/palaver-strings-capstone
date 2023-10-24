@@ -2,21 +2,27 @@ require('dotenv').config()
 
 const express = require('express')
 const mongoose = require('mongoose')
-const studentRoutes = require('./routes/student')
+
+// Import new route files
+const adminRoutes = require('./routes/adminRoutes')
+const instructorRoutes = require('./routes/instructorRoutes')
+const parentRoutes = require('./routes/parentRoutes')
+const studentRoutes = require('./routes/studentRoutes')
 
 // express
 const app = express();
 
-
-// middlware
+// middleware
 app.use(express.json())
-
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
 })
 
-// routes
+// Use the routes
+app.use('/api/admins', adminRoutes)
+app.use('/api/instructors', instructorRoutes)
+app.use('/api/parents', parentRoutes)
 app.use('/api/students', studentRoutes)
 
 // connect to database
