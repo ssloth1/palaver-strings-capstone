@@ -1,4 +1,5 @@
 const express = require('express');
+
 const { 
     createUser,
     getUsers,
@@ -24,4 +25,5 @@ router.use('/:userId/instructors', require('./instructorRoutes'));
 router.use('/:userId/parents', require('./parentRoutes'));
 
 module.exports = router
+
 

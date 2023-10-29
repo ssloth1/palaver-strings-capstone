@@ -1,4 +1,5 @@
 const express = require('express');
+
 const { 
     createStudent,
     getStudents,
@@ -10,12 +11,11 @@ const {
 const router = express.Router({ mergeParams: true });
 
 // Student-specific routes
-/*
 router.get('/', getStudents);
 router.get('/:id', getStudent);
 router.post('/', createStudent);
 router.delete('/:id', deleteStudent);
 router.patch('/:id', updateStudent);
-*/
+
 
 module.exports = router;

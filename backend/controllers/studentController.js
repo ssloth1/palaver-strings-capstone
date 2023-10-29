@@ -1,7 +1,7 @@
 const Student = require('../models/modelsIndex').Student;
 const mongoose = require('mongoose')
 
-/*
+
 
 // Get all students
 const getStudents = async (req, res) => {
@@ -93,4 +93,3 @@ module.exports = {
     updateStudent
 }
 
-*/
