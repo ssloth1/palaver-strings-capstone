@@ -1,21 +1,18 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './components/Login';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
-  const isLoggedIn = !!localStorage.getItem('adminToken');
-
   return (
-    <Router>
-      <Routes>
-        <Route exact path="/">
-          {isLoggedIn ? <Home /> : <Navigate to="/login" />}
-        </Route>
-        <Route path="/login">
-          {!isLoggedIn ? <Login /> : <Navigate to="/" />}
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>  {/* Need to wrap the whole app with the AuthProvider */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} /> 
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
