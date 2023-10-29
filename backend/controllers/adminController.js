@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const { Admin, Parent, Student, Instructor } = require('../models/modelsIndex');
 
 // Create a new admin
@@ -62,6 +65,34 @@ const updateAdmin = async (req, res) => {
     }
 };
 
+const loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Find admin by email
+        const admin = await Admin.findOne({ email: email });
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found!" });
+        }
+
+        // Check if the provided password matches the hased password in the database
+        const isMatch = await bcrypt.compare(password, admin.hashedPassword);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials!" });
+        }
+
+        // Generate the JWT token
+        const token = jwt.sign({ id: admin._id, role: admin.role }, 'MY_SECRET_KEY', { expiresIn: '1h' });
+
+        // Send the token in a HTTP-only cookie
+        res.status(200).json({ token: token });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/*
 // Get all subtypes (admins, parents, students, instructors)
 const getAllSubtypes = async (req, res) => {
     try {
@@ -144,17 +175,19 @@ const deleteStudent = async (req, res) => {
     }
 };
 
+*/
 
 module.exports = {
     createAdmin,
-    getAllSubtypes,
+    //getAllSubtypes,
     getAdmins,
     getAdmin,
     deleteAdmin,
     updateAdmin, 
-    createStudent,
-    getAllStudents,
-    getStudentById,
-    updateStudent,
-    deleteStudent
+    loginAdmin,
+    //createStudent,
+    //getAllStudents,
+    //getStudentById,
+    //updateStudent,
+    //deleteStudent
 };
