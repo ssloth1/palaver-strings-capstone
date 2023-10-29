@@ -1,25 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// Pages & other components
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
-import Navbar from './components/Navbar';
+import Login from './components/Login';
 
 function App() {
+  const isLoggedIn = !!localStorage.getItem('adminToken');
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Navbar />
-        <div className="pages">
-          <Routes>
-            <Route 
-              path="/" 
-              element={<Home />} 
-            />
-          </Routes>
-        </div>
-      </BrowserRouter>
-     
-    </div>
+    <Router>
+      <Routes>
+        <Route exact path="/">
+          {isLoggedIn ? <Home /> : <Navigate to="/login" />}
+        </Route>
+        <Route path="/login">
+          {!isLoggedIn ? <Login /> : <Navigate to="/" />}
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

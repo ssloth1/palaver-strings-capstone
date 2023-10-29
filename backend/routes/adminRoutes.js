@@ -1,4 +1,5 @@
 const express = require('express');
+const authenticate = require('../middleware/auth');
 
 const { 
     createAdmin,
@@ -20,7 +21,7 @@ const router = express.Router({ mergeParams: true });
 
 // Admin-specific routes
 router.get('/', getAdmins);
-router.get('/:id', getAdmin);
+router.get('/:id',getAdmin);
 router.post('/', createAdmin);
 router.delete('/:id', deleteAdmin);
 router.patch('/:id', updateAdmin);
