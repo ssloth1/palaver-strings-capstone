@@ -9,7 +9,8 @@ const studentSchema = new Schema({
     dateOfBirth: { type: Date, required: true },
     school: { type: String, required: true },
     grade: { type: Number, required: true },
-    primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor', required: true },
+    // Might need to make this required, but keeping it optional for now. 
+    primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor', required: false },
     mentor: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false },
     mentees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
     howHeardAboutProgram: { type: String, required: true },
