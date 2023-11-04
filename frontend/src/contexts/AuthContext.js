@@ -14,6 +14,10 @@ export function AuthProvider({ children }) {
     // Tracks if the user is logged in or not. Initialized to true if a token is stored locally.
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('adminToken'));
 
+    // Assume an 'adminRoleKey' in local storage determines if the user is an admin
+    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminRoleKey') === 'admin');
+
+
     // Effect to listen for changes in local storage, especially when the user logs out in another tab
     useEffect(() => {
         const handleStorageChange = () => {
@@ -30,17 +34,30 @@ export function AuthProvider({ children }) {
     }, []);
 
     // Method to set the user as logged in.
-    const login = () => setIsLoggedIn(true);
+    const login = (admin = false) => {
+        setIsLoggedIn(true);
+        setIsAdmin(admin);
+
+        // also set the 'adminRoleKey' in local storage if the user is an admin
+        if (admin) {
+            localStorage.setItem('adminRoleKey', 'admin');
+        }
+        
+    };
 
     // Method to log the user out and remove the token from localstorage
     const logout = () => {
         localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminRoleKey');
         setIsLoggedIn(false);
+        setIsAdmin(false);
     };
 
-    // The value that will be provid
+
+    // The value that will be provided to the context
     const value = {
         isLoggedIn,
+        isAdmin,
         login,
         logout
     };

@@ -41,7 +41,7 @@ function AdminLogin() {
             // If it was successful, take the following action
             if (response.status === 200) {
                 localStorage.setItem('adminToken', data.token); // Store the received token locally.
-                login(); // update the global authentication state
+                login(true); // update the global authentication state
                 navigate('/'); // Go to the homepage after successful login
             }
         } catch (err) {
