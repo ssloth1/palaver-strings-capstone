@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
 import { // Constants/dropdown options for the form
     GENDER,
@@ -11,14 +12,20 @@ import { // Constants/dropdown options for the form
     INSTRUMENTS,
 } from '../constants/formconstants';
 
-// Responsible for rendering the form for adding a new user
+/** This component renders a form for adding a new user to the database with roles.
+ * NOTES:
+ * - It checks if the user is logged in before allowing any submissions, although this is just a precaution.
+ * - Right now there is some validation for the specific admin role, but it is not complete and we will need to do this with other roles. 
+ */
 function AddUserForm() {
 
-    // Access the isLoggedIn state variable and login function from the AuthContext to check if the user is logged in
-    const { isLoggedIn } = useAuth(); 
+    const { isLoggedIn } = useAuth(); // Checks if the user is actually logged in.
+    const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
 
-    // Stores the form data for each input field
+    // State to store the form data
     const [formData, setFormData] = useState({
+        
+        // Common field for all user roles
         firstName: "",
         lastName: "",
         email: "",
@@ -36,32 +43,183 @@ function AddUserForm() {
         gender: "",
         raceEthnicity: "",
         primaryLanguage: "",
+
+        // Admin specific fields
+        permissions: [],
+        orgEmail: "",
+        secondaryEmail: "",
+
+        // Student specific fields
         instrument: "",
+        age: "",
+        dateOfBirth: "",
+        school: "",
+        grade: "",
+        primaryInstructor: "", // optional for now
+        mentor: "", // optional for now
+        mentees: [], // optional for now
+        howHeardAboutProgram: "", // optional for now
+
+        // Parent specific fields
+        // .. TODO: add parent specific fields
+
+        // Instructor specific fields
+        // .. TODO: add instructor specific fields
     });
 
-    // Handler for input changes
+    /**
+     * Handler for the form input changes and updates the state of the form data as the user types
+     * For checkboxes (permission), it adds or removes the permission from the array of permissions for the new admin.
+     * For other inputs, it updates the value corresponding to the input name.
+     */
     const handleChange = (event) => {
-        const { name, value } = event.target;
-        // Updates the formData state with the new value when an input field changes
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
-    }
 
-    // TODO: will handle form submissions. 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (!isLoggedIn) {
-            // TODO: 
+        const { name, value, type, checked } = event.target;
+        
+        // If the input is a checkbox, we need to handle it differently
+        if (type === "checkbox") {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                permissions: checked
+                    ? [...prevFormData.permissions, name]
+                    : prevFormData.permissions.filter(permission => permission !== name),
+            }));
+        
+        // Otherwise, we can just update the value of the input
+        } else {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        }
+    };
+    /** 
+     * Validates the form before submission.
+     * NOTE: This is not complete and we will need to add more validation for other roles.
+     *      Right now it only includes validation for the admin role, but we will ned to extend it for other roles. 
+     */
+        const validateForm = () => {
+        
+        // Admin related validation
+        if (formData.role === 'admin') {
+            if (!formData.permissions.length || !formData.orgEmail) {
+                console.error("Admins must have permissions and an organization email.")
+                setStatusMessage("Please fill in all required fields for the admin role.");
+                return false;
+            }
         }
 
-        // TODO: add validation for the form data
+        // TODO: Student related validation
 
-        // TODO: implement the logic for submitting the form data to the database
-        console.log('Form submitted!', formData);
+        // TODO: Parent related validation
 
+        // TODO: Instructor related validation
+
+        return true;
+
+    }
+
+    /**
+     * Handles the form submission.
+     * It prevents the default form submission behavior and then sends the form data to the backend.
+     * Validates the form, and then makes a POST request with the form data. 
+     */
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        // Checks if the user is logged in
+        if (!isLoggedIn) {
+            console.error("You need to be logged in to submit.")
+            setStatusMessage("You need to be logged in to submit.");
+            return;
+        }
+
+        // Checks if the passwords match before submission
+        if (formData.password !== formData.confirmPassword) {
+            setStatusMessage("Passwords do not match.");
+            return;
+        }
+
+        // Validates the form before submission
+        if (!validateForm()) {
+            return;
+        }
+
+        // Prepares the form data by putting it in the necessary format for the backend
+        const submissionData = {
+            ...formData,
+            address: {
+                country: formData.country,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode,
+            },
+            
+            // The entered form password will be hashed before being sent to the database
+            // the password hashing is handled within the userModel.js file in the backend directory
+            hashedPassword: formData.password,
+        };
+
+        // Remove confirmPassword before sending the form data to the backend
+        // This was only necessary
+        delete submissionData.confirmPassword; 
+
+        // Make a POST request to the backend with the form data for a new admin
+        try {
+            const response = await axios.post('http://localhost:4000/api/admins', submissionData);
+            setStatusMessage("Form submitted successfully!"); 
+            console.log("Form submitted successfully!", response.data);
+        } catch (error) {
+            setStatusMessage("An error occurred while submitting the form.");
+            console.error("Error submitting form", error);
+        }
     };
+ 
+    /**
+     * Renders form fields that are specific to the selected role.
+     * @returns {JSX} The JSX for the role-specific fields
+     */
+    const renderRoleSpecificFields = () => {
+        
+        // Constants for the admin permissions
+        const PERMISSIONS = ['create', 'read', 'update', 'delete'];
+
+        // Switch statement for the role-specific fields
+        switch (formData.role) {
+            
+            // Admin specific fields
+            case 'admin':
+                return (
+                    <>
+                        {/* Admin specific fields */}
+                        <div>
+                            {PERMISSIONS.map((permission) => (
+                                <label key={permission}>
+                                    <input
+                                        type="checkbox"
+                                        name={permission}
+                                        checked={formData.permissions.includes(permission)}
+                                        onChange={handleChange}
+                                    />
+                                    {permission.charAt(0).toUpperCase() + permission.slice(1)}
+                                </label>
+                            ))}
+                        </div>
+                        <input type="email" name="orgEmail" value={formData.orgEmail} onChange={handleChange} placeholder="Organization Email" required />
+                        <input type="email" name="secondaryEmail" value={formData.secondaryEmail} onChange={handleChange} placeholder="Secondary Email" />
+                    </>
+                );
+
+            // TODO: Student specific fields
+
+            // TODO: Parent specific fields
+
+            // TODO: Instructor specific fields
+        }
+    };
+    
 
     return (
         <form onSubmit={handleSubmit}>
@@ -140,14 +298,12 @@ function AddUserForm() {
                 <option value="text">Text</option>
             </select>
 
-            {/* Dropdown for the user's instrument */}
-            <select name="instrument" value={formData.instrument} onChange={handleChange} required={formData.role === 'student'}>
-                <option value="">Select Instrument</option>
-                {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
-            </select>
+            {/* Render role-specific fields based on the selected role */}
+            {renderRoleSpecificFields()}
 
             {/* Submit button */}
             <button type="submit">Add User</button>
+            {statusMessage && <p>{statusMessage}</p>}
 
         </form>
     );

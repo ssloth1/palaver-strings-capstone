@@ -13,7 +13,7 @@ const studentSchema = new Schema({
     primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor', required: false },
     mentor: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false },
     mentees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
-    howHeardAboutProgram: { type: String, required: true },
+    howHeardAboutProgram: { type: String, required: false },
 });
 
 const Student = User.discriminator('Student', studentSchema);
