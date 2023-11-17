@@ -1,5 +1,6 @@
 const Student = require('../models/modelsIndex').Student;
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { Parent } = require('../models/modelsIndex');
 
 
 
@@ -31,19 +32,19 @@ const getStudent = async (req, res) => {
     res.status(200).json(student) 
 }
 
-// Create a new student
+// Create a new student without a parent
 const createStudent = async (req, res) => {
-    const { firstName, lastName, email, hashedPassword } = req.body
+    const { studentData } = req.body;
 
-    // Add document to database
     try {
-        const student = await Student.create({ firstName, lastName, email, hashedPassword })
-        res.status(200).json(student)
-    } catch (err) {
-        res.status(400).json({err: err.message})
-    }
+        const student = new Student(studentData);
+        await student.save();
 
-}
+        res.status(201).json({ student });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 
 // Delete a student
 const deleteStudent = async (req, res) => {
@@ -81,15 +82,36 @@ const updateStudent = async (req, res) => {
     }
 
     res.status(200).json(student)
-    
 }
 
+// Create a new student with a parent
+const createStudentWithParent = async (req, res) => {
+    const { studentData, parentData } = req.body;
+    
+    try {
+        // Create parent
+        const parent = new Parent(parentData);
+        await parent.save();
+
+        // Create student with parent reference
+        const student = new Student({
+            ...studentData,
+            parent: parent._id
+        });
+        await student.save();
+
+        res.status(201).json({ student, parent });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
 
 module.exports = {
     getStudents,
     getStudent,
     createStudent,
     deleteStudent,
-    updateStudent
+    updateStudent,
+    createStudentWithParent
 }
 
