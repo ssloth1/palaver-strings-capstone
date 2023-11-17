@@ -2,6 +2,8 @@ const express = require('express');
 const authenticate = require('../middleware/auth');
 
 const { 
+    
+    /* Admin-specific routes */
     createAdmin,
     getAdmins,
     getAdmin, 
@@ -9,13 +11,7 @@ const {
     updateAdmin,
     loginAdmin,
 
-    // To-Do/Placeholders
-    //createStudent,
-    //getAllStudents,
-    //getStudentById,
-    //updateStudent,
-    //deleteStudent
-} = require('../controllers/AdminController');
+} = require('../controllers/adminController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -28,11 +24,5 @@ router.patch('/:id', updateAdmin);
 router.post('/login', loginAdmin);
 
 
-// Student-specific routes managed by Admin
-//router.post('/students', createStudent);
-//router.get('/students', getAllStudents);
-//router.get('/students/:id', getStudentById);
-//router.put('/students/:id', updateStudent);
-//router.delete('/students/:id', deleteStudent);
 
 module.exports = router;

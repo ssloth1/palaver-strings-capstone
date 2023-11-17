@@ -9,7 +9,7 @@ import { // Constants/dropdown options for the form
     COUNTRIES,
     US_STATES,
     CANADIAN_PROVINCES,
-    INSTRUMENTS,
+    //INSTRUMENTS,
 } from '../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
@@ -46,8 +46,13 @@ function AddUserForm() {
 
         // Admin specific fields
         permissions: [],
-        orgEmail: "",
         secondaryEmail: "",
+   
+        // Instructor specific fields
+        students: [],
+
+        // Shared by admin and instructor.
+        orgEmail: "",
 
         // Student specific fields
         instrument: "",
@@ -63,8 +68,7 @@ function AddUserForm() {
         // Parent specific fields
         // .. TODO: add parent specific fields
 
-        // Instructor specific fields
-        // .. TODO: add instructor specific fields
+
     });
 
     /**
@@ -73,10 +77,8 @@ function AddUserForm() {
      * For other inputs, it updates the value corresponding to the input name.
      */
     const handleChange = (event) => {
-
         const { name, value, type, checked } = event.target;
-        
-        // If the input is a checkbox, we need to handle it differently
+    
         if (type === "checkbox") {
             setFormData(prevFormData => ({
                 ...prevFormData,
@@ -84,8 +86,13 @@ function AddUserForm() {
                     ? [...prevFormData.permissions, name]
                     : prevFormData.permissions.filter(permission => permission !== name),
             }));
-        
-        // Otherwise, we can just update the value of the input
+        } else if (name === "students") {
+            // Handling multi-select for the 'students' field
+            const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                students: selectedOptions,
+            }));
         } else {
             setFormData(prevFormData => ({
                 ...prevFormData,
@@ -93,6 +100,7 @@ function AddUserForm() {
             }));
         }
     };
+
     /** 
      * Validates the form before submission.
      * NOTE: This is not complete and we will need to add more validation for other roles.
@@ -145,6 +153,19 @@ function AddUserForm() {
             return;
         }
 
+        let endpoint = "";
+        switch (formData.role) {
+            case 'admin':
+                endpoint = 'http://localhost:4000/api/admins';
+                break;
+            case 'instructor':
+                endpoint = 'http://localhost:4000/api/instructors';
+                //submissionData.students = formData.students;
+                break;
+            default:
+                break;
+        }
+
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
             ...formData,
@@ -165,11 +186,12 @@ function AddUserForm() {
         // Remove confirmPassword before sending the form data to the backend
         // This was only necessary
         delete submissionData.confirmPassword; 
+    
 
-        // Make a POST request to the backend with the form data for a new admin
+        // Make a POST request to the backend with the form data for the selected role
         try {
-            const response = await axios.post('http://localhost:4000/api/admins', submissionData);
-            setStatusMessage("Form submitted successfully!"); 
+            const response = await axios.post(endpoint, submissionData);
+            setStatusMessage("Form submitted successfully!");
             console.log("Form submitted successfully!", response.data);
         } catch (error) {
             setStatusMessage("An error occurred while submitting the form.");
@@ -216,7 +238,26 @@ function AddUserForm() {
 
             // TODO: Parent specific fields
 
-            // TODO: Instructor specific fields
+            // Instructor specific fields
+            case 'instructor':
+                return (
+                    <>
+                        {/* Instructor specific fields */}
+                        <input type="email" name="orgEmail" value={formData.orgEmail} onChange={handleChange} placeholder="Organization Email" required />
+                        
+                        {/* Uncomment and complete the following select block when the students data is available */}
+                        {/* <select multiple name="students" value={formData.students} onChange={handleChange}>
+                            {students.map(student => (
+                                <option key={student._id} value={student._id}>
+                                    {student.firstName} {student.lastName}
+                                </option>
+                            ))}
+                        </select> */}
+                    </>
+                );
+    
+            default:
+                return null;
         }
     };
     
@@ -306,6 +347,7 @@ function AddUserForm() {
             {statusMessage && <p>{statusMessage}</p>}
 
         </form>
-    );
-}
+        );
+    }
+
 export default AddUserForm;

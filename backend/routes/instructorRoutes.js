@@ -1,20 +1,22 @@
 const express = require('express');
 
 const { 
-    getStudent,
-    getStudents,
-    getStudentParent
+
+    createInstructor,
+    getInstructors,
+    getInstructor,
+    updateInstructor,
+    deleteInstructor
+
 } = require('../controllers/instructorController');
 
 const router = express.Router({ mergeParams: true });
 
-// Get a specific student by ID
-router.get('/students/:studentId', getStudent);
+router.post('/', createInstructor);
+router.get('/', getInstructors);
+router.get('/:id', getInstructor);
+router.patch('/:id', updateInstructor);
+router.delete('/:id', deleteInstructor);
 
-// Get all students assigned to a specific instructor
-router.get('/:instructorId/students', getStudents);
-
-// Get the parent of a specific student
-router.get('/students/:studentId/parent', getStudentParent);
 
 module.exports = router;
