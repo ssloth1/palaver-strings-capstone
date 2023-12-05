@@ -53,12 +53,12 @@ function AdminLogin() {
     };
 
     return (
-        <div className={styles.header}>
-            <h1> Palaver Strings Student Hub </h1>
+        <div className={styles.loginContainer}>
+            <div className={styles.loginForm}> Palaver Strings Student Hub</div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className={styles.loginForm}>
                 <div>
-                    <label>Email:</label>
+                    <label className={styles.labelStyle}>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -67,7 +67,7 @@ function AdminLogin() {
                     />
                 </div>
                 <div>
-                    <label>Password:</label>
+                    <label className={styles.labelStyle}>Password:</label>
                     <input
                         type="password"
                         value={password}
