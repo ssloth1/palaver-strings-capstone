@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LoginButton from './Button';
+import styles from './Login.module.css';
 
 function AdminLogin() {
     // State variables for form inputs and error messages
@@ -51,13 +53,12 @@ function AdminLogin() {
     };
 
     return (
-        <div>
-            <div style={{position: 'absolute', top: 181, height: 60, left: 385, width: 670, color: 'black', fontSize: 40, fontFamily: 'Poppins', fontWeight: 400, wordWrap: 'break-word'}}>Palaver Strings Student Hub Login
-        </div>
+        <div className={styles.header}>
+            <h1> Palaver Strings Student Hub </h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
-                <div style={{position: 'absolute', top: 344, left: 507, width: 169, height: 36, fontSize: 20, fontWeight: 400}}>
-                    <label>Email Address:</label>
+                <div>
+                    <label>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -73,17 +74,8 @@ function AdminLogin() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                </div> 
-                <div style={{ position: 'absolute', height: 65, width: 159, top: 568, right: 640}}> 
-                    <div style={{width: '100%', height: '100%', padding: 10, background: '#C69C64', borderRadius: 15, justifyContent: 'center', alignItems: 'center', gap: 10, display: 'inline-flex'}}>
-                        <div style={{justifyContent: 'center', alignItems: 'center', gap: 10, display: 'flex'}}>
-                            <div style={{width: 242, height: 97, textAlign: 'center', color: 'white', fontSize: 40, fontFamily: 'Poppins', fontWeight: '300', wordWrap: 'break-word'}}>
-                                <button type="submit" style={{width: '100%', height: '100%', background: 'transparent', border: 'none', color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit'}}>Login</button>
-                                <button style={{ position: 'absolute', top: 568, left: 641}}></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>  
+                </div>
+                <LoginButton onClick={handleSubmit}/>
             </form>
         </div>
     );
