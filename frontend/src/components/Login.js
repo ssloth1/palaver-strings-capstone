@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LoginButton from './Button';
+import styles from './Login.module.css';
 
 function AdminLogin() {
     // State variables for form inputs and error messages
@@ -51,12 +53,12 @@ function AdminLogin() {
     };
 
     return (
-        <div>
-            <h2>Admin Login</h2>
+        <div className={styles.loginContainer}>
+            <div className={styles.loginForm}> Palaver Strings Student Hub</div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className={styles.loginForm}>
                 <div>
-                    <label>Email:</label>
+                    <label className={styles.labelStyle}>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -65,7 +67,7 @@ function AdminLogin() {
                     />
                 </div>
                 <div>
-                    <label>Password:</label>
+                    <label className={styles.labelStyle}>Password:</label>
                     <input
                         type="password"
                         value={password}
@@ -73,7 +75,7 @@ function AdminLogin() {
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                <LoginButton onClick={handleSubmit}/>
             </form>
         </div>
     );
