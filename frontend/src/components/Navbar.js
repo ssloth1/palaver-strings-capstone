@@ -1,26 +1,34 @@
+import React, { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 
+function Navbar() {
 
-// Navbar compnent that shows up across the top of the page
-const Navbar = () => {
+    // Unpack the values form AuthContext
+    const {
+        isLoggedIn, 
+        isAdmin, 
+        isInstructor, 
+        isStudent, 
+        isParent 
+    } = useContext(AuthContext);
 
-
-    // Get the login status and isAdmin status from the AuthContext
-    const { isLoggedIn, isAdmin } = useAuth();
-    console.log({ isLoggedIn, isAdmin }); // For debugging
+    // Just logging user roles for debugging. 
+    // Wanted to check that the user is seeing the correct options. 
+    console.log(
+        "isLoggedIn:", isLoggedIn,
+        "isAdmin:", isAdmin(),
+        "isInstructor:", isInstructor(),
+        "isStudent:", isStudent(),
+        "isParent:", isParent()
+    );
 
     return (
-        <header>
-            <nav>                
-                {/* Other navigation links we can add will go here later.*/}
-                
-                {isLoggedIn && isAdmin && (
-                    <Link to="/add-user">Create User</Link> // Should only shows this link to logged-in admins
-                )}
-            </nav>
-        </header>
+        <nav>
+            <Link to="/">Home</Link>
+            {isLoggedIn && isAdmin() && <Link to="/create-user">Create User</Link>}
+        </nav>
     );
-};
+}
 
 export default Navbar;

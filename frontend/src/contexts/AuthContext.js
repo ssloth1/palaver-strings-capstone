@@ -1,67 +1,57 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Creates a 'Context' for authentication-related data and methods
-const AuthContext = createContext();
+export const AuthContext = createContext(); // Creates a new context for authentication
 
-// I made this custom hook to provide a shorthand for useContext(AuthContext)
-export function useAuth() {
-    return useContext(AuthContext);
-}
-
-// Provider component to wrap parts of the app where AuthContext should be accessible
+// AuthProvider component to provide authentication state and functions
 export function AuthProvider({ children }) {
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track the login status
+    const [userType, setUserType] = useState(null); // State to track user types
 
-    // Tracks if the user is logged in or not. Initialized to true if a token is stored locally.
-    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('adminToken'));
-
-    // Assume an 'adminRoleKey' in local storage determines if the user is an admin
-    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminRoleKey') === 'admin');
-
-
-    // Effect to listen for changes in local storage, especially when the user logs out in another tab
+    // Effect to check for saved login status in local storage
     useEffect(() => {
-        const handleStorageChange = () => {
-            setIsLoggedIn(!!localStorage.getItem('adminToken'));
-        };
-        
-        // Add event listener for storage changes
-        window.addEventListener('storage', handleStorageChange);
-
-        // Cleanup: remove the event listener when the compnent de-mounts (Remember to pick up your toys when you're done playing!)
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-        };
+        const savedUserType = localStorage.getItem('userType');
+        if (savedUserType) {
+            setIsLoggedIn(true);
+            setUserType(savedUserType);
+        }
     }, []);
 
-    // Method to set the user as logged in.
-    const login = (admin = false) => {
+    // Function to handle login for a user
+    const login = (userDetails) => {
         setIsLoggedIn(true);
-        setIsAdmin(admin);
-
-        // also set the 'adminRoleKey' in local storage if the user is an admin
-        if (admin) {
-            localStorage.setItem('adminRoleKey', 'admin');
-        }
-        
+        setUserType(userDetails.type);
+        localStorage.setItem('userType', userDetails.type);
     };
 
-    // Method to log the user out and remove the token from localstorage
+    // Function to handle logout for a user
     const logout = () => {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminRoleKey');
         setIsLoggedIn(false);
-        setIsAdmin(false);
+        setUserType(null);
+        localStorage.removeItem('userType');
     };
 
+    // Helper functions to check user's role
+    const isAdmin = () => userType === 'admin';
+    const isInstructor = () => userType === 'instructor';
+    const isStudent = () => userType === 'student';
+    const isParent = () => userType === 'parent';
 
-    // The value that will be provided to the context
+    // Context values that will be accessible to the components that use this context
     const value = {
         isLoggedIn,
-        isAdmin,
+        userType,
         login,
-        logout
+        logout,
+        isAdmin,
+        isInstructor,
+        isStudent,
+        isParent
     };
 
-    // Provides the AuthContext to child components
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+// Allows a component to access the authentication context
+export function useAuth() {
+    return useContext(AuthContext);
 }

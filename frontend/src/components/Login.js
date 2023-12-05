@@ -4,47 +4,47 @@ import { useAuth } from '../contexts/AuthContext';
 import LoginButton from './Button';
 import styles from './Login.module.css';
 
-function AdminLogin() {
-    // State variables for form inputs and error messages
+function Login() {
+
+    // Hooks for managing inputs 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userType, setUserType] = useState('admin');
     const [error, setError] = useState(null);
-    
-    // Hook to programmatically navigate to a new page
+
+    // Hook for handling navigation
     const navigate = useNavigate();
 
-    // Get the login function from the AuthContext (see the contexts folder)
+    // Custom hook to handle authentication/login
     const { login } = useAuth();  
 
-    // Handler for the login form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
-        // Send the email and password to the database for verification
+    const handleSubmit = async (e) => {
+        e.preventDefault(); 
+
+        // Dynamically uses the correct login endpoint based on the selected user type
+        let loginUrl = `/api/${userType}s/login`;
+
+
         try {
-            console.log('Sending login request...');
-            const response = await fetch('/api/admins/login', {
+            // Makes a POST request to the login URL with the user's email and password
+            const response = await fetch(loginUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
-        
-            console.log('Response received:', response);
             const data = await response.json();
-            console.log('Data:', data);
             
-            // Check if the respons status was bad
             if (response.status !== 200) {
                 setError(data.message);
                 return;
             }
-            // If it was successful, take the following action
+
+            // Successful login
             if (response.status === 200) {
-                localStorage.setItem('adminToken', data.token); // Store the received token locally.
-                login(true); // update the global authentication state
-                navigate('/'); // Go to the homepage after successful login
+                localStorage.setItem(`${userType}Token`, data.token); 
+                login({ type: userType }); // Updates the AuthContext
+                navigate('/'); // Navigates user to the home page
             }
         } catch (err) {
             console.error('Error during login:', err);
@@ -54,11 +54,20 @@ function AdminLogin() {
 
     return (
         <div className={styles.loginContainer}>
-            <div className={styles.loginForm}> Palaver Strings Student Hub</div>
+            <div className={styles.loginForm}>Palaver Strings Student Hub</div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit} className={styles.loginForm}>
                 <div>
-                    <label className={styles.labelStyle}>Email:</label>
+                    <label className={styles.labelStyle}>User Type:</label>
+                    <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+                        <option value="admin">Admin</option>
+                        <option value="instructor">Instructor</option>
+                        <option value="parent">Parent</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <div>
+                <label className={styles.labelStyle}>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -81,4 +90,4 @@ function AdminLogin() {
     );
 }
 
-export default AdminLogin;
+export default Login;

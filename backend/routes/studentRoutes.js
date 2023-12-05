@@ -6,7 +6,10 @@ const {
     getStudent, 
     deleteStudent,
     updateStudent,
-    createStudentWithParent
+    createStudentWithParent,
+
+    loginStudent
+
 } = require('../controllers/studentController');
 
 const router = express.Router({ mergeParams: true });
@@ -18,6 +21,8 @@ router.post('/', createStudent);
 router.delete('/:id', deleteStudent);
 router.patch('/:id', updateStudent);
 router.post('/withParent', createStudentWithParent);
+
+router.post('/login', loginStudent);
 
 
 module.exports = router;
