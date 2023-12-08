@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/Home.css";
 
 import { useAuth } from '../contexts/AuthContext';
 
@@ -24,7 +25,7 @@ const Home = () => {
     return (
         <div className="home">
             <header>
-                <h1>Welcome!</h1>
+                <h1>Welcome back!</h1>
                 <button onClick={handleLogout}>Logout</button>
             </header>
         </div>

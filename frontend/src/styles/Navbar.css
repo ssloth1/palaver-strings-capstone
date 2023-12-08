@@ -1,0 +1,19 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #C69C64;
+    padding: 10px;
+    font-family: 'Poppins'
+}
+
+nav a {
+    text-decoration: none;
+    color: #FFF;
+    margin-right: 20px;
+    font-size: 18px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
