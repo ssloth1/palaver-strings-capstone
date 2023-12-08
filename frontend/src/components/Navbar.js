@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import '../styles/Navbar.css';
 
 function Navbar() {
 
@@ -26,7 +27,8 @@ function Navbar() {
     return (
         <nav>
             <Link to="/">Home</Link>
-            {isLoggedIn && isAdmin() && <Link to="/create-user">Create User</Link>}
+            {isLoggedIn && isAdmin() && <Link to="/create-user">Add User</Link>}
+            {isLoggedIn && isAdmin() && <Link to="/users">Manage Users</Link>}
         </nav>
     );
 }

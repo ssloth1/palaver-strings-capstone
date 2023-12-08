@@ -15,10 +15,11 @@ body {
 header {
   background: #fff;
 }
+
 header .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -35,22 +36,5 @@ header a {
 
 .home {
   display: grid;
-  grid-template-columns: 3fr 1fr;
   gap: 100px;
-}
-.student-details {
-  background: #fff;
-  margin: 20px auto;
-  padding: 20px;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-}
-.student-details h4 {
-  margin: 0 0 10px 0;
-  font-size: 1.2em;
-  color: var(--primary);
-}
-.student-details p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #555;
 }
