@@ -1,4 +1,4 @@
-nav {
+/* nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,4 +16,47 @@ nav a {
 
 nav a:hover {
     text-decoration: underline;
+} */
+
+.side-menu {
+    width: 50px;
+    overflow: hidden;
+    transition: width 0.3s ease;
+}
+
+.side-menu.expanded {
+    width: 200px;
+}
+
+.side-menu .menu-content nav a:hover {
+    text-decoration: underline; /* Apply underline only to the link being hovered */
+}
+
+
+.menu-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #C69C64;
+    padding: 10px;
+    font-family: 'Poppins'
+}
+
+.side-menu .menu-content nav {
+    /* Add some padding around the navigation links */
+    padding: 10px;
+}
+
+.side-menu .menu-content nav a {
+    /* Style for each link */
+    display: block;  /* This makes each link take up its own line */
+    margin-bottom: 10px; /* Add space between the links */
+    text-decoration: none; /* Optional: removes underline from links */
+    color: #594ef3; /* Optional: sets text color */
+    /* Add more styles as needed */
+}
+
+
+.side-menu.expanded .menu-content nav a {
+    /* Different styles for when the menu is expanded */
 }
