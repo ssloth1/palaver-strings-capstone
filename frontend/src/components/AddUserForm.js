@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import styles from './AddUserForm.module.css';
 
 import { // Constants/dropdown options for the form
     GENDER,
@@ -263,7 +264,8 @@ function AddUserForm() {
     
 
     return (
-        <form onSubmit={handleSubmit}>
+        <body className={styles.addUserForm}>
+            <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
             <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
@@ -346,7 +348,8 @@ function AddUserForm() {
             <button type="submit">Add User</button>
             {statusMessage && <p>{statusMessage}</p>}
 
-        </form>
+            </form>
+        </body>
         );
     }
 

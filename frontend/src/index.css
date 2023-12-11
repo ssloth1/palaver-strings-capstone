@@ -10,6 +10,11 @@ body {
   margin: 0;
   font-family: "Poppins";
   color: #FFF;
+  display: flex;
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Horizontal centering */
+  flex-direction: column; /* Stack children vertically */
+  min-height: 100vh; /* Ensure body takes at least full viewport height */
 }
 
 header {

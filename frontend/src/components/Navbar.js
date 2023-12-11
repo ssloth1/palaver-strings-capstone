@@ -1,9 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 
 function Navbar() {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleMenu = () => {
+        setIsExpanded(!isExpanded);
+    };
 
     // Unpack the values form AuthContext
     const {
@@ -25,11 +30,17 @@ function Navbar() {
     );
 
     return (
-        <nav>
-            <Link to="/">Home</Link>
-            {isLoggedIn && isAdmin() && <Link to="/create-user">Add User</Link>}
-            {isLoggedIn && isAdmin() && <Link to="/users">Manage Users</Link>}
-        </nav>
+        <div className={`side-menu ${isExpanded ? 'expanded' : ''}`}>
+        <button onClick={toggleMenu}>Toggle Menu</button>
+        <div className="menu-content">
+            <nav>
+                <Link to="/">Home</Link>
+                {isLoggedIn && isAdmin() && <Link to="/create-user">Add User</Link>}
+                {isLoggedIn && isAdmin() && <Link to="/users">Manage Users</Link>}
+            </nav>
+        </div>
+    </div>
+       
     );
 }
 
