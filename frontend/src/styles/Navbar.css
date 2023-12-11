@@ -22,6 +22,10 @@ nav a:hover {
     width: 50px;
     overflow: hidden;
     transition: width 0.3s ease;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
 }
 
 .side-menu.expanded {
@@ -33,13 +37,14 @@ nav a:hover {
 }
 
 
-.menu-content {
+.side-menu .menu-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #C69C64;
     padding: 10px;
-    font-family: 'Poppins'
+    font-family: 'Poppins';
+    height: 100%;
 }
 
 .side-menu .menu-content nav {
@@ -54,6 +59,14 @@ nav a:hover {
     text-decoration: none; /* Optional: removes underline from links */
     color: #594ef3; /* Optional: sets text color */
     /* Add more styles as needed */
+}
+
+.side-menu .menu-content nav a {
+    display: block;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #594ef3;
+
 }
 
 
