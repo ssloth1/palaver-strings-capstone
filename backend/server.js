@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 app.use('/api/admins', adminRoutes)
 app.use('/api/instructors', instructorRoutes)
 //app.use('/api/parents', parentRoutes)
-//app.use('/api/students', studentRoutes)
+app.use('/api/students', studentRoutes)
 
 // connect to database
 mongoose.connect(process.env.MONGO_URI)

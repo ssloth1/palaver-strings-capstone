@@ -9,7 +9,7 @@ import { // Constants/dropdown options for the form
     COUNTRIES,
     US_STATES,
     CANADIAN_PROVINCES,
-    //INSTRUMENTS,
+    INSTRUMENTS,
 } from '../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
@@ -56,14 +56,16 @@ function AddUserForm() {
 
         // Student specific fields
         instrument: "",
-        age: "",
-        dateOfBirth: "",
-        school: "",
-        grade: "",
-        primaryInstructor: "", // optional for now
-        mentor: "", // optional for now
-        mentees: [], // optional for now
-        howHeardAboutProgram: "", // optional for now
+        //age: "",
+        //dateOfBirth: "",
+        //school: "",
+        //grade: "",
+        //Commenting the next three parameters out: these are optional in the model and probably best done through
+        //an update process rather than the creation process.
+        //primaryInstructor: "", // optional for now
+        //mentor: "", // optional for now
+        //mentees: [], // optional for now
+        //howHeardAboutProgram: "", // optional for now
 
         // Parent specific fields
         // .. TODO: add parent specific fields
@@ -119,6 +121,7 @@ function AddUserForm() {
 
         // TODO: Student related validation
 
+
         // TODO: Parent related validation
 
         // TODO: Instructor related validation
@@ -161,6 +164,10 @@ function AddUserForm() {
             case 'instructor':
                 endpoint = 'http://localhost:4000/api/instructors';
                 //submissionData.students = formData.students;
+                break;
+            case 'student':
+                endpoint = 'http://localhost:4000/api/students';
+                console.log("You're trying to make a student");
                 break;
             default:
                 break;
@@ -235,7 +242,23 @@ function AddUserForm() {
                 );
 
             // TODO: Student specific fields
-
+            case 'student':
+                return(
+                    <>
+                        
+                        {/*Student specific fields */}
+                        {/*Dropdown for instrument selection*/ }
+                        <select name="instrument" value={formData.instrument} onChange={handleChange} required>
+                            <option value="">Select Instrument</option>
+                            {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
+                        </select>
+                        {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
+                        {<input type="date" name="studentDOB" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
+                        {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
+                        {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
+                        {<input type="text" name="referral" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="PMC Referral" /> }
+                    </>
+                );
             // TODO: Parent specific fields
 
             // Instructor specific fields

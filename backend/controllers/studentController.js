@@ -21,7 +21,7 @@ const getStudent = async (req, res) => {
     const { id } = req.params
     // Check if id is valid
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({err: 'Student not found'})
+        return res.status(404).json({err: 'Invalid ID'})
     }
     // Find student by id
     const student = await Student.findById(id) 
@@ -34,12 +34,16 @@ const getStudent = async (req, res) => {
 
 // Create a new student without a parent
 const createStudent = async (req, res) => {
+    //This had originally been set to try to create a student object and then send that object to the server to save it-- the student object
+    //wouldn't send, so I took out the middle step and made the code align with adminController.
+    //I suspect that this was tied to the attempt to create parents and students simultaneously.
     const { studentData } = req.body;
+    
+    //Helpful log for debugging: uncomment this to view raw JSON being sent in to create a student.
+    //console.log(req.body);
 
     try {
-        const student = new Student(studentData);
-        await student.save();
-
+        const student = await Student.create(req.body);
         res.status(201).json({ student });
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -84,7 +88,12 @@ const updateStudent = async (req, res) => {
     res.status(200).json(student)
 }
 
+/*
 // Create a new student with a parent
+
+//I think we'll want to table this-- we may want to add a parent parameter to student creation, which can do a callback and update the
+//linked parent record, but we should probably not try to create both accounts at once.
+
 const createStudentWithParent = async (req, res) => {
     const { studentData, parentData } = req.body;
     
@@ -105,6 +114,7 @@ const createStudentWithParent = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 }
+*/
 
 module.exports = {
     getStudents,
@@ -112,6 +122,6 @@ module.exports = {
     createStudent,
     deleteStudent,
     updateStudent,
-    createStudentWithParent
+    //createStudentWithParent
 }
 
