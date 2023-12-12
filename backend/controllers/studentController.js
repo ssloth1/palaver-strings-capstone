@@ -1,6 +1,9 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const Student = require('../models/modelsIndex').Student;
-const mongoose = require('mongoose');
-const { Parent } = require('../models/modelsIndex');
+
+
 
 
 
