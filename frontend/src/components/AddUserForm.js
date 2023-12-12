@@ -57,16 +57,17 @@ function AddUserForm() {
 
         // Student specific fields
         instrument: "",
-        //age: "",
-        //dateOfBirth: "",
-        //school: "",
-        //grade: "",
+        age: "",
+        dateOfBirth: "",
+        school: "",
+        grade: "",
+        howHeardAboutProgram: "", // optional for now
         //Commenting the next three parameters out: these are optional in the model and probably best done through
         //an update process rather than the creation process.
         //primaryInstructor: "", // optional for now
         //mentor: "", // optional for now
         //mentees: [], // optional for now
-        //howHeardAboutProgram: "", // optional for now
+        
 
         // Parent specific fields
         // .. TODO: add parent specific fields
@@ -254,10 +255,10 @@ function AddUserForm() {
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
-                        {<input type="date" name="studentDOB" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
+                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="referral" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="PMC Referral" /> }
+                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} /> }
                     </>
                 );
             // TODO: Parent specific fields
