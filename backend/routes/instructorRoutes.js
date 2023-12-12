@@ -6,7 +6,9 @@ const {
     getInstructors,
     getInstructor,
     updateInstructor,
-    deleteInstructor
+    deleteInstructor,
+
+    loginInstructor,
 
 } = require('../controllers/instructorController');
 
@@ -17,6 +19,8 @@ router.get('/', getInstructors);
 router.get('/:id', getInstructor);
 router.patch('/:id', updateInstructor);
 router.delete('/:id', deleteInstructor);
+
+router.post('/login', loginInstructor);
 
 
 module.exports = router;

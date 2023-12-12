@@ -1,22 +1,30 @@
 /* google font */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 :root {
   --primary: #1a72ac;
   --error: #e7195a;
 }
 body {
-  background: #f1f1f1;
+  background: #487A79;
   margin: 0;
-  font-family: "Oswald";
+  font-family: "Poppins";
+  color: #FFF;
+  display: flex;
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Horizontal centering */
+  flex-direction: column; /* Stack children vertically */
+  min-height: 100vh; /* Ensure body takes at least full viewport height */
 }
+
 header {
   background: #fff;
 }
+
 header .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,22 +41,5 @@ header a {
 
 .home {
   display: grid;
-  grid-template-columns: 3fr 1fr;
   gap: 100px;
-}
-.student-details {
-  background: #fff;
-  margin: 20px auto;
-  padding: 20px;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-}
-.student-details h4 {
-  margin: 0 0 10px 0;
-  font-size: 1.2em;
-  color: var(--primary);
-}
-.student-details p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #555;
 }

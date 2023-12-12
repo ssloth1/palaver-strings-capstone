@@ -1,31 +1,30 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './components/Login';
+import Navbar from './components/Navbar';
 import AddUserForm from './components/AddUserForm';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ManageUsers from './components/ManageUsers';
+import UserDetails from './components/UserDetails';
+import { AuthProvider } from './contexts/AuthContext';
 
-// Main App
+// This is our main app component, for now it sets up routes and context for the web application
 function App() {
-
-  return (
-    <AuthProvider> {/* Need to wrap the whole app with the AuthProvider */}
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/add-user" element={<ProtectedRoute/>}/>
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
+    return (
+        <AuthProvider>
+            <Router>
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/create-user" element={<AddUserForm />} />
+                    <Route path="/users" element={<ManageUsers />} />
+                    <Route path="/user/:id" element={<UserDetails />} />
+                </Routes>
+            </Router>
+        </AuthProvider>
+    );
 }
 
-// Protected route component that will redirect to login if not logged in
-function ProtectedRoute() {
-  const { isLoggedIn, isAdmin } = useAuth();
-  // Render AddUserForm if logged in and is admin, otherwise redirect to login
-  return isLoggedIn && isAdmin ? <AddUserForm /> : <Navigate to="/login" replace />;
-}
 
 export default App;
