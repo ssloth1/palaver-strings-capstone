@@ -100,29 +100,33 @@ const deleteInstructor = async (req, res) => {
 // Associate a student with an instructor
 const assignStudent = async (req, res) => {
     const session = await mongoose.startSession();
+    
+    // Start transaction to ensure atomicity of the operation
     session.startTransaction();
     try {
         const instructorId = req.params.id;
         const studentId = req.body.studentId;
 
+        // Check if the instructor exists
         const instructor = await Instructor.findById(instructorId).session(session);
         if (!instructor) {
             await session.abortTransaction();
             return res.status(404).json({ message: "Instructor not found!" });
         }
-
+        
+        // Check if the student exists
         const student = await Student.findById(studentId).session(session);
         if (!student) {
             await session.abortTransaction();
             return res.status(404).json({ message: "Student not found!" });
         }
-
-        instructor.students.push(student._id); // Push student ID
+        
+        // Set up the association, save the documents, and commit the transaction
+        instructor.students.push(student._id);
         student.primaryInstructor = instructor._id;
         await instructor.save();
         await student.save();
         await session.commitTransaction();
-
         res.status(200).json(instructor);
     } catch (error) {
         await session.abortTransaction();
@@ -137,19 +141,29 @@ const assignStudent = async (req, res) => {
 // Disassociate a student from an instructor
 const unassignStudent = async (req, res) => {
     const session = await mongoose.startSession();
+    
+    // Start transaction to ensure atomicity of the operation
     session.startTransaction();
     try {
-        const instructor = await Instructor.findById(req.params.id).session(session);
+        const instructorId = req.params.id;
+        const studentId = req.body.studentId;
+
+        // Check if the instructor exists
+        const instructor = await Instructor.findById(instructorId).session(session);
         if (!instructor) {
             await session.abortTransaction();
             return res.status(404).json({ message: "Instructor not found!" });
         }
-        const student = await Student.findById(req.body.studentId).session(session);
+        
+        // Check if the student exists
+        const student = await Student.findById(studentId).session(session);
         if (!student) {
             await session.abortTransaction();
             return res.status(404).json({ message: "Student not found!" });
         }
-        instructor.students.pull(student);
+        
+        // Set up the association, save the documents, and commit the transaction
+        instructor.students.pull(student._id);
         student.primaryInstructor = null;
         await instructor.save();
         await student.save();
