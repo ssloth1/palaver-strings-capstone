@@ -7,11 +7,12 @@ const { INSTRUMENTS } = require('../constants');
 const studentSchema = new Schema({
     
     //Basic creational student data
-    instrument: { type: String, enum: INSTRUMENTS, required: true },
-    age: { type: Number, required: true },
-    dateOfBirth: { type: Date, required: true },
-    school: { type: String, required: true },
-    grade: { type: Number, required: true },
+    // Need to make these not required for purposes of updating student from outside of creation
+    instrument: { type: String, enum: INSTRUMENTS, required: function() { return this.isNew; } }, // Required only when new
+    age: { type: Number, required: function() { return this.isNew; } }, // Required only when new
+    dateOfBirth: { type: Date, required: function() { return this.isNew; } }, // Required only when new
+    school: { type: String, required: function() { return this.isNew; } }, // Required only when new
+    grade: { type: Number, required: function() { return this.isNew; } }, // Required only when new
     howHeardAboutProgram: { type: String, required: false },
     //Setting parent to required: false to allow creation of a student for now.
     //My opinion on the business decision is that parent should be a required item for student creation but not vice versa

@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middleware/auth');
 
 const { 
 
@@ -9,6 +10,9 @@ const {
     deleteInstructor,
 
     loginInstructor,
+
+    assignStudent,
+    unassignStudent,
 
 } = require('../controllers/instructorController');
 
@@ -21,6 +25,11 @@ router.patch('/:id', updateInstructor);
 router.delete('/:id', deleteInstructor);
 
 router.post('/login', loginInstructor);
+
+//Associate Student with Instructor
+router.patch('/:id/assignStudent', assignStudent);
+router.patch('/:id/unassignStudent', unassignStudent);
+
 
 
 module.exports = router;

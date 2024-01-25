@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -95,6 +96,73 @@ const deleteInstructor = async (req, res) => {
     }
 };
 
+
+// Associate a student with an instructor
+const assignStudent = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const instructorId = req.params.id;
+        const studentId = req.body.studentId;
+
+        const instructor = await Instructor.findById(instructorId).session(session);
+        if (!instructor) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+
+        const student = await Student.findById(studentId).session(session);
+        if (!student) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Student not found!" });
+        }
+
+        instructor.students.push(student._id); // Push student ID
+        student.primaryInstructor = instructor._id;
+        await instructor.save();
+        await student.save();
+        await session.commitTransaction();
+
+        res.status(200).json(instructor);
+    } catch (error) {
+        await session.abortTransaction();
+        res.status(400).json({ message: error.message });
+    } finally {
+        session.endSession();
+    }
+};
+
+
+
+// Disassociate a student from an instructor
+const unassignStudent = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const instructor = await Instructor.findById(req.params.id).session(session);
+        if (!instructor) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+        const student = await Student.findById(req.body.studentId).session(session);
+        if (!student) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Student not found!" });
+        }
+        instructor.students.pull(student);
+        student.primaryInstructor = null;
+        await instructor.save();
+        await student.save();
+        await session.commitTransaction();
+        res.status(200).json(instructor);
+    } catch (error) {
+        await session.abortTransaction();
+        res.status(400).json({ message: error.message });
+    } finally {
+        session.endSession();
+    }
+};
+
 module.exports = {
 
     /* Instructor-specific routes managed by Admin */
@@ -104,6 +172,9 @@ module.exports = {
     updateInstructor,
     deleteInstructor,
 
-    loginInstructor
+    loginInstructor,
+
+    assignStudent,
+    unassignStudent
 
 };
