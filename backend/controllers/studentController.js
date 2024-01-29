@@ -3,10 +3,6 @@ const bcrypt = require('bcrypt');
 
 const Student = require('../models/modelsIndex').Student;
 
-
-
-
-
 // Get all students
 const getStudents = async (req, res) => {
     try {
@@ -145,6 +141,9 @@ const loginStudent = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
 
 module.exports = {
     getStudents,
