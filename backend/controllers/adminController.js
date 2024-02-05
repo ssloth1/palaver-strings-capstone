@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -222,8 +223,155 @@ const unassignStudent = async (req, res) => {
         res.status(400).json({ message: error.message });
     } finally {
         session.endSession();
+    };
+};
+
+const createInstructor = async (req, res) => {
+    try {
+        const instructor = await Instructor.create(req.body);
+        res.status(201).json(instructor);
+    } catch (err) {
+        res.status(400).json({ err: err.message });
     }
 };
+
+// Get all instructors
+const getInstructors = async (req, res) => {
+    try {
+        const instructors = await Instructor.find({ __t: 'Instructor' }); 
+        res.status(200).json(instructors);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Get a specific instructor by ID
+const getInstructor = async (req, res) => {
+    try {
+        const instructor = await Instructor.findById(req.params.id);
+        if (!instructor) {
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+        res.status(200).json(instructor);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Update an instructor by ID
+const updateInstructor = async (req, res) => {
+    try {
+        const instructor = await Instructor.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        if (!instructor) {
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+        res.status(200).json(instructor);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Delete an instructor by ID
+const deleteInstructor = async (req, res) => {
+    try {
+        const instructor = await Instructor.findByIdAndDelete(req.params.id);
+        if (!instructor) {
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+        res.status(200).json({ message: "Instructor deleted successfully!" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Get all students
+const getStudents = async (req, res) => {
+    try {
+        const students = await Student.find({}).sort({createdAt: -1})
+        res.status(200).json(students)
+    } catch (err) {
+        res.status(400).json({err: err.message})
+    }
+}
+
+// Get a single student
+const getStudent = async (req, res) => {
+    
+    // Get id from params
+    const { id } = req.params
+    // Check if id is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({err: 'Invalid ID'})
+    }
+    // Find student by id
+    const student = await Student.findById(id) 
+    // Check if student exists
+    if (!student) {
+        return res.status(404).json({err: 'Student not found'})
+    }
+    res.status(200).json(student) 
+}
+
+// Create a new student without a parent
+const createStudent = async (req, res) => {
+    //This had originally been set to try to create a student object and then send that object to the server to save it-- the student object
+    //wouldn't send, so I took out the middle step and made the code align with adminController.
+    //I suspect that this was tied to the attempt to create parents and students simultaneously.
+    const { studentData } = req.body;
+    
+    //Helpful log for debugging: uncomment this to view raw JSON being sent in to create a student.
+    //console.log(req.body);
+
+    try {
+        const student = await Student.create(req.body);
+        res.status(201).json({ student });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+// Delete a student
+const deleteStudent = async (req, res) => {
+    // Get id from params
+    const { id } = req.params
+    // Check if id is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({err: 'Student not found'})
+    }
+    // Find student by id and delete it
+    const student = await Student.findOneAndDelete({_id: id})
+    // Check if student exists
+    if (!student) {
+        return res.status(404).json({err: 'Student not found'})
+    }
+    res.status(200).json(student)
+
+}
+
+// Update a student
+const updateStudent = async (req, res) => {
+    // Get id from params
+    const { id } = req.params
+    // Check if id is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({err: 'Student not found'})
+    }
+
+    const student = await Student.findByIdAndUpdate({_id: id}, {
+        ...req.body,
+    })
+
+    if (!student) {
+        return res.status(404).json({err: 'Student not found'})
+    }
+
+    res.status(200).json(student)
+}
+
+
 
 
 module.exports = {
@@ -239,5 +387,18 @@ module.exports = {
     loginAdmin,
 
     assignStudent,
-    unassignStudent
+    unassignStudent,
+
+    createInstructor,
+    getInstructor,
+    getInstructors,
+    updateInstructor,
+    deleteInstructor,
+
+    createStudent,
+    getStudent,
+    getStudents,
+    updateStudent,
+    deleteStudent
+
 };

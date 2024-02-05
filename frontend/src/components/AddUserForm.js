@@ -139,46 +139,50 @@ function AddUserForm() {
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Checks if the user is logged in
+    
         if (!isLoggedIn) {
-            console.error("You need to be logged in to submit.")
+            console.error("You need to be logged in to submit.");
             setStatusMessage("You need to be logged in to submit.");
             return;
         }
-
-        // Checks if the passwords match before submission
+    
         if (formData.password !== formData.confirmPassword) {
             setStatusMessage("Passwords do not match.");
             return;
         }
-
-        // Validates the form before submission
+    
         if (!validateForm()) {
             return;
         }
 
-        let endpoint = "";
+        const hashedPassword = await hashedPassword(formData.password);
+    
+        let endpoint;
+    
+        // Set the endpoint based on the selected role
         switch (formData.role) {
             case 'admin':
-                endpoint = 'http://localhost:4000/api/admins';
-                console.log("You're trying to make an admin")
+                endpoint = `http://localhost:4000/api/admins/createAdmin`; // Update this line
                 break;
             case 'instructor':
-                endpoint = 'http://localhost:4000/api/instructors';
-                console.log("You're trying to make an instructor")
+                endpoint = `http://localhost:4000/api/admins/createInstructor`; // Update this line
                 break;
             case 'student':
-                endpoint = 'http://localhost:4000/api/students';
-                console.log("You're trying to make a student");
+                endpoint = `http://localhost:4000/api/admins/createStudent`; // Update this line
                 break;
+            // Add cases for other roles as needed
             default:
-                break;
+                // Handle the default case or show an error message
+                console.error(`Invalid role: ${formData.role}`);
+                setStatusMessage(`Invalid role: ${formData.role}`);
+                return;
         }
-
-        // Prepares the form data by putting it in the necessary format for the backend
+    
+        // Preparing the submission data with a key indicating the type of user being created
         const submissionData = {
             ...formData,
+            hashedPassword,
+            userType: formData.role, // Adding a userType field to indicate the type of user being created
             address: {
                 country: formData.country,
                 addressLine1: formData.addressLine1,
@@ -187,25 +191,16 @@ function AddUserForm() {
                 state: formData.state,
                 zipCode: formData.zipCode,
             },
-            
-            // The entered form password will be hashed before being sent to the database
-            // the password hashing is handled within the userModel.js file in the backend directory
-            hashedPassword: formData.password,
         };
-
-        // Remove confirmPassword before sending the form data to the backend
-        // This was only necessary
-        delete submissionData.confirmPassword; 
+        delete submissionData.confirmPassword; // Remove confirmPassword as it's not needed for the backend
     
-
-        // Make a POST request to the backend with the form data for the selected role
         try {
             const response = await axios.post(endpoint, submissionData);
             setStatusMessage("Form submitted successfully!");
             console.log("Form submitted successfully!", response.data);
         } catch (error) {
-            setStatusMessage("An error occurred while submitting the form.");
-            console.error("Error submitting form", error);
+            setStatusMessage(`An error occurred while submitting the form: ${error.response ? error.response.data.message : error.message}`);
+            console.error("Error submitting form", error.response ? error.response.data : error);
         }
     };
  
@@ -256,7 +251,7 @@ function AddUserForm() {
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
-                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
+                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange}  placeholder ={formData.dateOfBirth} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
                         {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} /> }
@@ -289,7 +284,7 @@ function AddUserForm() {
     
 
     return (
-        <body className={styles.addUserForm}>
+        <div className={styles.addUserForm}>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
@@ -374,7 +369,7 @@ function AddUserForm() {
             {statusMessage && <p>{statusMessage}</p>}
 
             </form>
-        </body>
+        </div>
         );
     }
 
