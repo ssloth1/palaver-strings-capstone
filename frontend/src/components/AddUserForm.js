@@ -162,10 +162,11 @@ function AddUserForm() {
         switch (formData.role) {
             case 'admin':
                 endpoint = 'http://localhost:4000/api/admins';
+                console.log("You're trying to make an admin")
                 break;
             case 'instructor':
                 endpoint = 'http://localhost:4000/api/instructors';
-                //submissionData.students = formData.students;
+                console.log("You're trying to make an instructor")
                 break;
             case 'student':
                 endpoint = 'http://localhost:4000/api/students';

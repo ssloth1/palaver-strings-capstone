@@ -12,6 +12,9 @@ const {
     deleteAdmin,
     updateAdmin,
     loginAdmin,
+
+    assignStudent,
+    unassignStudent
 } = require('../controllers/adminController');
 
 const router = express.Router({ mergeParams: true });
@@ -27,5 +30,10 @@ router.post('/', createAdmin);
 router.delete('/:id', deleteAdmin);
 router.patch('/:id', updateAdmin);
 router.post('/login', loginAdmin);
+
+//Associate Student with Instructor
+router.patch('/:id/assignStudent', assignStudent);
+router.patch('/:id/unassignStudent', unassignStudent);
+
 
 module.exports = router;

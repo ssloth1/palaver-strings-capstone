@@ -8,11 +8,8 @@ const {
     getInstructor,
     updateInstructor,
     deleteInstructor,
-
     loginInstructor,
 
-    assignStudent,
-    unassignStudent,
 
 } = require('../controllers/instructorController');
 
@@ -23,12 +20,8 @@ router.get('/', getInstructors);
 router.get('/:id', getInstructor);
 router.patch('/:id', updateInstructor);
 router.delete('/:id', deleteInstructor);
-
 router.post('/login', loginInstructor);
 
-//Associate Student with Instructor
-router.patch('/:id/assignStudent', assignStudent);
-router.patch('/:id/unassignStudent', unassignStudent);
 
 
 
