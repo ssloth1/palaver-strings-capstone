@@ -1,0 +1,6 @@
+.droppableArea {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f8f8f8;
+  }

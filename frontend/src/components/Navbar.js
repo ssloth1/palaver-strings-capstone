@@ -37,6 +37,7 @@ function Navbar() {
                 <Link to="/">Home</Link>
                 {isLoggedIn && isAdmin() && <Link to="/create-user">Add User</Link>}
                 {isLoggedIn && isAdmin() && <Link to="/users">Manage Users</Link>}
+                {isLoggedIn && isAdmin() && <Link to="/student-assignments">Student Assignments</Link>}
             </nav>
         </div>
     </div>
