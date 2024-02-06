@@ -10,7 +10,7 @@ body {
   margin: 0;
   font-family: "Poppins";
   color: #FFF;
-  display: flex;
+  display: flexbox;
   align-items: center; /* Vertical centering */
   justify-content: center; /* Horizontal centering */
   flex-direction: column; /* Stack children vertically */
@@ -24,8 +24,8 @@ header {
 header .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 10px 10px;
-  display: flex;
+  padding: 10px;
+  display: flexbox;
   align-items: center;
   justify-content: space-between;
 }
@@ -40,6 +40,6 @@ header a {
 }
 
 .home {
-  display: grid;
+  display: flexbox; 
   gap: 100px;
 }
