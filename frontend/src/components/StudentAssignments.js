@@ -1,93 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import axios from 'axios';
+import './StudentAssignments.css';
 
 function StudentAssignments() {
+    // State hooks to store the students and instructors data
     const [students, setStudents] = useState([]);
     const [instructors, setInstructors] = useState([]);
 
     useEffect(() => {
-        const fetchStudents = async () => {
-            const { data } = await axios.get('/api/admins/students');
-            setStudents(data);
+        // Fetch data for students and instructors on component mount
+        const fetchData = async () => {
+            const studentsData = await axios.get('/api/admins/students');
+            const instructorsData = await axios.get('/api/admins/instructors');
+            setStudents(studentsData.data);
+    
+            setInstructors(instructorsData.data);
         };
 
-        const fetchInstructors = async () => {
-            const { data } = await axios.get('/api/admins/instructors');
-            setInstructors(data);
-        };
-
-        fetchStudents();
-        fetchInstructors();
+        fetchData();
     }, []);
 
-
-    const onDragEnd = async (result) => {
-        const { source, destination, draggableId } = result;
-        if (!destination) return; // Stops the process if dropped outside a droppable area
-    
+    // Function to handle the instructor change for a student
+    const handleInstructorChange = async (studentId, instructorId) => {
         try {
-            if (destination.droppableId === 'unassignedStudents') {
-                // Call API to unassign the student
-                await axios.patch(`/api/admins/instructor/${source.droppableId}/unassignStudent`, {
-                    studentId: draggableId,
-                });
-            } else {
-                // Call API to assign the student to an instructor
-                await axios.patch(`/api/admins/instructor/${destination.droppableId}/assignStudent`, {
-                    studentId: draggableId,
-                });
+            let endpoint = `/api/admins/instructor/${instructorId}/assignStudent`;
+            let body = { studentId };
+    
+            if (instructorId === 'unassigned') {
+                endpoint = `/api/admins/instructor/${studentId}/unassignStudent`;
+                body = {};
             }
-            // Refresh the data to reflect changes
-            fetchStudents();
-            fetchInstructors();
+    
+            await axios.patch(endpoint, body);
+    
+            // Optimistically update the students array to reflect the change
+            setStudents((prevStudents) =>
+                prevStudents.map((student) => {
+                    if (student._id === studentId) {
+                        return { ...student, primaryInstructor: instructorId !== 'unassigned' ? instructorId : null };
+                    }
+                    return student;
+                }),
+            );
         } catch (error) {
-            console.error('Drag-and-drop operation failed:', error);
+            console.error('Assignment operation failed:', error);
         }
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <div>
-                <h1>Student Assignments</h1>
-                <Droppable droppableId="unassignedStudents">
-                    {(provided) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps}>
-                            <h2>Unassigned Students</h2>
-                            {students.filter(student => !student.primaryInstructor).map((student, index) => (
-                                <Draggable key={student._id} draggableId={student._id} index={index}>
-                                    {(provided) => (
-                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                            {student.firstName} {student.lastName}
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-                {instructors.map((instructor, index) => (
-                    <Droppable key={instructor._id} droppableId={instructor._id}>
-                        {(provided) => (
-                            <div ref={provided.innerRef} {...provided.droppableProps} className="droppableArea">
-                                <h2>{instructor.firstName} {instructor.lastName}</h2>
-                                {students.filter(student => student.primaryInstructor === instructor._id).map((student, index) => (
-                                    <Draggable key={student._id} draggableId={student._id} index={index}>
-                                        {(provided) => (
-                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                {student.firstName} {student.lastName}
-                                            </div>
-                                        )}
-                                    </Draggable>
+        <div className="layout-container">
+
+            {/* Column for student assignments */}
+            <div className="column">
+                <div className="student-assignments-container">
+                    <h1 className="student-assignments-title">Assign Students</h1>
+                    {students.map((student) => (
+                        <div key={student._id} className="student-item">
+                            <span className="student-name">{student.firstName} {student.lastName} -- {student.instrument || 'Instrument not specified'}</span>
+                            <select
+                                className="student-dropdown"
+                                value={student.primaryInstructor || 'unassigned'}
+                                onChange={(e) => handleInstructorChange(student._id, e.target.value)}
+                            >
+                                <option value="unassigned">Unassigned</option>
+                                {instructors.map((instructor) => (
+                                    <option key={instructor._id} value={instructor._id}>
+                                        {instructor.firstName} {instructor.lastName}
+                                    </option>
                                 ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                ))}
+                            </select>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </DragDropContext>
+
+            {/* Column for displaying instructors and their assigned students */}
+            <div className="layout-container">
+                <div className="column">
+                    <div className="student-assignments-container">
+                        {instructors.map((instructor) => (
+                            <div key={instructor._id} className="instructor-assignments-container">
+                                <h2 className="student-assignments-title">{instructor.firstName} {instructor.lastName}'s Students</h2>
+                                <div className="student-item">
+                                    <ul className="student-name">
+                                        {students.filter(student => student.primaryInstructor === instructor._id).map(filteredStudent => (
+                                            <li key={filteredStudent._id}>{filteredStudent.firstName} {filteredStudent.lastName} -- {filteredStudent.instrument || 'Instrument not specified'}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 
