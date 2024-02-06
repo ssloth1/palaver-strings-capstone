@@ -154,35 +154,30 @@ function AddUserForm() {
         if (!validateForm()) {
             return;
         }
-
-        const hashedPassword = await hashedPassword(formData.password);
     
         let endpoint;
     
         // Set the endpoint based on the selected role
         switch (formData.role) {
             case 'admin':
-                endpoint = `http://localhost:4000/api/admins/createAdmin`; // Update this line
+                endpoint = `/api/admins/admin`; // Assuming this is the correct endpoint for creating admins
                 break;
             case 'instructor':
-                endpoint = `http://localhost:4000/api/admins/createInstructor`; // Update this line
+                endpoint = `/api/admins/instructor`;
                 break;
             case 'student':
-                endpoint = `http://localhost:4000/api/admins/createStudent`; // Update this line
+                endpoint = `/api/admins/student`;
                 break;
             // Add cases for other roles as needed
             default:
-                // Handle the default case or show an error message
                 console.error(`Invalid role: ${formData.role}`);
                 setStatusMessage(`Invalid role: ${formData.role}`);
                 return;
         }
     
-        // Preparing the submission data with a key indicating the type of user being created
+        // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
             ...formData,
-            hashedPassword,
-            userType: formData.role, // Adding a userType field to indicate the type of user being created
             address: {
                 country: formData.country,
                 addressLine1: formData.addressLine1,
@@ -191,16 +186,25 @@ function AddUserForm() {
                 state: formData.state,
                 zipCode: formData.zipCode,
             },
+            
+            // The entered form password will be hashed before being sent to the database
+            // the password hashing is handled within the userModel.js file in the backend directory
+            hashedPassword: formData.password,
         };
-        delete submissionData.confirmPassword; // Remove confirmPassword as it's not needed for the backend
+
+        // Remove confirmPassword before sending the form data to the backend
+        // This was only necessary
+        delete submissionData.confirmPassword; 
     
+
+        // Make a POST request to the backend with the form data for the selected role
         try {
             const response = await axios.post(endpoint, submissionData);
             setStatusMessage("Form submitted successfully!");
             console.log("Form submitted successfully!", response.data);
         } catch (error) {
-            setStatusMessage(`An error occurred while submitting the form: ${error.response ? error.response.data.message : error.message}`);
-            console.error("Error submitting form", error.response ? error.response.data : error);
+            setStatusMessage("An error occurred while submitting the form.");
+            console.error("Error submitting form", error);
         }
     };
  
@@ -254,7 +258,7 @@ function AddUserForm() {
                         {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange}  placeholder ={formData.dateOfBirth} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} /> }
+                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How I Heard About This" /> }
                     </>
                 );
             // TODO: Parent specific fields
