@@ -170,6 +170,9 @@ const assignStudent = async (req, res) => {
             return res.status(404).json({ message: "Student not found!" });
         }
         
+        console.log("Swapping student from instructor:", currentInstructorId, "to new instructor:", newInstructorId);
+        console.log("Student ID:", studentId);
+
         // Set up the association, save the documents, and commit the transaction
         instructor.students.push(student._id);
         student.primaryInstructor = instructor._id;
@@ -184,8 +187,6 @@ const assignStudent = async (req, res) => {
         session.endSession();
     }
 };
-
-
 
 // Disassociate a student from an instructor
 const unassignStudent = async (req, res) => {
@@ -225,6 +226,56 @@ const unassignStudent = async (req, res) => {
         session.endSession();
     };
 };
+
+
+const swapStudent = async (req, res) => {
+    const session = await mongoose.startSession();
+    try {
+        await session.startTransaction();
+        const newInstructorId = req.params.id; // New instructor's ID from URL
+        const { studentId } = req.body; // Student's ID from request body
+
+        // Fetch the student to find their current instructor
+        const student = await Student.findById(studentId).session(session);
+        if (!student) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Student not found!" });
+        }
+        
+        const currentInstructorId = student.primaryInstructor;
+
+        // If there is a current instructor, remove the student from their list
+        if (currentInstructorId) {
+            const currentInstructor = await Instructor.findById(currentInstructorId).session(session);
+            if (currentInstructor) {
+                currentInstructor.students.pull(student._id);
+                await currentInstructor.save({ session });
+            }
+        }
+
+        // Assign the student to the new instructor
+        const newInstructor = await Instructor.findById(newInstructorId).session(session);
+        if (!newInstructor) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "New instructor not found!" });
+        }
+        newInstructor.students.push(student._id);
+        await newInstructor.save({ session });
+
+        // Update the student's primary instructor
+        student.primaryInstructor = newInstructor._id;
+        await student.save({ session });
+
+        await session.commitTransaction();
+        res.status(200).json({ message: "Student successfully reassigned to the new instructor." });
+    } catch (error) {
+        await session.abortTransaction();
+        res.status(500).json({ message: error.message });
+    } finally {
+        session.endSession();
+    }
+};
+
 
 const createInstructor = async (req, res) => {
     try {
@@ -388,6 +439,7 @@ module.exports = {
 
     assignStudent,
     unassignStudent,
+    swapStudent,
 
     createInstructor,
     getInstructor,

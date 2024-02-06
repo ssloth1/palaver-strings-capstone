@@ -15,6 +15,7 @@ const {
 
     assignStudent,
     unassignStudent,
+    swapStudent,
 
     getInstructor,
     getInstructors,
@@ -49,6 +50,7 @@ router.post('/admin/login', loginAdmin);
 // Student-Instructor Association
 router.patch('/instructor/:id/assignStudent', assignStudent);
 router.patch('/instructor/:id/unassignStudent', unassignStudent);
+router.patch('/instructor/:id/swapStudent', swapStudent);
 
 // Instructor-specific routes
 router.get('/instructors', getInstructors);

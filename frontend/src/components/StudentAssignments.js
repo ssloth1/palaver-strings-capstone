@@ -21,27 +21,52 @@ function StudentAssignments() {
     }, []);
 
     // Function to handle the instructor change for a student
-    const handleInstructorChange = async (studentId, instructorId) => {
+    const handleInstructorChange = async (studentId, newInstructorId) => {
         try {
-            let endpoint = `/api/admins/instructor/${instructorId}/assignStudent`;
-            let body = { studentId };
+            // Find the student's current instructor ID from the students state
+            const currentInstructorId = students.find(student => student._id === studentId)?.primaryInstructor;
+            
+            // Check if the student is being reassigned (not just assigned for the first time or unassigned)
+            if (currentInstructorId && newInstructorId !== 'unassigned' && currentInstructorId !== newInstructorId) {
+                // Construct the endpoint for the swap operation
+                const endpoint = `/api/admins/instructor/${newInstructorId}/swapStudent`;
     
-            if (instructorId === 'unassigned') {
-                endpoint = `/api/admins/instructor/${studentId}/unassignStudent`;
-                body = {};
+                // Prepare the request body with the studentId
+                const body = { studentId };
+    
+                // Send the PATCH request to perform the swap
+                await axios.patch(endpoint, body);
+    
+                // Optimistically update the students state to reflect the new assignment
+                setStudents(prevStudents =>
+                    prevStudents.map(student => {
+                        if (student._id === studentId) {
+                            return { ...student, primaryInstructor: newInstructorId };
+                        }
+                        return student;
+                    }),
+                );
+            } else {
+                // Handle the regular assignment or unassignment if not a swap scenario
+                let endpoint = `/api/admins/instructor/${newInstructorId}/assignStudent`;
+                let body = { studentId };
+    
+                if (newInstructorId === 'unassigned') {
+                    endpoint = `/api/admins/instructor/${currentInstructorId}/unassignStudent`;
+                }
+    
+                await axios.patch(endpoint, body);
+    
+                // Update the students state to reflect the change
+                setStudents(prevStudents =>
+                    prevStudents.map(student => {
+                        if (student._id === studentId) {
+                            return { ...student, primaryInstructor: newInstructorId !== 'unassigned' ? newInstructorId : null };
+                        }
+                        return student;
+                    }),
+                );
             }
-    
-            await axios.patch(endpoint, body);
-    
-            // Optimistically update the students array to reflect the change
-            setStudents((prevStudents) =>
-                prevStudents.map((student) => {
-                    if (student._id === studentId) {
-                        return { ...student, primaryInstructor: instructorId !== 'unassigned' ? instructorId : null };
-                    }
-                    return student;
-                }),
-            );
         } catch (error) {
             console.error('Assignment operation failed:', error);
         }
