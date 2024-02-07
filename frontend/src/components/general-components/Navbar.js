@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import '../styles/Navbar.css';
+import './styles/Navbar.css';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState(false);

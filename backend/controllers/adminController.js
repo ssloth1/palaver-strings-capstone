@@ -156,5 +156,4 @@ module.exports = {
     deleteAdmin,
     updateAdmin,
     loginAdmin,
-
 };

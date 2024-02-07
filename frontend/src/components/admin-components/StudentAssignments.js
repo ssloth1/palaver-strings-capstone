@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './StudentAssignments.css';
+import './styles/StudentAssignments.css';
 
 function StudentAssignments() {
     // State hooks to store the students and instructors data

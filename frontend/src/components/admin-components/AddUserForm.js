@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import styles from './AddUserForm.module.css';
+import styles from './styles/AddUserForm.module.css';
 
 import { // Constants/dropdown options for the form
     GENDER,
@@ -11,7 +11,7 @@ import { // Constants/dropdown options for the form
     US_STATES,
     CANADIAN_PROVINCES,
     INSTRUMENTS,
-} from '../constants/formconstants';
+} from '../../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
  * NOTES:
