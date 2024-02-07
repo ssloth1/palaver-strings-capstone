@@ -139,42 +139,40 @@ function AddUserForm() {
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Checks if the user is logged in
+    
         if (!isLoggedIn) {
-            console.error("You need to be logged in to submit.")
+            console.error("You need to be logged in to submit.");
             setStatusMessage("You need to be logged in to submit.");
             return;
         }
-
-        // Checks if the passwords match before submission
+    
         if (formData.password !== formData.confirmPassword) {
             setStatusMessage("Passwords do not match.");
             return;
         }
-
-        // Validates the form before submission
+    
         if (!validateForm()) {
             return;
         }
-
+    
         let endpoint = "";
         switch (formData.role) {
             case 'admin':
                 endpoint = 'http://localhost:4000/api/admins';
+                console.log("You're trying to make an admin", formData);
                 break;
             case 'instructor':
                 endpoint = 'http://localhost:4000/api/instructors';
-                //submissionData.students = formData.students;
+                console.log("You're trying to make an instructor", formData);
                 break;
             case 'student':
                 endpoint = 'http://localhost:4000/api/students';
-                console.log("You're trying to make a student");
+                console.log("You're trying to make a student", formData);
                 break;
             default:
                 break;
         }
-
+    
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
             ...formData,
@@ -255,10 +253,10 @@ function AddUserForm() {
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
-                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
+                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange}  placeholder ={formData.dateOfBirth} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} /> }
+                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How I Heard About This" /> }
                     </>
                 );
             // TODO: Parent specific fields
@@ -288,7 +286,7 @@ function AddUserForm() {
     
 
     return (
-        <body className={styles.addUserForm}>
+        <div className={styles.addUserForm}>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
@@ -373,7 +371,7 @@ function AddUserForm() {
             {statusMessage && <p>{statusMessage}</p>}
 
             </form>
-        </body>
+        </div>
         );
     }
 

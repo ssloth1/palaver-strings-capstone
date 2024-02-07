@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -144,7 +145,6 @@ const loginAdmin = async (req, res) => {
     }
 };
 
-
 module.exports = {
     getAllUsers,
     getUser,
@@ -156,4 +156,5 @@ module.exports = {
     deleteAdmin,
     updateAdmin,
     loginAdmin,
+
 };
