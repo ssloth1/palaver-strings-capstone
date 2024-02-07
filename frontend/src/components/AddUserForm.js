@@ -155,24 +155,22 @@ function AddUserForm() {
             return;
         }
     
-        let endpoint;
-    
-        // Set the endpoint based on the selected role
+        let endpoint = "";
         switch (formData.role) {
             case 'admin':
-                endpoint = `/api/admins/admin`; // Assuming this is the correct endpoint for creating admins
+                endpoint = 'http://localhost:4000/api/admins';
+                console.log("You're trying to make an admin", formData);
                 break;
             case 'instructor':
-                endpoint = `/api/admins/instructor`;
+                endpoint = 'http://localhost:4000/api/instructors';
+                console.log("You're trying to make an instructor", formData);
                 break;
             case 'student':
-                endpoint = `/api/admins/student`;
+                endpoint = 'http://localhost:4000/api/students';
+                console.log("You're trying to make a student", formData);
                 break;
-            // Add cases for other roles as needed
             default:
-                console.error(`Invalid role: ${formData.role}`);
-                setStatusMessage(`Invalid role: ${formData.role}`);
-                return;
+                break;
         }
     
         // Prepares the form data by putting it in the necessary format for the backend

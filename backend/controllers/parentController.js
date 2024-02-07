@@ -1,3 +1,7 @@
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const { Parent } = require('../models/modelsIndex');
 
 // Get a parent's children information

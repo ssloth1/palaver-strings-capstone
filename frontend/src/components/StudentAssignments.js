@@ -10,8 +10,8 @@ function StudentAssignments() {
     useEffect(() => {
         // Fetch data for students and instructors on component mount
         const fetchData = async () => {
-            const studentsData = await axios.get('/api/admins/students');
-            const instructorsData = await axios.get('/api/admins/instructors');
+            const studentsData = await axios.get('/api/students');
+            const instructorsData = await axios.get('/api/instructors');
             setStudents(studentsData.data);
     
             setInstructors(instructorsData.data);
@@ -22,20 +22,26 @@ function StudentAssignments() {
 
     // Function to handle the instructor change for a student
     const handleInstructorChange = async (studentId, newInstructorId) => {
+        console.log(`Handling instructor change for student ID: ${studentId} to instructor ID: ${newInstructorId}`);
         try {
             // Find the student's current instructor ID from the students state
             const currentInstructorId = students.find(student => student._id === studentId)?.primaryInstructor;
+            console.log(`Current instructor ID: ${currentInstructorId}`);
+
             
             // Check if the student is being reassigned (not just assigned for the first time or unassigned)
             if (currentInstructorId && newInstructorId !== 'unassigned' && currentInstructorId !== newInstructorId) {
                 // Construct the endpoint for the swap operation
-                const endpoint = `/api/admins/instructor/${newInstructorId}/swapStudent`;
+                const endpoint = `/api/instructors/${newInstructorId}/swapStudent`;
+                console.log(`Swapping student ${studentId} from instructor ${currentInstructorId} to instructor ${newInstructorId}`);
     
                 // Prepare the request body with the studentId
                 const body = { studentId };
+                console.log(`Request body:`, body)
     
                 // Send the PATCH request to perform the swap
                 await axios.patch(endpoint, body);
+                console.log('Swap operation successful');
     
                 // Optimistically update the students state to reflect the new assignment
                 setStudents(prevStudents =>
@@ -48,14 +54,18 @@ function StudentAssignments() {
                 );
             } else {
                 // Handle the regular assignment or unassignment if not a swap scenario
-                let endpoint = `/api/admins/instructor/${newInstructorId}/assignStudent`;
+                let endpoint = `/api/instructors/${newInstructorId}/assignStudent`;
+                console.log(`Assigning student ${studentId} to instructor ${newInstructorId}`);
+
                 let body = { studentId };
+                console.log(`Request body:`, body);
     
                 if (newInstructorId === 'unassigned') {
-                    endpoint = `/api/admins/instructor/${currentInstructorId}/unassignStudent`;
+                    endpoint = `/api/instructors/${currentInstructorId}/unassignStudent`;
                 }
     
                 await axios.patch(endpoint, body);
+                console.log('Assignment operation successful');
     
                 // Update the students state to reflect the change
                 setStudents(prevStudents =>
