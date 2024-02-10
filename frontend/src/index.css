@@ -34,7 +34,7 @@ header a {
   text-decoration: none;
 }
 .pages{
-  max-width: 1400px;
+  max-width: 100vh;
   padding: 20px;
   margin: 0 auto;
 }

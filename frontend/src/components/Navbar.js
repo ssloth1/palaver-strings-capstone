@@ -1,7 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import NavigationLink from './NavigationLink.js';
 import '../styles/Navbar.css';
+import { IoMdHome } from "react-icons/io";
+import { RiUserAddLine } from "react-icons/ri";
+import { FaUserEdit } from 'react-icons/fa'; 
+
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -31,17 +35,19 @@ function Navbar() {
 
     return (
         <div className={`side-menu ${isExpanded ? 'expanded' : ''}`}>
-        <button onClick={toggleMenu}>Toggle Menu</button>
-        <div className="menu-content">
-            <nav>
-                <Link to="/">Home</Link>
-                {isLoggedIn && isAdmin() && <Link to="/create-user">Add User</Link>}
-                {isLoggedIn && isAdmin() && <Link to="/users">Manage Users</Link>}
-            </nav>
+            <button onClick={toggleMenu}>Toggle Menu</button>
+            <div className="menu-content">
+                <nav>
+                    <NavigationLink Icon={IoMdHome} to="/" label="Home" /> {/* Corrected the label prop */}
+                    {isLoggedIn && isAdmin() && (
+                        <>
+                            <NavigationLink Icon={RiUserAddLine} to="/create-user" label="Add User" />
+                            <NavigationLink Icon={FaUserEdit} to="/users" label="Manage Users" /> {/* Corrected the closing tag */}
+                        </>
+                    )}
+                </nav>
+            </div>
         </div>
-    </div>
-       
     );
-}
-
-export default Navbar;
+                    }
+    export default Navbar;
