@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track the login status
     const [userType, setUserType] = useState(null); // State to track user types
 
+    
     // Effect to check for saved login status in local storage
     useEffect(() => {
         const savedUserType = localStorage.getItem('userType');
