@@ -6,6 +6,7 @@ const {
     getStudent, 
     deleteStudent,
     updateStudent,
+
     //createStudentWithParent
     loginStudent
 
@@ -21,7 +22,6 @@ router.delete('/:id', deleteStudent);
 router.patch('/:id', updateStudent);
 //router.post('/withParent', createStudentWithParent);
 
-// Login route for Student
 router.post('/login', loginStudent);
 
 

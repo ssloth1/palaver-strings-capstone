@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 const User = require('./userModel');
 
 const parentSchema = new Schema({
-    children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
-    parentEmail: { type: String, required: false },
-    discountPercentage: { type: Number, required: false, default: 0 },
+    children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true}],
+    parentEmail: { type: String, required: true },
+    discountPercentage: { type: Number, required: true, default: 0 },
 });
 
 const Parent = User.discriminator('Parent', parentSchema);

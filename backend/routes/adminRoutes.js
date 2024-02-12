@@ -12,7 +12,6 @@ const {
     deleteAdmin,
     updateAdmin,
     loginAdmin,
-
 } = require('../controllers/adminController');
 
 const router = express.Router({ mergeParams: true });
@@ -28,7 +27,5 @@ router.post('/', createAdmin);
 router.delete('/:id', deleteAdmin);
 router.patch('/:id', updateAdmin);
 router.post('/login', loginAdmin);
-
-
 
 module.exports = router;
