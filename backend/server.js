@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/adminRoutes')
 const instructorRoutes = require('./routes/instructorRoutes')
 const parentRoutes = require('./routes/parentRoutes')
 const studentRoutes = require('./routes/studentRoutes')
+const messageRoutes = require('./routes/messageRoutes')
 
 // express
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/admins', adminRoutes)
 app.use('/api/instructors', instructorRoutes)
 //app.use('/api/parents', parentRoutes)
 app.use('/api/students', studentRoutes)
+app.use('/api/messages', messageRoutes)
 
 // connect to database
 mongoose.connect(process.env.MONGO_URI)

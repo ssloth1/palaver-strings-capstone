@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { Instructor, Student } = require('./modelsIndex');
 const { WEEKDAYS } = require('../constants');
 
 const classSchema = new Schema ({
@@ -11,4 +10,9 @@ const classSchema = new Schema ({
     //Possibly unnecessary
     meetingDay: { type: String, enum: WEEKDAYS, required: true },
     meetingTime: { type: Number, required: true }
+
 })
+
+const Class = mongoose.model('Class', classSchema);
+
+module.exports = Class;
