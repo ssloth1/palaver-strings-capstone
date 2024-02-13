@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
-const Student = require('../models/modelsIndex').Student;
+const axios = require('axios');
+const { Instructor, Student, Parent } = require('../models/modelsIndex');
+const mongoose = require('mongoose');
 
 
 
@@ -63,20 +64,53 @@ const getStudent = async (req, res) => {
 
 // Create a new student without a parent
 const createStudent = async (req, res) => {
-    //This had originally been set to try to create a student object and then send that object to the server to save it-- the student object
-    //wouldn't send, so I took out the middle step and made the code align with adminController.
-    //I suspect that this was tied to the attempt to create parents and students simultaneously.
-    const { studentData } = req.body;
-    
-    //Helpful log for debugging: uncomment this to view raw JSON being sent in to create a student.
-    //console.log(req.body);
-
+    //Create the student
     try {
         const student = await Student.create(req.body);
         res.status(201).json({ student });
-    } catch (err) {
-        res.status(400).json({ message: err.message });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).json({ message: error.message })
     }
+    
+    //Start a session - don't want to update any records if any portion fails
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        //Find a parent
+        const parent = await Parent.findOne({ email: req.body.parentEmail }).session(session);
+        if (!parent) {
+            await session.abortTransaction();
+            await Student.findOneAndDelete({ email: req.body.email })
+            return res.status(404).json({ message: 'Parent not found' });
+        }
+
+        //get our newly-created student within the session
+        const sessionStudent = await Student.findOne({ email: req.body.email }).session(session);
+        if (!sessionStudent) {
+            await session.abortTransaction();
+            await Student.findOneAndDelete({ email: req.body.email })
+            return res.status(404).json({ message: 'Student not created' });
+        }
+
+        //Associate student with parent and parent with student.
+        sessionStudent.parent = parent._id;
+        parent.children.push(sessionStudent._id);
+
+        //Save transactions and then commit session.
+        await sessionStudent.save();
+        await parent.save();
+        await session.commitTransaction();
+    } catch (err) {
+        //On error, abort the transaction, delete the student, and notify the user.
+        await session.abortTransaction();
+        await Student.findOneAndDelete({ email: req.body.email })
+        res.status(400).json({ message: err.message });
+    } finally {
+        session.endSession();
+    }
+
+
 };
 
 // Delete a student

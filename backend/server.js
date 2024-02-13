@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 // Use the routes
 app.use('/api/admins', adminRoutes)
 app.use('/api/instructors', instructorRoutes)
-//app.use('/api/parents', parentRoutes)
+app.use('/api/parents', parentRoutes)
 app.use('/api/students', studentRoutes)
 
 // connect to database
