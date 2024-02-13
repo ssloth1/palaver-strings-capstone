@@ -130,4 +130,5 @@ module.exports = {
     loginParent,
     getChildrenInfo,
     findByEmail,
+    addChild
 };

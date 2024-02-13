@@ -11,8 +11,8 @@ const {
     loginParent,
     getChildrenInfo,
     findByEmail
-    
-
+    getChildrenInfo,
+    addChild
 } = require('../controllers/parentController');
 
 const router = express.Router({ mergeParams: true });
@@ -29,5 +29,8 @@ router.post('/login', loginParent);
 router.get('/:parentId/children', getChildrenInfo);
 
 router.post('/find', findByEmail);
+
+// Add a child to a parent
+router.post('/:parentId/children/:studentId', addChild);
 
 module.exports = router;

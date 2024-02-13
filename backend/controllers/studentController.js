@@ -1,8 +1,38 @@
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 const { Instructor, Student, Parent } = require('../models/modelsIndex');
 const mongoose = require('mongoose');
+
+
+
+const loginStudent = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Find student by email
+        const student = await Student.findOne({ email: email });
+        if (!student) {
+            return res.status(404).json({ message: "Student not found!" });
+        }
+
+        // Check if the provided password matches the hased password in the database
+        const isMatch = await bcrypt.compare(password, student.hashedPassword);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials!" });
+        }
+
+        // Generate the JWT token
+        const token = jwt.sign({ id: student._id, role: student.role }, 'MY_SECRET_KEY', { expiresIn: '1h' });
+
+        // Send the token in a HTTP-only cookie
+        res.status(200).json({ token: token });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 // Get all students
 const getStudents = async (req, res) => {
@@ -121,71 +151,16 @@ const updateStudent = async (req, res) => {
     res.status(200).json(student)
 }
 
-/*
-// Create a new student with a parent
-
-//I think we'll want to table this-- we may want to add a parent parameter to student creation, which can do a callback and update the
-//linked parent record, but we should probably not try to create both accounts at once.
-
-const createStudentWithParent = async (req, res) => {
-    const { studentData, parentData } = req.body;
-    
-    try {
-        // Create parent
-        const parent = new Parent(parentData);
-        await parent.save();
-
-        // Create student with parent reference
-        const student = new Student({
-            ...studentData,
-            parent: parent._id
-        });
-        await student.save();
-
-        res.status(201).json({ student, parent });
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-}
-*/
-
-const loginStudent = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        // Find student by email
-        const student = await Student.findOne({ email: email });
-        if (!student) {
-            return res.status(404).json({ message: "Student not found!" });
-        }
-
-        // Check if the provided password matches the hased password in the database
-        const isMatch = await bcrypt.compare(password, student.hashedPassword);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials!" });
-        }
-
-        // Generate the JWT token
-        const token = jwt.sign({ id: student._id, role: student.role }, 'MY_SECRET_KEY', { expiresIn: '1h' });
-
-        // Send the token in a HTTP-only cookie
-        res.status(200).json({ token: token });
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 
 
 
 module.exports = {
+
     getStudents,
     getStudent,
     createStudent,
     deleteStudent,
     updateStudent,
-    //createStudentWithParent, 
 
     loginStudent
 }
