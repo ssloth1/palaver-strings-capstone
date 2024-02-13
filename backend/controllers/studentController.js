@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 const { Instructor, Student, Parent } = require('../models/modelsIndex');
-const mongoose = require('mongoose');
 
 
 

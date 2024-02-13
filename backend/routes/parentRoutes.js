@@ -10,8 +10,7 @@ const {
     deleteParent,
     loginParent,
     getChildrenInfo,
-    findByEmail
-    getChildrenInfo,
+    findByEmail,
     addChild
 } = require('../controllers/parentController');
 
