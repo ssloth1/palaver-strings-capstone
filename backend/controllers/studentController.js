@@ -66,7 +66,6 @@ const createStudent = async (req, res) => {
     //Create the student
     try {
         const student = await Student.create(req.body);
-        res.status(201).json({ student });
     } catch (error) {
         console.log(error.message);
         return res.status(400).json({ message: error.message })
@@ -75,12 +74,17 @@ const createStudent = async (req, res) => {
     //Start a session - don't want to update any records if any portion fails
     const session = await mongoose.startSession();
     session.startTransaction();
+    console.log("session started")
     try {
+        console.log("in the try block")
         //Find a parent
         const parent = await Parent.findOne({ email: req.body.parentEmail }).session(session);
         if (!parent) {
+            console.log("Couldn't find a parent")
             await session.abortTransaction();
+            console.log("session aborted")
             await Student.findOneAndDelete({ email: req.body.email })
+            console.log("student deleted.")
             return res.status(404).json({ message: 'Parent not found' });
         }
 
@@ -100,7 +104,9 @@ const createStudent = async (req, res) => {
         await sessionStudent.save();
         await parent.save();
         await session.commitTransaction();
+        res.status(201).json({ sessionStudent });
     } catch (err) {
+        console.log(err.message);
         //On error, abort the transaction, delete the student, and notify the user.
         await session.abortTransaction();
         await Student.findOneAndDelete({ email: req.body.email })
