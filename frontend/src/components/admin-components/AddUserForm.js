@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import styles from './AddUserForm.module.css';
+import styles from './styles/AddUserForm.module.css';
 
 import { // Constants/dropdown options for the form
     GENDER,
@@ -11,7 +11,7 @@ import { // Constants/dropdown options for the form
     US_STATES,
     CANADIAN_PROVINCES,
     INSTRUMENTS,
-} from '../constants/formconstants';
+} from '../../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
  * NOTES:
@@ -62,6 +62,7 @@ function AddUserForm() {
         school: "",
         grade: "",
         howHeardAboutProgram: "", // optional for now
+        parentEmail: "",
         //Commenting the next three parameters out: these are optional in the model and probably best done through
         //an update process rather than the creation process.
         //primaryInstructor: "", // optional for now
@@ -71,6 +72,7 @@ function AddUserForm() {
 
         // Parent specific fields
         // .. TODO: add parent specific fields
+        // At the moment, there are no parent-specific fields.
 
 
     });
@@ -122,6 +124,15 @@ function AddUserForm() {
         }
 
         // TODO: Student related validation
+        if (formData.role === 'student'){
+            if (!formData.parentEmail) {
+                console.error("Student cannot be created without a parent.");
+                setStatusMessage("Parent email must be entered.");
+                return false;
+            }
+            
+        }
+        
 
 
         // TODO: Parent related validation
@@ -139,42 +150,45 @@ function AddUserForm() {
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Checks if the user is logged in
+    
         if (!isLoggedIn) {
-            console.error("You need to be logged in to submit.")
+            console.error("You need to be logged in to submit.");
             setStatusMessage("You need to be logged in to submit.");
             return;
         }
-
-        // Checks if the passwords match before submission
+    
         if (formData.password !== formData.confirmPassword) {
             setStatusMessage("Passwords do not match.");
             return;
         }
-
-        // Validates the form before submission
+    
         if (!validateForm()) {
+            setStatusMessage("Data did not validate.")
             return;
         }
-
+    
         let endpoint = "";
         switch (formData.role) {
             case 'admin':
                 endpoint = 'http://localhost:4000/api/admins';
+                console.log("You're trying to make an admin", formData);
                 break;
             case 'instructor':
                 endpoint = 'http://localhost:4000/api/instructors';
-                //submissionData.students = formData.students;
+                console.log("You're trying to make an instructor", formData);
                 break;
             case 'student':
                 endpoint = 'http://localhost:4000/api/students';
-                console.log("You're trying to make a student");
+                console.log("You're trying to make a student", formData);
+                break;
+            case 'parent':
+                endpoint = 'http://localhost:4000/api/parents';
+
                 break;
             default:
                 break;
         }
-
+    
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
             ...formData,
@@ -198,6 +212,7 @@ function AddUserForm() {
     
 
         // Make a POST request to the backend with the form data for the selected role
+        console.log("Submitting Form");
         try {
             const response = await axios.post(endpoint, submissionData);
             setStatusMessage("Form submitted successfully!");
@@ -243,7 +258,7 @@ function AddUserForm() {
                     </>
                 );
 
-            // TODO: Student specific fields
+            //Student specific fields
             case 'student':
                 return(
                     <>
@@ -255,13 +270,21 @@ function AddUserForm() {
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
-                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} defaultValue={"2018-10-15"} required />}
+                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} /> }
+                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> }
+                        {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
                     </>
                 );
             // TODO: Parent specific fields
+            case 'parent':
+                return(
+                    <>
+                        {/*Parent specific fields*/}
+                        {/*At this time, there are no parent-specific fields.*/}
+                    </>
+                )
 
             // Instructor specific fields
             case 'instructor':
@@ -288,7 +311,7 @@ function AddUserForm() {
     
 
     return (
-        <body className={styles.addUserForm}>
+        <div className={styles.addUserForm}>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
@@ -373,7 +396,7 @@ function AddUserForm() {
             {statusMessage && <p>{statusMessage}</p>}
 
             </form>
-        </body>
+        </div>
         );
     }
 

@@ -1,0 +1,79 @@
+/* Base styles for the nav bar */
+.side-menu {
+    width: 50px;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+}
+
+/* Styles when sidebar is expanded */
+.side-menu.expanded {
+    width: 380px;
+}
+
+/* Hide text in contracted state and adjust layout for expanded state */
+.side-menu a > .link-text {
+    transition: display 0.3s, opacity 0.3s ease;
+    visibility: hidden;
+}
+
+.side-menu.expanded a > .link-text {
+    display: inline;
+    opacity: 1;
+    margin-left: 10px;
+    visibility: visible;
+}
+
+.side-menu .menu-content {
+    list-style-type: none;
+    display: block;
+    position: absolute;
+    align-items: top;
+    background-color: #76A7B1;
+    padding: 10px;
+    margin: auto;
+    font-family: 'Poppins';
+    font-size: 32px;
+    font-weight: '400'; 
+    height: 100%;
+    word-wrap: break-word;
+    
+}
+
+.side-menu .menu-content nav {
+    /* Add some padding around the navigation links */
+    padding: 10px;
+}
+
+.side-menu .menu-content nav a {
+    /* Style for each link */
+    display: flex;
+    width: auto;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 10px; /* Add space between the links */
+    text-decoration: none; /* Optional: removes underline from links */
+    color: #FFFFFF; /* Optional: sets text color */
+    position: relative;
+}
+
+/* Styles for icons */
+.side-menu .menu-content nav a svg {
+    /* Styles for your icons */
+    margin-right: 10px; /* Space between icon and text */
+}
+
+.side-menu .menu-content nav a:hover,
+.side-menu .menu-content nav a:focus {
+    text-decoration: underline; /* Apply underline only to the link being hovered */
+    background-color: #5d9ca8;
+}
+
+.side-menu.expanded .menu-content nav a {
+    /* Different styles for when the menu is expanded */
+    justify-content: flex-start;
+
+}

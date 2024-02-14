@@ -17,7 +17,7 @@ const studentSchema = new Schema({
     //Setting parent to required: false to allow creation of a student for now.
     //My opinion on the business decision is that parent should be a required item for student creation but not vice versa
     //But I am creating student first, so I'll swap this to required when resolving parent creation (when I can create parents.)
-    parent: { type: String, required: false },
+    parent: { type: mongoose.Schema.Types.ObjectID, ref: 'Parent', required: false },
 
     //These fields should likely be handled outside of creation: students may not be assigned to an instructor immediately,
     //and the mentor program is not yet implemented at Palaver, let alone in our code.

@@ -53,7 +53,7 @@ function UserDetails() {
                     <>
                         <p>Parent Email: {user.parentEmail}</p>
                         <p>Discount Percentage: {user.discountPercentage}%</p>
-                        <p>Number of Children: {user.children?.length || 0}</p>
+                        <p>Children: {user.children}</p>
                     </>
                 );
             case 'student':
