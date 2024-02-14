@@ -40,6 +40,6 @@ header a {
 }
 
 .home {
-  display: grid;
+  display: flexbox;
   gap: 100px;
 }
