@@ -4,8 +4,12 @@
 }
 
 header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
     font-size: 24px;
     margin-bottom: 20px;
-    color: #C69C64;
+    color: #ffffff;
     font-family: 'Poppins';
 }

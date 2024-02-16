@@ -7,6 +7,7 @@
     left: 0;
     top: 0;
     height: 100%;
+    z-index: 1010;
 }
 
 /* Styles when sidebar is expanded */
