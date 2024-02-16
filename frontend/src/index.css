@@ -18,7 +18,8 @@ body {
 }
 
 header {
-  background: #fff;
+  background: #46a9ad;
+  align-items: top;
 }
 
 header .container {
@@ -26,7 +27,7 @@ header .container {
   margin: 0 auto;
   padding: 10px 10px;
   display: flex;
-  align-items: center;
+  align-items: top;
   justify-content: space-between;
 }
 header a {
