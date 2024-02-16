@@ -6,6 +6,8 @@ import { IoMdHome } from "react-icons/io";
 import { RiUserAddLine } from "react-icons/ri";
 import { FaUserEdit } from 'react-icons/fa'; 
 import { MdOutlineAssignmentInd } from "react-icons/md";
+import { FaIndent } from 'react-icons/fa';
+import { CiMail } from "react-icons/ci";
 
 
 function Navbar() {
@@ -45,6 +47,16 @@ function Navbar() {
                             <NavigationLink Icon={RiUserAddLine} to="/create-user" label="Add User" />
                             <NavigationLink Icon={FaUserEdit} to="/users" label="Manage users" />
                             <NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="Student Assignments"/>
+                        </>
+                    )}
+                    {isLoggedIn && (isAdmin() || isInstructor()) && (
+                        <>
+                            <NavigationLink Icon={FaIndent} to="/write-message" label="Compose Messages" />
+                        </>
+                    )}
+                    {isLoggedIn && (
+                        <>
+                            <NavigationLink Icon={CiMail} to="/messages" label="Read Messages" />
                         </>
                     )}
             </nav>

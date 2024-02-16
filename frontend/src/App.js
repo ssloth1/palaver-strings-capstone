@@ -7,6 +7,8 @@ import AddUserForm from './components/admin-components/AddUserForm';
 import ManageUsers from './components/admin-components/ManageUsers';
 import UserDetails from './components/admin-components/UserDetails';
 import StudentAssignments from './components/admin-components/StudentAssignments';
+import WriteMessage from './components/admin-instructor-components/CreateMessage';
+import ViewMessages from './components/general-components/ViewMessages';
 import { AuthProvider } from './contexts/AuthContext';
 
 // This is our main app component, for now it sets up routes and context for the web application
@@ -22,6 +24,8 @@ function App() {
                     <Route path="/users" element={<ManageUsers />} />
                     <Route path="/user/:id" element={<UserDetails />} />
                     <Route path="/student-assignments" element={<StudentAssignments />} />
+                    <Route path="/write-message" element={<WriteMessage />} />
+                    <Route path="/messages" element={<ViewMessages />} />
                 </Routes>
             </Router>
         </AuthProvider>
