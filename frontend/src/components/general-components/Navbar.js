@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext.js';
 import NavigationLink from './NavigationLink.js';
 import './styles/Navbar.css';
 import { IoMdHome } from "react-icons/io";
@@ -11,20 +12,18 @@ import { CiMail } from "react-icons/ci";
 
 
 function Navbar() {
+    const navigate = useNavigate();
+    const { logout, isLoggedIn, isAdmin, isInstructor, isStudent, isParent } = useAuth ();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleMenu = () => {
         setIsExpanded(!isExpanded);
     };
 
-    // Unpack the values form AuthContext
-    const {
-        isLoggedIn, 
-        isAdmin, 
-        isInstructor, 
-        isStudent, 
-        isParent 
-    } = useContext(AuthContext);
+    const handleLogout = async ( ) => {
+        await logout();
+        navigate('/login');
+    };
 
     // Just logging user roles for debugging. 
     // Wanted to check that the user is seeing the correct options. 
@@ -58,6 +57,9 @@ function Navbar() {
                         <>
                             <NavigationLink Icon={CiMail} to="/messages" label="Read Messages" />
                         </>
+                    )}
+                    {isLoggedIn && (
+                        <button onClick={handleLogout}>Logout</button>
                     )}
             </nav>
         </div>
