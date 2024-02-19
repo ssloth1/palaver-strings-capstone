@@ -1,8 +1,11 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from '../../contexts/AuthContext';
 import axios from 'axios';
+import styles from './styles/CreateMessage.module.css';
 
 function WriteMessage() {
+
+    console.log("WriteMessage");
 
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
 
@@ -64,7 +67,7 @@ function WriteMessage() {
     };
 
     return (
-        <div>
+        <div className={styles.createMessage}>
             <form onSubmit={onSubmit}>
 
                 {/*Text input for recipient email*/}
@@ -74,7 +77,7 @@ function WriteMessage() {
                 <input type='text' name='subjectLine' value={formData.subjectLine} onChange={handleChange} placeholder="Subject" />
 
                 {/*Textarea input for message text */}
-                <textarea name="messageText" rows="5" cols="33" value={formData.messageText} onChange={handleChange} placeholder="Type your message here..." required />
+                <textarea name="messageText" rows="20" cols="60" value={formData.messageText} onChange={handleChange} placeholder="Type your message here..." required />
                 
                 {/*Submit Button*/}
                 <button type="submit">Send Message</button>
