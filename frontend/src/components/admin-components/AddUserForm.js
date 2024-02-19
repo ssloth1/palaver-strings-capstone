@@ -311,6 +311,7 @@ function AddUserForm() {
     
 
     return (
+        <h1> Add User </h1>
         <div className={styles.addUserForm}>
             <form onSubmit={handleSubmit}>
 

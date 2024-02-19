@@ -16,12 +16,6 @@ const Home = () => {
         }
     }, [isLoggedIn, navigate]);
 
-    // // Handler for logging out 
-    // const handleLogout = () => {
-    //     logout(); // Logout function from AuthContext
-    //     navigate('/login'); // Navigate user back into the login screen. 
-    // };
-
     return (
         <div className="home">
             <header>
