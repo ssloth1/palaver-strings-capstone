@@ -1,0 +1,15 @@
+
+.createMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.createMessage input,
+.createMessage button,
+.createMessage textarea {
+    display: block; /* This will ensure each element takes up the full width of its container */
+    width: 100%; /* This makes each element stretch to the full container width */
+    margin-bottom: 10px; /* Adds some space between each field */
+}
