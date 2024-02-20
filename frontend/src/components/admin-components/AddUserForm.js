@@ -311,8 +311,9 @@ function AddUserForm() {
     
 
     return (
-        <h1> Add User </h1>
+        
         <div className={styles.addUserForm}>
+            <h1> Add User </h1>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
