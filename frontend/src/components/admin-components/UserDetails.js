@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Loader from '../general-components/Loader';
 
 function UserDetails() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Fetch the user details from the database.
     useEffect(() => {
+        setLoading(true);
         fetch(`/api/admins/users/${id}`)
             .then(response => {
                 if (!response.ok) {
@@ -15,19 +18,24 @@ function UserDetails() {
                 }
                 return response.json();
             })
-            .then(data => setUser(data))
+            .then(data => {
+                setUser(data);
+                setLoading(false);
+            })
             .catch(error => {
                 console.error('Fetch error:', error);
                 setError(error.toString());
+                setLoading(false);
             });
     }, [id]);
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    // If the data is still loading, display a loading spinner.
+    if (loading) {
+        return <Loader />;
     }
 
-    if (!user) {
-        return <div>Loading...</div>;
+    if (error) {
+        return <div>Error: {error}</div>;
     }
 
     // Function the handle rendering role-specific fields based on the type of user.

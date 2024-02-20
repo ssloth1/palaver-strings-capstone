@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './styles/StudentAssignments.css';
+import Loader from '../general-components/Loader';
 
 function StudentAssignments() {
     // State hooks to store the students and instructors data
     const [students, setStudents] = useState([]);
     const [instructors, setInstructors] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // Fetch data for students and instructors on component mount
         const fetchData = async () => {
-            const studentsData = await axios.get('/api/students');
-            const instructorsData = await axios.get('/api/instructors');
-            setStudents(studentsData.data);
-    
-            setInstructors(instructorsData.data);
+            setLoading(true); // Sets loading state to true
+            try {
+                const studentsData = await axios.get('/api/students');
+                const instructorsData = await axios.get('/api/instructors');
+                setStudents(studentsData.data);
+                setInstructors(instructorsData.data);      
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false); // Sets loading state to false
+            }
         };
 
         fetchData();
@@ -81,6 +89,12 @@ function StudentAssignments() {
             console.error('Assignment operation failed:', error);
         }
     };
+
+
+    // State hook to store the loading state of the component
+    if (loading) {
+        return <Loader />;
+    }
 
     return (
         <div className="layout-container">

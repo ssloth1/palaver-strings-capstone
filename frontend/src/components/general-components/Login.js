@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import LoginButton from './Button';
-import styles from './styles/Login.module.css';
+import loginStyles from './styles/Login.module.css';
+import Loader from './Loader';
 
 function Login() {
+
+    // Hook for managing loading state
+    const [loading, setLoading] = useState(false);
 
     // Hooks for managing inputs 
     const [email, setEmail] = useState('');
@@ -21,12 +25,12 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); 
+        setLoading(true); // Sets loading state to true
+        
+        try {            
+            // Dynamically uses the correct login endpoint based on the selected user type
+            let loginUrl = `/api/${userType}s/login`;
 
-        // Dynamically uses the correct login endpoint based on the selected user type
-        let loginUrl = `/api/${userType}s/login`;
-
-
-        try {
             // Makes a POST request to the login URL with the user's email and password
             const response = await fetch(loginUrl, {
                 method: 'POST',
@@ -50,16 +54,23 @@ function Login() {
         } catch (err) {
             console.error('Error during login:', err);
             setError('Something made an oopsie!');
+        } finally {
+            setLoading(false); // Sets loading state to false
         }
     };
 
+    if (loading) {
+        return <Loader />;
+    }
+
     return (
-        <div className={styles.loginContainer}>
-            <div className={styles.loginForm}>Palaver Strings Student Hub</div>
+        <div className={loginStyles.loginContainer}>
+
+            <div className={loginStyles.loginForm}>Palaver Strings Student Hub</div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit} className={styles.loginForm}>
+            <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
                 <div>
-                    <label className={styles.labelStyle}>User Type:</label>
+                    <label className={loginStyles.labelStyle}>User Type:</label>
                     <select value={userType} onChange={(e) => setUserType(e.target.value)}>
                         <option value="admin">Admin</option>
                         <option value="instructor">Instructor</option>
@@ -68,7 +79,7 @@ function Login() {
                     </select>
                 </div>
                 <div>
-                <label className={styles.labelStyle}>Email:</label>
+                <label className={loginStyles.labelStyle}>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -77,7 +88,7 @@ function Login() {
                     />
                 </div>
                 <div>
-                    <label className={styles.labelStyle}>Password:</label>
+                    <label className={loginStyles.labelStyle}>Password:</label>
                     <input
                         type="password"
                         value={password}
