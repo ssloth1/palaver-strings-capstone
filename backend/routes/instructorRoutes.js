@@ -40,7 +40,7 @@ router.patch('/:id/assignStudent', assignStudent);
 router.patch('/:id/unassignStudent', unassignStudent);
 router.patch('/:id/swapStudent', swapStudent);
 
-// Route for instructor to submit a progress report
+// Route for instructor to submit a progress report for a student
 router.post('/:id/submitProgressReport', submitProgressReport);
 
 

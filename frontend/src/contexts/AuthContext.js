@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
         console.log('User details:', userDetails);
         setIsLoggedIn(true);
         setUserType(userDetails.type);
-        setUserId(userDetails.id);
+        setUserId(userDetails.id); // Correctly setting the user ID
         localStorage.setItem('userType', userDetails.type);
         localStorage.setItem('userId', userDetails.id);
     };

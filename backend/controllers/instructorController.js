@@ -25,8 +25,12 @@ const loginInstructor = async (req, res) => {
         // Generate the JWT token
         const token = jwt.sign({ id: instructor._id, role: instructor.role }, 'MY_SECRET_KEY', { expiresIn: '1h' });
 
-        // Send the token in a HTTP-only cookie
-        res.status(200).json({ token: token });
+        // Send the token and the instructor's ID and role in the response
+        res.status(200).json({ token: token, id: instructor._id, type: instructor.role });
+        // add a log statement to make sure the token is being generated and the id and role are being sent back
+        console.log("token: ", token);
+        console.log("id: ", instructor._id);
+        console.log("type: ", instructor.role);
 
     } catch (error) {
         res.status(500).json({ message: error.message });

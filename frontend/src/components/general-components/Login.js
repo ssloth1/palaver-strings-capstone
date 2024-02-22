@@ -48,7 +48,7 @@ function Login() {
             if (response.status === 200) {
                 localStorage.setItem(`${userType}Token`, data.token);
                 localStorage.setItem('email', email); 
-                login({ type: userType }); // Updates the AuthContext
+                login({ type: userType, id: data.id }); // Updates the AuthContext
                 navigate('/'); // Navigates user to the home page
             }
         } catch (err) {

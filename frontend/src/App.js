@@ -11,6 +11,7 @@ import WriteMessage from './components/admin-instructor-components/CreateMessage
 import ViewMessages from './components/general-components/ViewMessages';
 
 import StudentList from './components/instructor-components/StudentList';
+import ProgressReportForm from './components/instructor-components/ProgressReportForm';
 import { AuthProvider } from './contexts/AuthContext';
 
 // This is our main app component, for now it sets up routes and context for the web application
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/write-message" element={<WriteMessage />} />
                     <Route path="/messages" element={<ViewMessages />} />
                     <Route path="/mystudents" element={<StudentList />} />
+                    <Route path="/progress-report/:studentId" element={<ProgressReportForm />} />
                 </Routes>
             </Router>
         </AuthProvider>

@@ -93,8 +93,8 @@ const loginParent = async(req,res) => {
         //Generate the JWT token
         const token = jwt.sign({ id: parent._id, role: parent.role }, 'MY_SECRET_KEY', { expiresIn: '1h' });
 
-        //Send the token in a HTTP-only cookie
-        res.status(200).json({ token: token});
+        //Send the token, id, and role in the response
+        res.status(200).json({ token: token, id: parent._id, type: parent.role });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
