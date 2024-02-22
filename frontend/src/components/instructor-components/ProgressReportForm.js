@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios'; 
 import { useAuth } from '../../contexts/AuthContext';
 
+
+// Note: for now I just went with the simplest possible implementation of the ProgressReportForm component,
+// using the 1-5 scale for each question and tallying a score, they might not care to use it but I figured
+// it could be a good idea to add a tally score for each form incase we want to track individual student progress over time.
+
+// Conor mentioned that Matt might want to just have this in a yes or no format, so I can change it to that if needed.
+// I also added a comments section for the instructor to leave feedback for the student.
+
+// I'm also unsure if this will be internal (only viewed by instructors and admins) or if it will be visible to students and parents as well. 
+// Having multiple views for the same form would be a bit more complicated, but I can do it if needed.
+
+// - Jim 2/21/2024
+
 const ProgressReportForm = () => {
-    const { userId, isLoggedIn, instructorId } = useAuth();
+    const { userId, isLoggedIn, isInstructor } = useAuth();
     const { studentId } = useParams();
     const navigate = useNavigate(); 
 
@@ -18,6 +31,24 @@ const ProgressReportForm = () => {
 
     const [questions, setQuestions] = useState(initializeQuestion);
     const [comments, setComments] = useState("");
+
+    useEffect(() => {
+
+        // Redirect users who are not logged in or who are not instructors
+        if (!isLoggedIn) {
+            console.error('You must be logged in to view this page.');
+            navigate('/login');
+        }
+
+        // Redirect users who are not instructors
+        if (!isInstructor) {
+            console.error('You must be an instructor to view this page.');
+            navigate('/login');
+        }
+
+
+    }, [isLoggedIn, isInstructor, navigate]);
+
 
     const handleQuestionChange = (index, event) => {
         const values = [...questions];
@@ -33,12 +64,11 @@ const ProgressReportForm = () => {
         event.preventDefault();
         
         // Calculate the average score
-        const totalScore = questions.reduce((acc, curr) => acc + Number(curr.score), 0);
+        const totalScore = questions.reduce((acc, curr) => acc + curr.score, 0);
         const finalScore = totalScore / questions.length;
 
         // Construct the payload
         const payload = {
-            instructorId: userId, // Assuming you have the instructor's ID available
             studentId,
             questions,
             comments,
@@ -46,14 +76,12 @@ const ProgressReportForm = () => {
         };
 
         try {
-            // Replace with your actual API endpoint
-            const response = await axios.post('/api/progress-reports', payload);
+            // Update the endpoint to include the instructorId in the URL
+            const response = await axios.post(`/api/instructors/${userId}/submitProgressReport`, payload);
             console.log('Progress Report Submitted:', response.data);
-            // Navigate to another route or show success message
-            navigate('/some-success-route');
+            navigate('/home');
         } catch (error) {
             console.error('Error submitting progress report:', error);
-            // Handle error (e.g., show an error message)
         }
     };
 

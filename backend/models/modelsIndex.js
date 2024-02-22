@@ -3,6 +3,7 @@ const Student = require('./user/studentModel');
 const Instructor = require('./user/instructorModel');
 const Parent = require('./user/parentModel');
 const Admin = require('./user/adminModel');
+const ProgressReport = require('./report/progressReportModel');
 
 module.exports = {
     User,
@@ -10,4 +11,5 @@ module.exports = {
     Instructor,
     Parent,
     Admin,
+    ProgressReport
 };

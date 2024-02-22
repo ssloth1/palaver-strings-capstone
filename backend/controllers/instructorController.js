@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const { Instructor, Student, Parent } = require('../models/modelsIndex');
+const { Instructor, Student, Parent, ProgressReport } = require('../models/modelsIndex');
 
 const loginInstructor = async (req, res) => {
     try {
@@ -242,41 +242,29 @@ const swapStudent = async (req, res) => {
     }
 };
 
-
-// Handles submitting a progress report for a student
+// Submit a progress report for a student by an instructor
 const submitProgressReport = async (req, res) => {
     const session = await mongoose.startSession();
     try {
         await session.startTransaction();
-        const { studentId, instructorId } = req.params;
+        const { studentId } = req.body;
+        const instructorId = req.params.id;
         const { questions, comments, finalScore } = req.body;
 
-        // Find the student and instructor
-        const student = await Student.findById(studentId).session(session);
-        if (!student) {
-            await session.abortTransaction();
-            return res.status(404).json({ message: "Student not found!" });
-        }
-        const instructor = await Instructor.findById(instructorId).session(session);
-        if (!instructor) {
-            await session.abortTransaction();
-            return res.status(404).json({ message: "Instructor not found!" });
-        }
-
         // Create the progress report
-        const progressReport = await ProgressReport.create({
-            instructor: instructor._id,
-            student: student._id,
+        const progressReport = await ProgressReport.create([{
+            instructor: instructorId,
+            student: studentId,
             questions: questions,
             comments: comments,
             finalScore: finalScore
-        });
+        }], { session: session });
 
         // Update the student's progress reports
-        student.progressReports.push(progressReport._id);
-        await student.save({ session });
+        await Student.findByIdAndUpdate(studentId, {
+            $push: { progressReports: progressReport[0]._id }
+        }, { session: session });
 
-        // Commit the transaction
         await session.commitTransaction();
         res.status(201).json(progressReport);
     } catch (error) {

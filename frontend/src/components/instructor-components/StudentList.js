@@ -11,7 +11,7 @@ const StudentList = () => {
     const {
         isLoggedIn,
         isInstructor,
-        userId // Access the userId from context
+        userId
     } = useContext(AuthContext);
 
     const [studentList, setStudentList] = useState([]);
