@@ -97,7 +97,7 @@ const ProgressReportForm = () => {
                                 type="radio"
                                 name={`question-${index}`}
                                 value={score}
-                                checked={item.score == score}
+                                checked={item.score === score}
                                 onChange={(event) => handleQuestionChange(index, event)}
                             />
                             {score}
