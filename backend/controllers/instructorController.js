@@ -65,6 +65,19 @@ const getInstructor = async (req, res) => {
     }
 };
 
+// Get students associated with an instructor
+const getInstructorStudents = async (req, res) => {
+    try {
+        const instructor = await Instructor.findById(req.params.id).populate('students');
+        if (!instructor) {
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+        res.status(200).json(instructor.students);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 // Update an instructor by ID
 const updateInstructor = async (req, res) => {
     try {
@@ -226,10 +239,56 @@ const swapStudent = async (req, res) => {
 };
 
 
+// Handles submitting a progress report for a student
+const submitProgressReport = async (req, res) => {
+    const session = await mongoose.startSession();
+    try {
+        await session.startTransaction();
+        const { studentId, instructorId } = req.params;
+        const { questions, comments, finalScore } = req.body;
+
+        // Find the student and instructor
+        const student = await Student.findById(studentId).session(session);
+        if (!student) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Student not found!" });
+        }
+        const instructor = await Instructor.findById(instructorId).session(session);
+        if (!instructor) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "Instructor not found!" });
+        }
+
+        // Create the progress report
+        const progressReport = await ProgressReport.create({
+            instructor: instructor._id,
+            student: student._id,
+            questions: questions,
+            comments: comments,
+            finalScore: finalScore
+        });
+
+        // Update the student's progress reports
+        student.progressReports.push(progressReport._id);
+        await student.save({ session });
+
+        // Commit the transaction
+        await session.commitTransaction();
+        res.status(201).json(progressReport);
+    } catch (error) {
+        await session.abortTransaction();
+        res.status(500).json({ message: error.message });
+    } finally {
+        session.endSession();
+    }
+};
+
+
 module.exports = {
 
     getInstructors,
     getInstructor,
+    getInstructorStudents,
     createInstructor,
     deleteInstructor,
     updateInstructor,
@@ -237,6 +296,8 @@ module.exports = {
     assignStudent,
     unassignStudent,
     swapStudent,
+
+    submitProgressReport,
 
     loginInstructor
 

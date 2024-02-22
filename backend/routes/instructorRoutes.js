@@ -5,6 +5,7 @@ const {
     createInstructor,
     getInstructors,
     getInstructor,
+    getInstructorStudents,
     updateInstructor,
     deleteInstructor,
 
@@ -12,7 +13,9 @@ const {
 
     assignStudent,
     unassignStudent,
-    swapStudent
+    swapStudent,
+
+    submitProgressReport
 
 } = require('../controllers/instructorController');
 
@@ -22,6 +25,10 @@ const router = express.Router({ mergeParams: true });
 router.post('/', createInstructor);
 router.get('/', getInstructors);
 router.get('/:id', getInstructor);
+
+// Route for getting an instructor's students
+router.get('/:id/students', getInstructorStudents);
+
 router.patch('/:id', updateInstructor);
 router.delete('/:id', deleteInstructor);
 
@@ -32,5 +39,9 @@ router.post('/login', loginInstructor);
 router.patch('/:id/assignStudent', assignStudent);
 router.patch('/:id/unassignStudent', unassignStudent);
 router.patch('/:id/swapStudent', swapStudent);
+
+// Route for instructor to submit a progress report
+router.post('/:id/submitProgressReport', submitProgressReport);
+
 
 module.exports = router;
