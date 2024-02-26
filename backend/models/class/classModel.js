@@ -11,7 +11,12 @@ const classSchema = new Schema ({
     meetingDay: { type: String, enum: WEEKDAYS, required: true },
     meetingTime: { type: Number, required: true }
 
-})
+}, {timestamps: true});
+
+classSchema.index({ instructor: 1});
+classSchema.index({ meetingDay: 1, meetingTime: 1});
+classSchema.index({ name: 'text' });
+
 
 const Class = mongoose.model('Class', classSchema);
 
