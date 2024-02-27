@@ -9,6 +9,8 @@ import { FaUserEdit } from 'react-icons/fa';
 import { MdOutlineAssignmentInd } from "react-icons/md";
 import { FaIndent } from 'react-icons/fa';
 import { CiMail } from "react-icons/ci";
+import { FaRegListAlt } from 'react-icons/fa';
+import { VscChecklist } from "react-icons/vsc";
 
 
 function Navbar() {
@@ -51,6 +53,8 @@ function Navbar() {
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
                             <NavigationLink Icon={FaIndent} to="/write-message" label="Compose Messages" />
+                            <NavigationLink Icon={FaRegListAlt} to="/take-attendance" label="Take Attendance" />
+                            <NavigationLink Icon={VscChecklist} to="/view-attendance" label="View Attendance Records" />
                         </>
                     )}
                     {isLoggedIn && (
