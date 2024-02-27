@@ -7,14 +7,11 @@ import Loader from "../general-components/Loader";
 function TakeAttendance () {
     console.log("TakeAttendance");
 
-
-
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [students, setStudents] = useState([]);
     const [statusMessage, setStatusMessage] = useState("");
-    
-
+    const [classes, setClasses] = useState([]);
     const {
         isLoggedIn,
         isAdmin,
@@ -42,6 +39,12 @@ function TakeAttendance () {
 
         fetchStudents();
     }, [attendanceData.classId]);
+
+    useEffect (() => {
+        const fetchClasses = async () => {
+            setIsLoading(true);
+            try {
+                const response = await axios.get
 
     const handleChange = (event) => {
         const { name, value } = event.target;
