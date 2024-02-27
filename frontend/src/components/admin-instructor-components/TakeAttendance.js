@@ -40,12 +40,14 @@ function TakeAttendance () {
         fetchStudents();
     }, [attendanceData.classId]);
 
+    /*
     useEffect (() => {
         const fetchClasses = async () => {
             setIsLoading(true);
             try {
                 const response = await axios.get
-
+    */
+   
     const handleChange = (event) => {
         const { name, value } = event.target;
         setAttendanceData(prevData => ({
