@@ -66,36 +66,42 @@ function Login() {
     return (
         <div className={loginStyles.loginContainer}>
 
-            <div className={loginStyles.loginForm}>Palaver Strings Student Hub</div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>Palaver Strings Student Hub</div>
+        {error && <p className={loginStyles.errorMessage}>{error}</p>}
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
-                <div>
+                
+                <div className={loginStyles.inputContainer}>
                     <label className={loginStyles.labelStyle}>User Type:</label>
-                    <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+                    <select className={loginStyles.dropdownBox} value={userType} onChange={(e) => setUserType(e.target.value)}>
                         <option value="admin">Admin</option>
                         <option value="instructor">Instructor</option>
                         <option value="parent">Parent</option>
                         <option value="student">Student</option>
                     </select>
                 </div>
-                <div>
-                <label className={loginStyles.labelStyle}>Email:</label>
+                
+                <div className={loginStyles.inputContainer}>
+                    <label className={loginStyles.labelStyle}>Email:</label>
                     <input
+                        className={loginStyles.inputField}
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
-                <div>
+                
+                <div className={loginStyles.inputContainer}>
                     <label className={loginStyles.labelStyle}>Password:</label>
                     <input
+                        className={loginStyles.inputField}
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
+                
                 <LoginButton onClick={handleSubmit}/>
             </form>
         </div>

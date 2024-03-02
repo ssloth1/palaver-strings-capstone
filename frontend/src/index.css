@@ -6,7 +6,7 @@
   --error: #e7195a;
 }
 body {
-  background: #487A79;
+  background: linear-gradient(45deg, #477A79 0%, #88ADA5 100%);
   margin: 0;
   font-family: "Poppins";
   color: #FFF;

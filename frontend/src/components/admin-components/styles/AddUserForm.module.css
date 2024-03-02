@@ -1,16 +1,64 @@
-
-
 .addUserForm {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #88ADA5;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .addUserForm input,
 .addUserForm select,
 .addUserForm button {
-    display: block; /* This will ensure each element takes up the full width of its container */
-    width: 100%; /* This makes each element stretch to the full container width */
-    margin-bottom: 10px; /* Adds some space between each field */
+    display: block;
+    width: calc(100% - 20px); 
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.addUserForm button {
+    background-color: #C69C63;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.addUserForm button:hover {
+    background-color: #4972a0;
+}
+
+.addUserForm input:focus,
+.addUserForm select:focus {
+    border-color: #4972a0;
+    outline: none;
+}
+
+.addUserForm h1 {
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .addUserForm {
+        width: 100%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .addUserForm input,
+    .addUserForm select,
+    .addUserForm button {
+        font-size: 14px;
+    }
 }
