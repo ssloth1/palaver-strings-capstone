@@ -1,35 +1,100 @@
-Requirements: 
+Project Development Requirements Documenation: 
+- Updated: 3/2/2024 by Jim Bebarski
 
 Nodejs:
-- Latest LTS Version: 18.18.0 (includes npm 9.8.1)
+- Latest LTS Version: v21.6.1
 - https://nodejs.org/en/download
 
-Backend Packages (Updated 10/5/2023 by Jim):
-NOTE: Make sure you are in the root directory of the project when installing packages!!!
-npm install express 
-npm install -g nodemon
-npm install mongodb
-npm install mongoose
+npm:
+- Comes with Nodejs
+- We used npm version 10.2.4
 
-Package Descriptions -
+----------------------------------------------------------------------------------------------------------------------------
+Backend Dependencies Installation:
+NOTE: Makes sure you are in the backend directory before running these commands.
+
 Express: 
 - A lightweight framework for handling routing, specifying what should happen when a user requests certain endpoints.
 - Can handle user authentication, parsing requests, and cookies.
+- Command: npm install express
 
 Nodemon:
-A utility that monitors for any changes in your source and automatically restarts your server. 
+- Monitors changes in the source code and automatically restarts the server.
+- Command: npm install nodemon
 
 MongoDB:
-A NoSQL database that stores data in JSON-like documents. 
-Designed for scalability and flexibility.
+- A NoSQL database that stores data in JSON-like documents, designed for high availability and scalability.
+- Command: npm install mongodb
 
 Mongoose:
-Provides object-data modeling for MongoDB. 
-It wraps MongoDB with an additional layer, allowing for methods to read and write database documents. 
-It also lets us declare models and schemas for a more structured data approach.
+- Provides object-data modeling for MongoDB, allowing for a structured schema and validation approach.
+- Command: npm install mongoose
 
-Other Devtools:
+----------------------------------------------------------------------------------------------------------------------------
+
+Frontend Dependencies Installation:
+NOTE: Makes sure you are in the frontend directory before running these commands.
+
+Axios: 
+- A promise-based HTTP client for making requests to the backend.
+- It is used to send requests to the backend.
+- Command: npm install axios
+
+Cors:
+- A package to enable Cross-Origin Resource Sharing in the Express instance.
+- It allows for the frontend to communicate with the backend, specifically for the development environment.
+- Command: npm install cors
+
+Jsonwebtoken:
+- A package to create and verify JSON Web Tokens (JWT).
+- We will use this to authenticate users.
+- Command: npm install jsonwebtoken
+
+React-Beautiful-DnD:
+- A package to create beautiful and accessible drag and drop for lists.
+- We will use this to create the drag and drop functionality for some of the frontend components.
+- Command: npm install react-beautiful-dnd
+
+React-Router-Dom:
+- A package to enable routing in the React application.
+- We will use this to navigate between different pages in the application.
+- Command: npm install react-router-dom
+
+React-Scripts:
+- A package to enable scripts for the React application.
+- We will use this to start the development server and build the application.
+- Command: npm install react-scripts
+
+Web-Vitals:
+- A package to measure the performance of a web page.
+- We will use this to measure the performance of the application.
+- Command: npm install web-vitals
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Other Development Tools:
+
 Postman:
 https://www.postman.com/
 - We will use this to design, test, and document APIs.
 - Make sure to download the app, so you can send requests locally. 
+
+MongoDB Compass:
+https://www.mongodb.com/try/download/compass
+- We will use this to visualize and interact with the data in the database.
+- Make sure to download the app, so you can connect to the database locally.
+
+Visual Studio Code:
+- We will use this to write and edit code.
+
+Git:
+- We will use this to manage the codebase and collaborate with each other.
+
+Figma:
+- We will use this to design the user interface and user experience of the application.
+- Make sure to create an account and download the app. You should be able to get a student account for free.
+- Thus far we mostly use it for the wireframes and the design of the application.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
