@@ -59,6 +59,14 @@ const updateUser = async (req, res) => {
 // Create a new admin
 const createAdmin = async (req, res) => {
     try {
+        const old = await User.findOne({ email : req.body.email });
+        if (old) {
+            return res.status(400).json({ err:"User already exists "});
+        } 
+    } catch (err) {
+        return res.status(400).json({ err: err.message });
+    }
+    try {
         const admin = await Admin.create(req.body);
         res.status(201).json(admin);
     } catch (err) {

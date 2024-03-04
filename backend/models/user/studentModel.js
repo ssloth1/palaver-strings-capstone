@@ -9,7 +9,7 @@ const studentSchema = new Schema({
     //Basic creational student data
     // Need to make these not required for purposes of updating student from outside of creation
     instrument: { type: String, enum: INSTRUMENTS, required: function() { return this.isNew; } }, // Required only when new
-    age: { type: Number, required: function() { return this.isNew; } }, // Required only when new
+    //age: { type: Number, required: function() { return this.isNew; } }, // Attempting to remove and replace with calculation
     dateOfBirth: { type: Date, required: function() { return this.isNew; } }, // Required only when new
     school: { type: String, required: function() { return this.isNew; } }, // Required only when new
     grade: { type: Number, required: function() { return this.isNew; } }, // Required only when new
@@ -27,6 +27,9 @@ const studentSchema = new Schema({
 
 });
 
+studentSchema.virtual('age').get(function() {
+    return (new Date()).getFullYear() - (new Date(user.dateOfBirth)).getFullYear();
+});
 
 const Student = User.discriminator('Student', studentSchema);
 

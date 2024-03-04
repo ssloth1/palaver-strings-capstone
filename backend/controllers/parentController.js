@@ -35,6 +35,14 @@ const getParent = async (req, res) => {
 
 //create a new parent without a student
 const createParent = async (req, res) => {
+    try {
+        const old = await User.findOne({ email : req.body.email });
+        if (old) {
+            return res.status(400).json({ err:"User already exists "});
+        } 
+    } catch (err) {
+        return res.status(400).json({ err: err.message });
+    }
     const { parentData } = req.body;
     //console.log(req.body);
 
