@@ -1,17 +1,13 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 
-const {
-    recordAttendance,
-    getAttendanceRecords,
-    updateAttendanceRecord
-} = require('../controllers/attendanceController');
+const attendanceController = require('../controllers/attendanceController');
 
 const router = express.Router({mergeParams: true});
 
-router.post('/', recordAttendance);
-router.get('/', getAttendanceRecords);
-router.patch('/:attendanceId', updateAttendanceRecord); 
+router.post('/attendance', attendanceController.recordAttendance.bind(attendanceController));
+router.get('/attendance', attendanceController.getAttendanceRecords.bind(attendanceController));
+router.patch('/:attendanceId', attendanceController.updateAttendanceRecord.bind(attendanceController)); 
 
 module.exports = router;
 

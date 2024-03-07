@@ -1,24 +1,16 @@
 const express = require('express');
-const {
-    getAllMessages,
-    getMessage,
-    deleteMessage,
-    createMessage,
-    getMessagesToUser,
-    getMessagesFromUser,
-    getMessagesToUserByEmail
-} = require('../controllers/messageController');
+const messageController = require('../controllers/messageController');
 const router = express.Router({mergeParams: true});
 
 //Basic Routes
-router.get('/', getAllMessages);
-router.get('/read/:id', getMessage);
-router.delete('/:id', deleteMessage);
-router.post('/', createMessage);
+router.get('/', messageController.getAllMessages.bind(messageController));
+router.get('/read/:id', messageController.getMessage.bind(messageController));
+router.delete('/:id', messageController.deleteMessage.bind(messageController));
+router.post('/', messageController.createMessage.bind(messageController));
 
 //user functionality routes
-router.get('/toUser/:id', getMessagesToUser);
-router.post('/mail', getMessagesToUserByEmail);
-router.get('/fromUser/:id', getMessagesFromUser);
+router.get('/toUser/:id', messageController.getMessagesToUser.bind(messageController));
+router.post('/mail', messageController.getMessagesToUserByEmail.bind(messageController));
+router.get('/fromUser/:id', messageController.getMessagesFromUser.bind(messageController));
 
 module.exports = router;

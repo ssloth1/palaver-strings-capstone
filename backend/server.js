@@ -11,6 +11,7 @@ const parentRoutes = require('./routes/parentRoutes')
 const studentRoutes = require('./routes/studentRoutes')
 const messageRoutes = require('./routes/messageRoutes')
 const attendanceRoutes = require('./routes/attendanceRoutes')
+const classRoutes = require('./routes/classRoutes')
 
 // express
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/parents', parentRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api/attendance', attendanceRoutes)
+app.use('/api/classes', classRoutes);
 
 // connect to database
 mongoose.connect(process.env.MONGO_URI)

@@ -51,6 +51,9 @@ const CANADIAN_PROVINCES = [
     'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'
 ];
 
+const WEEKDAYS = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+]
 const USER_TYPES = [
     'Admin', 'Instructor', 'Parent', 'Student'
 ];
@@ -63,5 +66,6 @@ module.exports = {
     COUNTRIES,
     US_STATES,
     CANADIAN_PROVINCES,
-    USER_TYPES,
+    WEEKDAYS,
+    USER_TYPES
 };
