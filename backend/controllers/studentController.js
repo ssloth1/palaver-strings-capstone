@@ -63,7 +63,15 @@ class StudentController {
 
     // Create a new student without a parent
     async createStudent(req, res){
-        //Create the student
+        try {
+        const old = await User.findOne({ email : req.body.email });
+        if (old) {
+            return res.status(400).json({ err:"User already exists "});
+        } 
+    } catch (err) {
+        return res.status(400).json({ err: err.message });
+    }
+    //Create the student
         try {
             const student = await Student.create(req.body);
         } catch (error) {
