@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './styles/ViewAttendanceRecords.module.css';
-import Loader from '../general-components/Loader';
+import styles from '../styles/ViewAttendanceRecords.module.css';
+import Loader from '../../general-components/Loader';
 
 function ViewAttendanceRecords () {
     const [ records, setRecords] = useState ([]);

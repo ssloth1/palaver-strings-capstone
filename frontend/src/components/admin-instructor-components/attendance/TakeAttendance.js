@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
-import styles from "./styles/TakeAttendance.module.css";
-import Loader from "../general-components/Loader";
+import styles from "../styles/TakeAttendance.module.css";
+import Loader from "../../general-components/Loader";
 
 function TakeAttendance () {
     console.log("TakeAttendance");
@@ -11,7 +11,7 @@ function TakeAttendance () {
     const [error, setError] = useState('');
     const [students, setStudents] = useState([]);
     const [statusMessage, setStatusMessage] = useState("");
-    const [classes, setClasses] = useState([]);
+    
     const {
         isLoggedIn,
         isAdmin,
