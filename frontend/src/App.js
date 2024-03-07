@@ -30,6 +30,7 @@ function App() {
                     <Route path="/messages" element={<ViewMessages />} />
                     <Route path="/take-attendance" element={<TakeAttendance />} />
                     <Route path="/view-attendance" element={<ViewAttendanceRecords />} />
+                    
                 </Routes>
             </Router>
         </AuthProvider>
