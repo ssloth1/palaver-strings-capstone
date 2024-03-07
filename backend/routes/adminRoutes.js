@@ -1,5 +1,8 @@
 const express = require('express');
 const authenticate = require('../middleware/auth');
+
+const adminController = require('../controllers/adminController');
+/*
 const { 
 
     getAllUsers,
@@ -14,20 +17,20 @@ const {
     loginAdmin,
 
 } = require('../controllers/adminController');
-
+*/
 const router = express.Router({ mergeParams: true });
 
 // Admin-specific routes
-router.get('/users', getAllUsers); 
-router.get('/users/:id', getUser);       
-router.delete('/users/:id',deleteUser);
-router.patch('/users/:id', updateUser); 
-router.get('/', getAdmins);
-router.get('/:id', getAdmin);
-router.post('/', createAdmin);
-router.delete('/:id', deleteAdmin);
-router.patch('/:id', updateAdmin);
-router.post('/login', loginAdmin);
+router.get('/users', adminController.getAllUsers.bind(adminController)); 
+router.get('/users/:id', adminController.getUser.bind(adminController));       
+router.delete('/users/:id', adminController.deleteUser.bind(adminController));
+router.patch('/users/:id', adminController.updateUser.bind(adminController)); 
+router.get('/', adminController.getAdmins.bind(adminController));
+router.get('/:id', adminController.getAdmin.bind(adminController));
+router.post('/', adminController.createAdmin.bind(adminController));
+router.delete('/:id', adminController.deleteAdmin.bind(adminController));
+router.patch('/:id', adminController.updateAdmin.bind(adminController));
+router.post('/login', adminController.loginAdmin.bind(adminController));
 
 
 
