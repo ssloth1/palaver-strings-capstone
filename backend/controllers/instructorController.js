@@ -35,6 +35,14 @@ const loginInstructor = async (req, res) => {
 
 const createInstructor = async (req, res) => {
     try {
+        const old = await User.findOne({ email : req.body.email });
+        if (old) {
+            return res.status(400).json({ err:"User already exists "});
+        } 
+    } catch (err) {
+        return res.status(400).json({ err: err.message });
+    }
+    try {
         const instructor = await Instructor.create(req.body);
         res.status(201).json(instructor);
     } catch (err) {
