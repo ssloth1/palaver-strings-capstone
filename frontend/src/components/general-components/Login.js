@@ -103,6 +103,9 @@ function Login() {
                 </div>
                 
                 <LoginButton onClick={handleSubmit}/>
+
+                <button type="button" className={loginStyles.basicButton} onClick={() => navigate('/password-reset')}>Forgot Password?</button>
+                
             </form>
         </div>
     );

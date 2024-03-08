@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './components/general-components/Login';
+import PasswordReset from './components/general-components/PasswordReset';
 import Navbar from './components/general-components/Navbar';
 import AddUserForm from './components/admin-components/AddUserForm';
 import ManageUsers from './components/admin-components/ManageUsers';
@@ -25,6 +26,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/password-reset" element={<PasswordReset />} />
                     <Route path="/create-user" element={<AddUserForm />} />
                     <Route path="/users" element={<ManageUsers />} />
                     <Route path="/user/:id" element={<UserDetails />} />

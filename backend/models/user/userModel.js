@@ -8,6 +8,11 @@ const userSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     hashedPassword: { type: String, required: true},
+
+    // The following fields are for password reset functionality
+    resetPasswordToken: { type: String, required: false },
+    resetPasswordExpires: { type: Date, required: false },
+
     role: { type: String, enum: ['student', 'parent', 'instructor', 'admin'], required: true },
     address: {
         addressLine1: { type: String, required: true },

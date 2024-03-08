@@ -5,6 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 // Import new route files
+const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const instructorRoutes = require('./routes/instructorRoutes')
 const parentRoutes = require('./routes/parentRoutes')
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 })
 
 // Use the routes
+app.use('/api/users', userRoutes)
 app.use('/api/admins', adminRoutes)
 app.use('/api/instructors', instructorRoutes)
 app.use('/api/parents', parentRoutes)
