@@ -8,6 +8,8 @@ import loginStyles from './styles/Login.module.css';
 
 // Note: All password reset logic on the backend is associated with the userController.js and userRoutes.js files
 
+// Right now I am just using the styling from the login form, but you can style this however you want
+
 function ResetPasswordConfirm() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');

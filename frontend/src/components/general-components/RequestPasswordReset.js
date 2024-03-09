@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginStyles from './styles/Login.module.css';
 
+// This component is used to request a password reset link via email, and is used when a user has forgotten their password
+// Once a user provides their email, a request is sent to the backend to send a password reset email
+// then they will need to click the link in the email to reset their password
+// They will then navigate to the ResetPasswordConfirm component to complete the process.
+
+// Note: We are using mailjet, and currently the email comes from my neu email, so it may be in your spam folder
+// In production you'll want to use a no-reply email address that is whitelisted by your email provider. 
+// All password reset logic on the backend is associated with the userController.js and userRoutes.js files
+
+// Right now I am just using the styling from the login form, but you can style this however you want
+
 function RequestPasswordReset() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
