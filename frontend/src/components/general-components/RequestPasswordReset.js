@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginStyles from './styles/Login.module.css';
 
-function PasswordReset() {
+function RequestPasswordReset() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const [message, setMessage] = useState('');
@@ -12,27 +12,30 @@ function PasswordReset() {
         // If there's a message (which we set on successful email submission), navigate back after 3 seconds
         if (message) {
             const timer = setTimeout(() => {
-                navigate('/login'); // Adjust this to your login route
+                navigate('/login');
             }, 3000);
             return () => clearTimeout(timer);
         }
     }, [message, navigate]);
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null); // Reset error state on new submission
         try {
-            // Adjust the endpoint to match your API route for password reset requests
+            
+            // fetch request to reset password, using token from URL params and new password from state
             const response = await fetch('/api/users/request-password-reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
             });
-            const data = await response.json();
 
+            const data = await response.json();
+            
+            // if something went wrong, throw an error
             if (response.ok) {
                 setMessage('Check your email for the password reset link.');
-                // No need to navigate immediately, useEffect will handle it
             } else {
                 throw new Error(data.message || 'Failed to send password reset email');
             }
@@ -63,4 +66,4 @@ function PasswordReset() {
     );
 }
 
-export default PasswordReset;
+export default RequestPasswordReset;

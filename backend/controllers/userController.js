@@ -35,7 +35,13 @@ exports.requestPasswordReset = async (req, res) => {
                 Email: user.email,
             }],
             Subject: 'Password Reset Request',
-            TextPart: `Hello, ${user.firstName}! You are receiving this email because you (or someone else) has requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process: ${process.env.FRONTEND_URL}/reset-password/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
+            TextPart: `Hello, ${user.firstName}!
+
+You are receiving this email because you (or someone else) has requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process:
+
+${process.env.FRONTEND_URL}/reset-password/${token}
+
+If you did not request this, please ignore this email and your password will remain unchanged.`,
         }]
     });
 
@@ -49,24 +55,28 @@ exports.requestPasswordReset = async (req, res) => {
     };
 
 
-exports.resetPassword = async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
-    const user = await User.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() }
-    });
+    exports.resetPassword = async (req, res) => {
+        const { token } = req.params;
+        const { password } = req.body;
     
-    if (!user) {
-        return res.status(400).send('Password reset token is invalid or has expired.');
-    }
-    
-    // Hash the new password and save
-    user.hashedPassword = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
-    
-    // Send a confirmation email
-    res.send('Password has been reset successfully.');
-};
+        try {
+            const user = await User.findOne({
+                resetPasswordToken: token,
+                resetPasswordExpires: { $gt: Date.now() }
+            });
+            
+            if (!user) {
+                return res.status(400).json({ error: 'Password reset token is invalid or has expired.' });
+            }
+            
+            user.hashedPassword = password;
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save();
+            
+            res.json({ message: 'Password has been reset successfully.' });
+        } catch (error) {
+            console.error(error); // Log the error for server-side debugging
+            res.status(500).json({ error: 'An error occurred while resetting the password.' });
+        }
+    };
