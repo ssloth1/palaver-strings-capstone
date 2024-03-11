@@ -35,7 +35,6 @@ class InstructorController {
 };
 
 
-
     async createInstructor(req, res) {
         try {
             const instructor = await Instructor.create(req.body);

@@ -6,28 +6,36 @@ export const AuthContext = createContext(); // Creates a new context for authent
 export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track the login status
     const [userType, setUserType] = useState(null); // State to track user types
+    const [userId, setUserId] = useState(null); // State to track user details
 
     // Effect to check for saved login status in local storage
     useEffect(() => {
         const savedUserType = localStorage.getItem('userType');
-        if (savedUserType) {
+        const savedUserId = localStorage.getItem('userId');
+        if (savedUserType && savedUserId) {
             setIsLoggedIn(true);
             setUserType(savedUserType);
+            setUserId(savedUserId);
         }
     }, []);
 
     // Function to handle login for a user
     const login = (userDetails) => {
+        console.log('User details:', userDetails);
         setIsLoggedIn(true);
         setUserType(userDetails.type);
+        setUserId(userDetails.id); // Correctly setting the user ID
         localStorage.setItem('userType', userDetails.type);
+        localStorage.setItem('userId', userDetails.id);
     };
 
     // Function to handle logout for a user
     const logout = () => {
         setIsLoggedIn(false);
         setUserType(null);
+        setUserId(null);
         localStorage.removeItem('userType');
+        localStorage.removeItem('userId');
     };
 
     // Helper functions to check user's role
@@ -40,6 +48,7 @@ export function AuthProvider({ children }) {
     const value = {
         isLoggedIn,
         userType,
+        userId,
         login,
         logout,
         isAdmin,

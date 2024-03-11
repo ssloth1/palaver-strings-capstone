@@ -15,7 +15,7 @@ import { CiMail } from "react-icons/ci";
 
 function Navbar() {
     const navigate = useNavigate();
-    const { logout, isLoggedIn, isAdmin, isInstructor, isStudent, isParent } = useAuth ();
+    const { logout, isLoggedIn, isAdmin, isInstructor, isStudent, isParent, userId } = useAuth ();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleMenu = () => {
@@ -34,7 +34,8 @@ function Navbar() {
         "isAdmin:", isAdmin(),
         "isInstructor:", isInstructor(),
         "isStudent:", isStudent(),
-        "isParent:", isParent()
+        "isParent:", isParent(),
+        "userId:", userId
     );
 
     return (
@@ -54,6 +55,11 @@ function Navbar() {
                         <>
                             <NavigationLink Icon={FaIndent} to="/write-message" label="Compose Messages" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="Attendance" />
+                        </>
+                    )}
+                    {isLoggedIn && isInstructor() && (
+                        <>
+                            <NavigationLink Icon={FaIndent} to="/mystudents" label="My Students" />
                         </>
                     )}
                     {isLoggedIn && (

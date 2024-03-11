@@ -25,6 +25,9 @@ const studentSchema = new Schema({
     mentor: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false },
     mentees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
 
+    // Field for progress reports associated with the student
+    progressReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProgressReport', required: false }],
+
 });
 
 studentSchema.virtual('age').get(function() {
