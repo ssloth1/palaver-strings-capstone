@@ -5,12 +5,14 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 // Import new route files
+const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const instructorRoutes = require('./routes/instructorRoutes')
 const parentRoutes = require('./routes/parentRoutes')
 const studentRoutes = require('./routes/studentRoutes')
 const messageRoutes = require('./routes/messageRoutes')
-const progressReportRoutes = require('./routes/progressReportRoutes')
+const attendanceRoutes = require('./routes/attendanceRoutes')
+const classRoutes = require('./routes/classRoutes')
 
 // express
 const app = express();
@@ -24,12 +26,14 @@ app.use((req, res, next) => {
 })
 
 // Use the routes
+app.use('/api/users', userRoutes)
 app.use('/api/admins', adminRoutes)
 app.use('/api/instructors', instructorRoutes)
 app.use('/api/parents', parentRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/messages', messageRoutes)
-app.use('/api/progress-reports', progressReportRoutes)
+app.use('/api/attendance', attendanceRoutes)
+app.use('/api/classes', classRoutes);
 
 // connect to database
 mongoose.connect(process.env.MONGO_URI)
@@ -43,7 +47,3 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => {
         console.log('failed to connect to database', err)
     })
-
-
-
-

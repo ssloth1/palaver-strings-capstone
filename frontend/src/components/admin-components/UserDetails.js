@@ -81,6 +81,10 @@ function UserDetails() {
     };
 
     // General User Fields:
+    if (!user) {
+        return<Loader/>;
+    }
+
     return (
         <div>
             <h1>User Details</h1>

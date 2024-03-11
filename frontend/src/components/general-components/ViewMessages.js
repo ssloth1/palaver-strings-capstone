@@ -9,15 +9,21 @@ function ViewMessages() {
     Send email from local storage.
     */
 
-    const request = { "email":localStorage.getItem('email') };
+    // const request = { "email":localStorage.getItem('email') };
 
     useEffect(() => {
-        const data = async () => {
-            const messageData = await axios.post("http://localhost:4000/api/messages/mail", request);
+        const email = localStorage.getItem('email');
+        const request = { email: email};
+        
+        const fetchData = async () => {
+            try {
+                const messageData = await axios.post("http://localhost:4000/api/messages/mail", request);
             setMessages(messageData.data)
-        }
-
-        data();
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        };    
+        fetchData();
     }, []);
 
     return (

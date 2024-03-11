@@ -11,6 +11,7 @@ import { // Constants/dropdown options for the form
     US_STATES,
     CANADIAN_PROVINCES,
     INSTRUMENTS,
+    USER_TYPES,
 } from '../../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
@@ -240,7 +241,7 @@ function AddUserForm() {
                 return (
                     <>
                         {/* Admin specific fields */}
-                        <div>
+                        <div class="checkbox">
                             {PERMISSIONS.map((permission) => (
                                 <label key={permission}>
                                     <input
@@ -253,8 +254,6 @@ function AddUserForm() {
                                 </label>
                             ))}
                         </div>
-                        <input type="email" name="orgEmail" value={formData.orgEmail} onChange={handleChange} placeholder="Organization Email" required />
-                        <input type="email" name="secondaryEmail" value={formData.secondaryEmail} onChange={handleChange} placeholder="Secondary Email" />
                     </>
                 );
 
@@ -265,11 +264,12 @@ function AddUserForm() {
                         
                         {/*Student specific fields */}
                         {/*Dropdown for instrument selection*/ }
+                        <label for="instrument">Instrument</label>
                         <select name="instrument" value={formData.instrument} onChange={handleChange} required>
                             <option value="">Select Instrument</option>
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
-                        {<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/>}
+                        {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
                         {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
                         {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
                         {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}

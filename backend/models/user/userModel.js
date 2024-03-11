@@ -8,29 +8,22 @@ const userSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     hashedPassword: { type: String, required: true},
+
+    // The following fields are for password reset functionality
+    resetPasswordToken: { type: String, required: false },
+    resetPasswordExpires: { type: Date, required: false },
+
     role: { type: String, enum: ['student', 'parent', 'instructor', 'admin'], required: true },
     address: {
-        country: { type: String, enum: COUNTRIES, required: true },
         addressLine1: { type: String, required: true },
         addressLine2: { type: String, required: false },
         city: { type: String, required: true },
         state: {
             type: String,
+            enum: US_STATES,
             required: true,
-            validate: {
-                validator: function(v) {
-                    if (this.address.country === 'United States') {
-                        return US_STATES.includes(v);
-                    }
-                    if (this.address.country === 'Canada') {
-                        return CANADIAN_PROVINCES.includes(v);
-                    }
-                    return false;  // Invalid if no recognized country is selected
-                },
-                message: props => `${props.value} is not a valid state/province for the selected country`
-            }
         },
-        zipCode: { type: String, required: function() { return this.address.country === 'United States'; } },
+        zipCode: { type: String, required: true},
     },
     phoneNumber: { type: String, required: false},
     preferredCommunication : { type: String, required: false },
