@@ -16,6 +16,7 @@ import TakeAttendance from './components/admin-instructor-components/attendance/
 import ViewAttendanceRecords from './components/admin-instructor-components/attendance/ViewAttendanceRecords';
 import Attendance from './components/admin-instructor-components/attendance/Attendance';
 import CreateClass from './components/admin-instructor-components/palaver-classes/CreateClass';
+import PalClass from './components/admin-instructor-components/palaver-classes/PalClass';
 
 
 // This is our main app component, for now it sets up routes and context for the web application
@@ -39,9 +40,11 @@ function App() {
                         <Route path="take" element={<TakeAttendance />} />
                         <Route path="view" element={<ViewAttendanceRecords />} />
                     </Route>
-                    <Route path="/take-attendance" element={<TakeAttendance />} />
-                    <Route path="/view-attendance" element={<ViewAttendanceRecords />} />
-                    <Route path="/create-class" element={<CreateClass />} />
+                    {/* <Route path="/take-attendance" element={<TakeAttendance />} />
+                    <Route path="/view-attendance" element={<ViewAttendanceRecords />} /> */}
+                    <Route path="/classes" element={<PalClass />}>
+                        <Route path="create-class" element={<CreateClass />} />
+                    </Route>
                 </Routes>
             </Router>
         </AuthProvider>
