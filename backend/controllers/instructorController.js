@@ -96,6 +96,20 @@ class InstructorController {
         }
     }
 
+    //find all students for an instructor
+    //currently using a post request using locally stored email.
+    async getInstuctorByEmail(req, res){
+        try{
+            const instructor = await Instructor.findOne({ email:req.body.email });
+            if (!instructor) {
+                return res.status(404).json({ message: "Instructor not found!" });
+            }
+            res.status(200).json(instructor);
+        } catch (error) {
+            res.status(400).json({ message:error.message })
+        }
+    }
+
     // Associate a student with an instructor
     async assignStudent(req, res){
         const session = await mongoose.startSession();

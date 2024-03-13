@@ -11,6 +11,6 @@ router.post('/', messageController.createMessage.bind(messageController));
 //user functionality routes
 router.get('/toUser/:id', messageController.getMessagesToUser.bind(messageController));
 router.post('/mail', messageController.getMessagesToUserByEmail.bind(messageController));
-router.get('/fromUser/:id', messageController.getMessagesFromUser.bind(messageController));
+router.get('/fromUser/', messageController.getMessagesFromUser.bind(messageController));
 
 module.exports = router;

@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { AuthContext } from '../../contexts/AuthContext';
+import { AuthContext } from '../../../contexts/AuthContext';
 import axios from 'axios';
-import styles from './styles/CreateMessage.module.css';
+import styles from '../styles/CreateMessage.module.css';
+import { USER_TYPES } from "../../../constants/formconstants";
 
 function WriteMessage() {
 
@@ -39,11 +40,18 @@ function WriteMessage() {
         if(!isAdmin && !isInstructor){
             console.error("Only admins or instructors can send messages.");
             setStatusMessage("Only admins or instructors can send messages.");
+            return;
         }
 
         if (!isLoggedIn) {
             console.error("Your login has expired.  You must be logged in to send messages.");
             setStatusMessage("Your login has expired.  You must be logged in to send messages.");
+            return;
+        }
+
+        if (!formData.toUsers && formData.toCategory === ""){
+            console.error("There must be at least one recipient");
+            setStatusMessage("There must be at least one recipient");
             return;
         }
 
@@ -71,7 +79,13 @@ function WriteMessage() {
             <form onSubmit={onSubmit}>
 
                 {/*Text input for recipient email*/}
-                <input type='text' name='toUsers' value={formData.toUsers} onChange={handleChange} placeholder="Recipient's Email" required />
+                <input type='text' name='toUsers' value={formData.toUsers} onChange={handleChange} placeholder="Recipient's Email" />
+
+                {/*Dropdown to select a user-group*/}
+                <select name="toCategory" value={formData.toCategory} onChange={handleChange} >
+                <option value="">Do not message a group.</option>
+                {USER_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+                </select>
 
                 {/*Text input for subject*/}
                 <input type='text' name='subjectLine' value={formData.subjectLine} onChange={handleChange} placeholder="Subject" />

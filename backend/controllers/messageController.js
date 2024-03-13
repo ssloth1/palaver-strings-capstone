@@ -43,16 +43,27 @@ class messageController {
 
     //Create a message
     async createMessage(req, res){
+        const foundToUsers = new Array;
         try {
             const foundFromUser = await User.findOne({ email: req.body.fromUser });
             if(!foundFromUser) {
                 console.log("Email provided as message author does not match a user in the database.")
             }
-            const foundToUsers = await User.findOne({ email: req.body.toUsers });
-            if(!foundToUsers) {
-                console.log("Recipient does not exist in the database.");
-                return res.status(404).json({ message: 'Recipient not found in the database.' });
+            if (req.body.toUsers != ""){
+                foundToUsers = await User.findOne({ email: req.body.toUsers });
+                if(!foundToUsers) {
+                    console.log("Recipient does not exist in the database.");
+                    return res.status(404).json({ message: 'Recipient not found in the database.' });
+                }    
+                console.log()
             }
+            if(req.body.toCategory != ""){
+                const categoryMembers = await User.find({ __t:req.body.toCategory });
+                for (const member of categoryMembers) {
+                    foundToUsers.push(member);
+                }
+            }
+
             const preMessage = {
                 ...req.body,
                 toUsers: foundToUsers,
@@ -62,6 +73,7 @@ class messageController {
             const message = await Message.create(preMessage);
             res.status(201).json(message);
         } catch (error) {
+            console.log(error.message);
             res.status(400).json({ message: error.message });
         }
     }
@@ -97,9 +109,10 @@ class messageController {
     }
 
     //Gets all messages sent by a user
+    //changing to go by email instead of ID since we're still not passing ID to frontend quite right.
     async getMessagesFromUser (req, res){
         try {
-            const messages = await Message.find({ fromUser: req.params.id }).exec();
+            const messages = await Message.find({ email: req.body.email });
             if (!messages) {
                 return res.status(404).json({ message: "No messages from the User." });
             }

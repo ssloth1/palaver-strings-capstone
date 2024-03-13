@@ -63,13 +63,14 @@ class StudentController {
 
     // Create a new student without a parent
     async createStudent(req, res){
+        console.log("api call received.");
         try {
-        const old = await User.findOne({ email : req.body.email });
+            const old = await User.findOne({ email : req.body.email });
         if (old) {
             return res.status(400).json({ err:"User already exists "});
         } 
     } catch (err) {
-        return res.status(400).json({ err: err.message });
+        console.log("passed the duplicate test.")
     }
     //Create the student
         try {

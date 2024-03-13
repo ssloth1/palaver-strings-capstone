@@ -53,8 +53,8 @@ function Navbar() {
                     )}
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
-                            <NavigationLink Icon={FaIndent} to="/write-message" label="Compose Messages" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="Attendance" />
+                            <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="Messaging" />
                         </>
                     )}
                     {isLoggedIn && isInstructor() && (
@@ -62,7 +62,7 @@ function Navbar() {
                             <NavigationLink Icon={FaIndent} to="/mystudents" label="My Students" />
                         </>
                     )}
-                    {isLoggedIn && (
+                    {isLoggedIn && (!isAdmin() && !isInstructor()) && (
                         <>
                             <NavigationLink Icon={CiMail} to="/messages" label="Read Messages" />
                         </>

@@ -3,7 +3,7 @@ const express = require('express');
 const { 
     //createUser,
     //getUsers,
-    //getUser, 
+    getUser, 
     //deleteUser,
     //updateUser,
     requestPasswordReset,
@@ -15,7 +15,7 @@ const router = express.Router()
 
 // General user routes
 //router.get('/', getUsers);
-//router.get('/:id', getUser);
+router.get('/:id', getUser);
 //router.post('/', createUser);
 //router.delete('/:id', deleteUser);
 //router.patch('/:id', updateUser);
