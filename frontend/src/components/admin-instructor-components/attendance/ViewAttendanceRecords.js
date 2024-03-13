@@ -36,12 +36,13 @@ function ViewAttendanceRecords () {
                     {records.map((record) => (
                         <li key={record._id}>
                             <p>Date: {new Date(record.date).toLocaleDateString()}</p>
-                            <p>Class ID: {record.classId}</p>
-                            {record.attendance && Array.isArray(record.attendance) ? (
+                            <p>Class ID: {record.class && record.class.name}</p>
+                            {record.students && record.students.length > 0 ? (
                                 <ul>
-                                    {record.attendance.map((att, index) => (
+                                    {record.students.map((att, index) => (
                                         <li key={index}>
-                                            Student ID: {att.studentId}, Status: {att.status}
+                                            <p>Student: {att.student.firstName}  {att.student.lastName}</p> 
+                                            <p>Status: {att.status}</p>
                                         </li>
                                     ))}
                                 </ul>

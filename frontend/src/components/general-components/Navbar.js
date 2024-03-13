@@ -10,6 +10,7 @@ import { FaUserEdit } from 'react-icons/fa';
 import { MdOutlineAssignmentInd } from "react-icons/md";
 import { FaIndent } from 'react-icons/fa';
 import { CiMail } from "react-icons/ci";
+import { SiGoogleclassroom } from "react-icons/si";
 
 
 
@@ -59,6 +60,7 @@ function Navbar() {
                         <>
                             <NavigationLink Icon={FaIndent} to="/write-message" label="Compose Messages" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="Attendance" />
+                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="Classes" />
                         </>
                     )}
                     {isLoggedIn && isInstructor() && (

@@ -27,6 +27,16 @@ class ClassService {
         }
     }
 
+    async getClassById(classId) {
+        try {
+            const response = await axios.get(`${this.baseUrl}/${classId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching class by ID:", error);
+            throw error;
+        }
+    }   
+
     async updateClass(id, updateData) {
         try {
             const response = await axios.put(`${this.baseUrl}/${id}`, updateData);
