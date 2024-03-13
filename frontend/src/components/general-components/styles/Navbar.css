@@ -1,4 +1,3 @@
-/* Base styles for the nav bar */
 .side-menu {
     width: 50px;
     overflow: hidden;
@@ -8,14 +7,13 @@
     top: 0;
     height: 100%;
     z-index: 1010;
+    background-color: #76A7B1;
 }
 
-/* Styles when sidebar is expanded */
 .side-menu.expanded {
-    width: 380px;
+    width: 300px;
 }
 
-/* Hide text in contracted state and adjust layout for expanded state */
 .side-menu a > .link-text {
     transition: display 0.3s, opacity 0.3s ease;
     visibility: hidden;
@@ -27,21 +25,21 @@
     margin-left: 10px;
     visibility: visible;
 }
-
 .side-menu .menu-content {
     list-style-type: none;
     display: block;
     position: absolute;
+    align-items: center;
+    width: 100%;
     align-items: top;
     background-color: #76A7B1;
+    border-radius: 5px;
     padding: 10px;
-    margin: auto;
-    font-family: 'Poppins';
-    font-size: 32px;
-    font-weight: '400'; 
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 400; 
     height: 100%;
     word-wrap: break-word;
-    
 }
 
 .side-menu .menu-content nav {
@@ -51,15 +49,36 @@
 
 .side-menu .menu-content nav a {
     /* Style for each link */
+    position:relative;
     display: flex;
     width: auto;
     align-items: center;
-    gap: 50px;
-    margin-bottom: 10px; /* Add space between the links */
-    text-decoration: none; /* Optional: removes underline from links */
-    color: #FFFFFF; /* Optional: sets text color */
-    position: relative;
+    margin-bottom: 10px; 
+    text-decoration: none; 
+    color: #FFFFFF;
 }
+
+/* Tooltip text */
+.side-menu .menu-content nav a .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 105%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: normal; 
+}
+
+
+
 
 /* Styles for icons */
 .side-menu .menu-content nav a svg {
@@ -69,8 +88,11 @@
 
 .side-menu .menu-content nav a:hover,
 .side-menu .menu-content nav a:focus {
-    text-decoration: underline; /* Apply underline only to the link being hovered */
+    /* Styles for when the link is hovered or focused */
+    text-decoration: wavy;
     background-color: #5d9ca8;
+    border-radius: 5px;
+    margin-right: 10px;
 }
 
 .side-menu.expanded .menu-content nav a {
@@ -78,3 +100,52 @@
     justify-content: flex-start;
 
 }
+
+
+/* Menu button styling */
+.menu-button {
+    background-color: #76a7b1;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.menu-button:hover {
+    background-color: #5d9ca8;
+    transform: scale(1.05);
+}
+
+.menu-button-icon {
+    font-size: 20px;
+}
+
+/* Logout button styling */
+.logout-button {
+    background-color: #76a7b1;
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: Poppins;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+}
+
+.logout-button:hover {
+    background-color: #5d9ca8;
+}
+

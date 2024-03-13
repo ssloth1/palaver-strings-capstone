@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import LoginButton from './Button';
+import LoginButton from './LoginButton';
+import PasswordResetRequestButton from './PasswordResetRequestButton';
 import loginStyles from './styles/Login.module.css';
 import Loader from './Loader';
 
@@ -102,9 +103,13 @@ function Login() {
                     />
                 </div>
                 
-                <LoginButton onClick={handleSubmit}/>
+                <div className={loginStyles.buttonSpacing}>
+                    <LoginButton onClick={handleSubmit}/>
+                </div>
 
-                <button type="button" className={loginStyles.basicButton} onClick={() => navigate('/request-password-reset')}>Forgot Password?</button>
+                <div className={loginStyles.buttonSpacing}>
+                    <PasswordResetRequestButton onClick={() => navigate('/password-reset-request')}></PasswordResetRequestButton>
+                </div>
                 
             </form>
         </div>

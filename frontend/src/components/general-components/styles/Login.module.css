@@ -76,3 +76,8 @@
     border-color: #007bff;
 }
 
+/* Space between the input fields and the buttons */
+.buttonSpacing {
+    margin-top: 20px;
+}
+
