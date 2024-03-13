@@ -22,6 +22,7 @@ import ViewClasses from './components/admin-instructor-components/palaver-classe
 import PalClass from './components/admin-instructor-components/palaver-classes/PalClass';
 import ClassDetails from './components/admin-instructor-components/palaver-classes/ClassDetails';
 import StudentList from './components/instructor-components/StudentList';
+import ProgressReportForm from './components/instructor-components/ProgressReportForm'
 
 
 // This is our main app component, for now it sets up routes and context for the web application
@@ -57,6 +58,7 @@ function App() {
                         <Route path=":classId" element={<ClassDetails />} />
                     </Route>
                     <Route path="/mystudents" element={<StudentList />} /> 
+                    <Route path="/prog-report" element={<ProgressReportForm />} /> 
                 </Routes>
             </Router>
         </AuthProvider>
