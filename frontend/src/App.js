@@ -18,6 +18,9 @@ import TakeAttendance from './components/admin-instructor-components/attendance/
 import ViewAttendanceRecords from './components/admin-instructor-components/attendance/ViewAttendanceRecords';
 import Attendance from './components/admin-instructor-components/attendance/Attendance';
 import CreateClass from './components/admin-instructor-components/palaver-classes/CreateClass';
+import ViewClasses from './components/admin-instructor-components/palaver-classes/ViewClasses';
+import PalClass from './components/admin-instructor-components/palaver-classes/PalClass';
+import ClassDetails from './components/admin-instructor-components/palaver-classes/ClassDetails';
 import StudentList from './components/instructor-components/StudentList';
 
 
@@ -48,10 +51,11 @@ function App() {
                         <Route path="take" element={<TakeAttendance />} />
                         <Route path="view" element={<ViewAttendanceRecords />} />
                     </Route>
-                    <Route path="/take-attendance" element={<TakeAttendance />} />
-                    <Route path="/view-attendance" element={<ViewAttendanceRecords />} />
-                    <Route path="/create-class" element={<CreateClass />} />
-                    <Route path="/mystudents" element ={<StudentList />} />
+                    <Route path="/classes" element={<PalClass />}>
+                        <Route path="create-class" element={<CreateClass />} />
+                        <Route path="view-classes" element={<ViewClasses />} />
+                        <Route path=":classId" element={<ClassDetails />} />
+                    </Route>
                 </Routes>
             </Router>
         </AuthProvider>

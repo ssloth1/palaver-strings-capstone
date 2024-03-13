@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { WEEKDAYS } = require('../constants');
 
 const classSchema = new Schema ({
     name: { type: String, required: true },
@@ -8,8 +7,8 @@ const classSchema = new Schema ({
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
 
     //Possibly unnecessary
-    meetingDay: { type: String, enum: WEEKDAYS, required: true },
-    meetingTime: { type: Number, required: true }
+    meetingDay: [{ type: String, required: true }],
+    meetingTime: { type: String, required: true }
 
 }, {timestamps: true});
 

@@ -4,19 +4,14 @@ import axios from "axios";
 import styles from "../styles/TakeAttendance.module.css";
 import Loader from "../../general-components/Loader";
 
-function TakeAttendance () {
-    console.log("TakeAttendance");
-
+function TakeAttendance() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [students, setStudents] = useState([]);
+    const [classes, setClasses] = useState([]);
     const [statusMessage, setStatusMessage] = useState("");
-    
-    const {
-        isLoggedIn,
-        isAdmin,
-        isInstructor
-    } = useContext(AuthContext);
+
+    const { isLoggedIn, isAdmin, isInstructor } = useContext(AuthContext);
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
@@ -24,42 +19,48 @@ function TakeAttendance () {
         attendance: []
     });
 
-    useEffect (() => {
-        const fetchStudents = async () => {
+    useEffect(() => {
+        const fetchClasses = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/students');
-                setStudents(response.data);
+                const response = await axios.get('http://localhost:4000/api/classes');
+                setClasses(response.data);
             } catch (error) {
-                console.error("Error fetching students", error);
-            }finally {
+                console.error("Error fetching classes", error);
+            } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchStudents();
-    }, [attendanceData.classId]);
+        fetchClasses();
+    }, []);
 
-    /*
-    useEffect (() => {
-        const fetchClasses = async () => {
-            setIsLoading(true);
-            try {
-                const response = await axios.get
-    */
-   
+    const fetchStudents = async (classId) => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:4000/api/students?classId=${classId}`);
+            setStudents(response.data);
+        } catch (error) {
+            console.error("Error fetching students", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setAttendanceData(prevData => ({
             ...prevData,
             [name]: value
         }));
+
+        fetchStudents(value); // Fetch students for the selected class
     };
 
-    const handleAttendanceChange = (index, event) => {
-        const updatedAttendance = attendanceData.attendance.map((item, i) => {
-            if (i === index) {
-                return { ...item, [event.target.name]: event.target.value };
+    const handleAttendanceChange = (studentId, status) => {
+        const updatedAttendance = attendanceData.attendance.map(item => {
+            if (item.studentId === studentId) {
+                return { ...item, status: status };
             }
             return item;
         });
@@ -70,29 +71,21 @@ function TakeAttendance () {
         }));
     };
 
-    const addAttendanceRow = () => {
-        setAttendanceData(prevData => ({
-            ...prevData,
-            attendance: [...prevData.attendance, { studentId: "", status: ""}]
-        }));
-    };
-
     const onSubmit = async (event) => {
         event.preventDefault();
 
-        if(!isAdmin && !isInstructor){
+        if (!isAdmin && !isInstructor) {
             console.error("Only admins or instructors can take attendance.");
             setStatusMessage("Only admins or instructors can take attendance.");
             return;
         }
 
-        if(!isLoggedIn){
+        if (!isLoggedIn) {
             console.error("Your login has expired. You must be logged in to take attendance.");
             setStatusMessage("Your login has expired. You must be logged in to take attendance.");
             return;
         }
-        
-        
+
         setIsLoading(true);
         try {
             const response = await axios.post('http://localhost:4000/api/attendance', attendanceData);
@@ -109,30 +102,52 @@ function TakeAttendance () {
     };
 
     if (isLoading) return <Loader />;
-    
+
     return (
-        <div className={styles.TakeAttendance}> 
+        <div className={styles.TakeAttendance}>
             <form onSubmit={onSubmit}>
-                <input type="text" name="classId" value={attendanceData.classId} onChange={handleChange} placeholder="Class ID" required/>
-                <input type="date" name="date" value={attendanceData.date} onChange={handleChange} required />
-                {attendanceData.attendance.map((item, index) => (
-                    <div key = {index}>
-                        <select name="studentId" value={item.studentId} onChange={(event) => handleAttendanceChange(index, event)} required />
-                        <option value=""> Select Student</option>
-                        {students.map((student) => (
-                            <option key={student._id} value={student._id}>
-                                {student.name} - {student.id}
-                            </option>
-                        ))}
-                        <select name="status" value={item.status} onChange={(event) => handleAttendanceChange(index, event)} required>
-                            <option value="">Select Status</option>
-                            <option value="present">Present</option>
-                            <option value="absent - unexcused">Absent - Unexcused</option>
-                            <option value="absent - excused">Absent - Excused</option>
-                        </select>
-                    </div>
-                ))}
-                <button type="button" onClick={addAttendanceRow}>Add Student</button>
+                <select name="classId" value={attendanceData.classId} onChange={handleChange} required>
+                    <option value="">Select Class</option>
+                    {classes.map((classItem) => (
+                        <option key={classItem._id} value={classItem._id}>
+                            {classItem.name}
+                        </option>
+                    ))}
+                </select>
+                <input type="date" name="date" value={attendanceData.date} onChange={(e) => setAttendanceData(prevData => ({...prevData, date: e.target.value}))} required />
+                {students.length > 0 && (
+    <div>
+        {students.map((student) => (
+            <div key={student._id}>
+                <label>
+                    <input 
+                        type="checkbox" 
+                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'present')}
+                        onChange={() => handleAttendanceChange(student._id, 'present')} 
+                    />
+                    Present
+                </label>
+                <label>
+                    <input 
+                        type="checkbox" 
+                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - unexcused')}
+                        onChange={() => handleAttendanceChange(student._id, 'absent - unexcused')} 
+                    />
+                    Absent - Unexcused
+                </label>
+                <label>
+                    <input 
+                        type="checkbox" 
+                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - excused')}
+                        onChange={() => handleAttendanceChange(student._id, 'absent - excused')} 
+                    />
+                    Absent - Excused
+                </label>
+                <span>{student.name} - {student.id}</span>
+            </div>
+        ))}
+    </div>
+)}
                 <button type="submit">Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
             </form>
@@ -142,3 +157,6 @@ function TakeAttendance () {
 }
 
 export default TakeAttendance;
+
+
+

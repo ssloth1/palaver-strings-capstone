@@ -1,0 +1,21 @@
+/* Ensure icons are always visible and have space */
+.side-menu a svg {
+    margin-right: 10px; 
+    flex-shrink: 0; 
+}
+
+/* Initial state of the link text */
+.side-menu .link-text {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease 0s;
+    white-space: nowrap;
+    overflow: hidden; 
+}
+
+/* When the sidebar is expanded, show the text */
+.side-menu.expanded .link-text {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.1s;
+}

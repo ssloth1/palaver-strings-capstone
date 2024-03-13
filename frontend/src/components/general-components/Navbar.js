@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
 import NavigationLink from './NavigationLink.js';
 import './styles/Navbar.css';
+import { LuMenu } from "react-icons/lu";
 import { IoMdHome } from "react-icons/io";
 import { RiUserAddLine, RiBookletLine } from "react-icons/ri";
 import { FaUserEdit } from 'react-icons/fa'; 
 import { MdOutlineAssignmentInd } from "react-icons/md";
 import { FaIndent } from 'react-icons/fa';
 import { CiMail } from "react-icons/ci";
+import { SiGoogleclassroom } from "react-icons/si";
 
 
 
@@ -40,7 +42,10 @@ function Navbar() {
 
     return (
         <div className={`side-menu ${isExpanded ? 'expanded' : ''}`}>
-            <button onClick={toggleMenu}>Toggle Menu</button>
+        <button className="menu-button" onClick={toggleMenu}>
+            <span className="menu-button-icon"><LuMenu /></span>
+            Menu
+        </button>
             <div className="menu-content">
                 <nav>
                     <NavigationLink Icon={IoMdHome} to="/" label="Home" />
@@ -55,6 +60,7 @@ function Navbar() {
                         <>
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="Attendance" />
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="Messaging" />
+                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="Classes" />
                         </>
                     )}
                     {isLoggedIn && isInstructor() && (
@@ -68,7 +74,13 @@ function Navbar() {
                         </>
                     )}
                     {isLoggedIn && (
-                        <button onClick={handleLogout}>Logout</button>
+                        <button 
+                            className="logout-button" 
+                            onClick={handleLogout} 
+                            style={{display: isExpanded ? 'block' : 'none'}}
+                        >
+                            Logout
+                        </button>
                     )}
             </nav>
         </div>
