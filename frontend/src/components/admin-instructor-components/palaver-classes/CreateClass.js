@@ -6,7 +6,7 @@ import { WEEKDAYS } from "../../../constants/formconstants";
 function CreateClass() {
     const [classData, setClassData] = useState({
         name: '',
-        instructorId: '',
+        instructor: '',
         meetingDay: [],
         meetingTime: '',
     });
@@ -18,6 +18,7 @@ function CreateClass() {
             // Assuming your backend has a route to fetch instructors
             try {
                 const { data } = await axios.get('/api/instructors');
+                console.log("Fetched instructors:", data);
                 setInstructors(data);
             } catch (error) {
                 console.error("Failed to fetch instructors:", error);
@@ -29,6 +30,7 @@ function CreateClass() {
 
     
     const handleDaySelection = (day) => {
+        console.log("Selected day:", day);
         setClassData(prevState => ({
             ...prevState,
             meetingDay: prevState.meetingDay.includes(day)
@@ -40,18 +42,10 @@ function CreateClass() {
     // Handle input change
     const handleChange = (event) => {
         const { name, value } = event.target;
-        if (name === 'instructorName') {
-            const instructor = instructors.find(instructor => instructor.name === value);
-            setClassData(prevState => ({
-                ...prevState,
-                instructorId: instructor ? instructor.id : '',
-            }));
-        } else { 
-            setClassData(prevState => ({
-                ...prevState,
-                [name]: value,
-            }));
-        }
+        setClassData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     // Handle form submission
@@ -61,7 +55,7 @@ function CreateClass() {
         try {
             const submissionData = {
                 name: classData.name,
-                instructorId: classData.instructorId,
+                instructor: classData.instructor,
                 meetingDay: classData.meetingDay,
                 meetingTime: classData.meetingTime,
             };
@@ -87,14 +81,16 @@ function CreateClass() {
                         required
                     />
                     <select
-                        name="instructorName"
-                        value={instructors.find(i => i.id === classData.instructorId)?.name || ''}
+                        name="instructor"
+                        value={classData.instructor}
                         onChange={handleChange}
                         required
                     >
                         <option value="">Select Instructor</option>
                         {instructors.map(instructor => (
-                            <option key={instructor.id} value={instructor.name}>{instructor.name}</option>
+                            <option key={instructor._id} value={instructor._id}>
+                                {`${instructor.firstName} ${instructor.lastName}`} {/* Display full name */}
+                            </option>
                         ))}
                     </select>    
                     <input
