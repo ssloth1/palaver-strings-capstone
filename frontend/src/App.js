@@ -56,6 +56,7 @@ function App() {
                         <Route path="view-classes" element={<ViewClasses />} />
                         <Route path=":classId" element={<ClassDetails />} />
                     </Route>
+                    <Route path="/mystudents" element={<StudentList />} /> 
                 </Routes>
             </Router>
         </AuthProvider>
