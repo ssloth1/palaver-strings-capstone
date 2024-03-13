@@ -39,6 +39,8 @@ function Login() {
                 body: JSON.stringify({ email, password }),
             });
             const data = await response.json();
+
+            console.log("login response:", data);
             
             if (response.status !== 200) {
                 setError(data.message);
@@ -49,7 +51,7 @@ function Login() {
             if (response.status === 200) {
                 localStorage.setItem(`${userType}Token`, data.token);
                 localStorage.setItem('email', email); 
-                login({ type: userType, id: data.id }); // Updates the AuthContext
+                login({ type: userType, id: data.token.id }); // Updates the AuthContext
                 navigate('/'); // Navigates user to the home page
             }
         } catch (err) {
