@@ -80,3 +80,16 @@ If you did not request this, please ignore this email and your password will rem
             res.status(500).json({ error: 'An error occurred while resetting the password.' });
         }
     };
+
+    exports.getUser = async (req, res) => {
+        try {
+            const user = await User.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ message: "User not found!" });
+            }
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    };
+    

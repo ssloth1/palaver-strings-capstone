@@ -41,17 +41,28 @@ const StudentList = () => {
                 return;
             }
 
+            //Get user's email to use as a key in the database.
+            const userEmailJson = {
+                email: localStorage.getItem('email'),
+            }
+            
+
             // Fetch the list of the current instructor's students using their userId as a reference
             try {
-                const response = await axios.get(`/api/instructors/${userId}/students`);
-                console.log(response.data);
-                setStudentList(response.data);
+                const response = await axios.post('/api/instructors/find', userEmailJson);
+                const studentArray = new Array();
+                for (const student of response.data.students) {
+                    var nextStudent = await axios.get(`/api/students/${student}`)
+                    studentArray.push(nextStudent.data);
+                }
+                setStudentList(studentArray);
             } catch (error) {
                 console.error("Error retrieving student list: " + error);
                 setStatusMessage("Error retrieving student list: " + error);
             } finally {
                 setLoading(false);
             }
+
         };
 
         // Call getStudents when the component mounts
@@ -65,22 +76,22 @@ const StudentList = () => {
     }
 
     const handleStudentClick = (studentId) => {
-        navigate(`/progress-report/${studentId}`);
+        navigate(`/user/${studentId}`);
     };
 
     // Modify the return statement to include onClick handler for each student
     return (
         <div>
             <h2>My Students</h2>
-            <p>{statusMessage}</p>
             <ul>
-                {studentList.map((student, index) => (
+                {studentList.map((student) => (
                     // Correct the function call here to match the defined function name
-                    <li key={index} onClick={() => handleStudentClick(student._id)}>
-                        {student.firstName} {student.lastName}
+                    <li key={student._id} onClick={() => handleStudentClick(student._id)}>
+                        Name: {student.firstName} {student.lastName}, Email: {student.email}
                     </li>
                 ))}
             </ul>
+            <p>{statusMessage}</p>
         </div>
     );
 }

@@ -31,7 +31,22 @@ const studentSchema = new Schema({
 });
 
 studentSchema.virtual('age').get(function() {
-    return (new Date()).getFullYear() - (new Date(user.dateOfBirth)).getFullYear();
+    //Start by counting years from birth to now
+    var studentAge = (new Date()).getFullYear() - (new Date(user.dateOfBirth)).getFullYear();
+    
+    //If the current month is before the birth month, subtract one (they have not had a birthday this year)
+    if ((new Date()).getMonth() < (new Date(user.dateOfBirth)).getMonth()){
+        studentAge = studentAge - 1;
+    }
+
+    //If the current month is the same as the birth month, but we have not yet passed the birth DAY, subtract one.
+    //They have not yet had a birthday this year.
+    if ((new Date()).getMonth() === (new Date(user.dateOfBirth)).getMonth() && (new Date()).getDate() < (new Date(user.dateOfBirth)).getDate()){
+        studentAge = studentAge - 1;
+    }
+
+    //Return the age.
+    return studentAge;
 });
 
 const Student = User.discriminator('Student', studentSchema);

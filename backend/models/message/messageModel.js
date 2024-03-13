@@ -8,8 +8,8 @@ const messageSchema = new Schema({
     //Header Info
     fromUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     toUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }],
-    toCategory: { type: String, enum: USER_TYPES, required: false},
-    toClass: { type: mongoose.Schema.Types.ObjectID, ref: 'Class', required: false },
+    //toCategory: { type: String, enum: USER_TYPES, required: false}, //I'm replacing this with adding users to the message via controller logic
+    //toClass: { type: mongoose.Schema.Types.ObjectID, ref: 'Class', required: false }, //See above
     subjectLine: { type: String, required: false },
 
     //Message Content
