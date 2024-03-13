@@ -1,14 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { AuthContext } from '../../../contexts/AuthContext';
 import axios from 'axios';
 import styles from '../styles/CreateMessage.module.css';
 import { USER_TYPES } from "../../../constants/formconstants";
+import Loader from "../../general-components/Loader";
 
 function WriteMessage() {
 
     console.log("WriteMessage");
 
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
+    const [loading, setLoading] = useState(false);
+    const [palaverClasses, setPalaverClasses] = useState(new Array());
 
     const {
         isLoggedIn,
@@ -18,11 +21,42 @@ function WriteMessage() {
 
     const [formData, setFormData] = useState({
 
-        toUsers: "",
+        toUsers: [],
         subjectLine: "",
         messageText: "",
-        //toCategory //to be implemented in a future ticket.
-    });
+        toCategory: "",
+        toClass: [],
+
+    });    
+
+    useEffect(() => {
+        setLoading(true);
+        fetch('/api/classes/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Array.isArray(data)) {
+                const nameData = new Array();
+                for (const item of data) {
+                    console.log([item.name, item._id]);
+                    nameData.push([item.name, item._id]);
+                }
+                setPalaverClasses(nameData);
+            } else {
+                console.warn('Received data is not in an array');
+                setPalaverClasses([]);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            setStatusMessage(error.toString());
+        })
+        .finally(() => setLoading(false)); // Stop loading (purely cosmetic)
+    }, []);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -31,7 +65,6 @@ function WriteMessage() {
             ...prevFormData,
             [name]: value,
         }));
-
     };
 
     const onSubmit = async (event) => {
@@ -49,7 +82,7 @@ function WriteMessage() {
             return;
         }
 
-        if (!formData.toUsers && formData.toCategory === ""){
+        if (!formData.toUsers && formData.toCategory === "" && formData.toClass === ""){
             console.error("There must be at least one recipient");
             setStatusMessage("There must be at least one recipient");
             return;
@@ -74,6 +107,10 @@ function WriteMessage() {
         }
     };
 
+    if (loading) {
+        return <Loader />;
+    }
+
     return (
         <div className={styles.createMessage}>
             <form onSubmit={onSubmit}>
@@ -85,6 +122,12 @@ function WriteMessage() {
                 <select name="toCategory" value={formData.toCategory} onChange={handleChange} >
                 <option value="">Do not message a group.</option>
                 {USER_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+                </select>
+
+                {/*Dropdown to select a class*/}
+                <select name="toClass" value={formData.toClass} onChange={handleChange} >
+                <option value="">Do not message a class.</option>
+                {palaverClasses.map(item => <option key={item} value={item[1]}>{item[0]}</option>)}
                 </select>
 
                 {/*Text input for subject*/}

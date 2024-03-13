@@ -1,6 +1,7 @@
 const { User } = require('../models/modelsIndex');
 const mongoose = require('mongoose');
 const Message = require('../models/message/messageModel');
+const Class = require('../models/class/classModel');
 
 class messageController {
     //Retrieves all messages
@@ -49,21 +50,27 @@ class messageController {
             if(!foundFromUser) {
                 console.log("Email provided as message author does not match a user in the database.")
             }
-            if (req.body.toUsers != ""){
-                foundToUsers = await User.findOne({ email: req.body.toUsers });
+            if (req.body.toUsers !== ""){
+                foundToUsers.push(await User.findOne({ email: req.body.toUsers }));
                 if(!foundToUsers) {
                     console.log("Recipient does not exist in the database.");
                     return res.status(404).json({ message: 'Recipient not found in the database.' });
                 }    
                 console.log()
             }
-            if(req.body.toCategory != ""){
+            if(req.body.toCategory !== ""){
                 const categoryMembers = await User.find({ __t:req.body.toCategory });
                 for (const member of categoryMembers) {
                     foundToUsers.push(member);
                 }
             }
-
+            if (req.body.toClass !== "") {
+                const palaverClass = await Class.findById(req.body.toClass)
+                for (const student of palaverClass.students){
+                    foundToUsers.push(student);
+                } 
+            }
+            
             const preMessage = {
                 ...req.body,
                 toUsers: foundToUsers,
