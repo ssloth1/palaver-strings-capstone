@@ -15,7 +15,7 @@ function TakeAttendance() {
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
-        date: "",
+        date: new Date().toISOString().split('T')[0], 
         attendance: []
     });
 
@@ -40,6 +40,15 @@ function TakeAttendance() {
         try {
             const response = await axios.get(`http://localhost:4000/api/students?classId=${classId}`);
             setStudents(response.data);
+
+            const defaultAttendance = response.data.map(student => ({
+                studentId: student._id,
+                status: 'present'
+            }));
+            setAttendanceData(prevData => ({
+                ...prevData,
+                attendance: defaultAttendance
+            }));
         } catch (error) {
             console.error("Error fetching students", error);
         } finally {
@@ -58,12 +67,9 @@ function TakeAttendance() {
     };
 
     const handleAttendanceChange = (studentId, status) => {
-        const updatedAttendance = attendanceData.attendance.map(item => {
-            if (item.studentId === studentId) {
-                return { ...item, status: status };
-            }
-            return item;
-        });
+        const filteredAttendance = attendanceData.attendance.filter(item => item.studentId !== studentId);
+        const updatedAttendance = [...filteredAttendance, { studentId, status }];
+        
 
         setAttendanceData(prevData => ({
             ...prevData,
@@ -116,38 +122,46 @@ function TakeAttendance() {
                 </select>
                 <input type="date" name="date" value={attendanceData.date} onChange={(e) => setAttendanceData(prevData => ({...prevData, date: e.target.value}))} required />
                 {students.length > 0 && (
-    <div>
-        {students.map((student) => (
-            <div key={student._id}>
-                <label>
-                    <input 
-                        type="checkbox" 
-                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'present')}
-                        onChange={() => handleAttendanceChange(student._id, 'present')} 
-                    />
-                    Present
-                </label>
-                <label>
-                    <input 
-                        type="checkbox" 
-                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - unexcused')}
-                        onChange={() => handleAttendanceChange(student._id, 'absent - unexcused')} 
-                    />
-                    Absent - Unexcused
-                </label>
-                <label>
-                    <input 
-                        type="checkbox" 
-                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - excused')}
-                        onChange={() => handleAttendanceChange(student._id, 'absent - excused')} 
-                    />
-                    Absent - Excused
-                </label>
-                <span>{student.name} - {student.id}</span>
-            </div>
-        ))}
-    </div>
-)}
+                    <div>
+                        {students.map((student) => (
+                            <div key={student._id}>
+                                <span>{student.name} - {student.id}</span>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'present')}
+                                        onChange={() => handleAttendanceChange(student._id, 'present')} 
+                                    />
+                                    Present
+                                </label>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'late')}
+                                        onChange={() => handleAttendanceChange(student._id, 'late')} 
+                                    />
+                                    Late
+                                </label>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - excused')}
+                                        onChange={() => handleAttendanceChange(student._id, 'absent - excused')} 
+                                    />
+                                    Absent - Excused
+                                </label>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - unexcused')}
+                                        onChange={() => handleAttendanceChange(student._id, 'absent - unexcused')} 
+                                    />
+                                    Absent - Unexcused
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <button type="submit">Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
             </form>
@@ -157,6 +171,5 @@ function TakeAttendance() {
 }
 
 export default TakeAttendance;
-
 
 

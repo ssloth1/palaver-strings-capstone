@@ -9,7 +9,10 @@ function ClassDetails () {
 
     useEffect(() => {
         classService.getClassById(classId)
-        .then(data => setClassDetails(data))
+        .then(data => {
+            console.log(data);
+            setClassDetails(data);
+        })
         .catch(error => console.error("Failed to fetch class details:", error));
     }, [classId]);
 
@@ -25,9 +28,15 @@ function ClassDetails () {
             <p>Meeting Time: {ClassDetails.meetingTime}</p>
             <p>Students: </p>
             <ul>
-                {ClassDetails.students.map((student) => (
-                    <li key={student._id}>{student.firstName} {student.lastName} </li>
-                ))}
+            {ClassDetails.students && ClassDetails.students.length > 0 ? (
+                                <ul>
+                                    {ClassDetails.students.map((student) => (
+                                        <li key={student._id}>{`${student.firstName} ${student.lastName}`}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No students enrolled</p>
+                            )}
             </ul>
         </div>
     );

@@ -23,9 +23,9 @@ function ViewClasses () {
             <h2>All Classes</h2>
             <div className="classes-list">
                 {classes.map((classItem) => (
-                    <Link to={`/classes/${classItem._id}`} key={classItem._id}>
-                       <div className='"class-item>'>
-                            <h3>{classItem.name}</h3> 
+                    <Link to={`/classes/${classItem._id}`} key={classItem._id} >
+                       <div className="class-item>">
+                            <h3>{classItem.name}</h3>
                         </div>
                     </Link>
                 ))}
