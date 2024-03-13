@@ -66,6 +66,7 @@ function Navbar() {
                     {isLoggedIn && isInstructor() && (
                         <>
                             <NavigationLink Icon={FaIndent} to="/mystudents" label="My Students" />
+                            <NavigationLink Icon={FaIndent} to="/prog-report" label="Progress Reports" />
                         </>
                     )}
                     {isLoggedIn && (!isAdmin() && !isInstructor()) && (
