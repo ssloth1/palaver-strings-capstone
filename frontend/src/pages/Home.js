@@ -19,7 +19,7 @@ const Home = () => {
     return (
         <div className="home">
             <header>
-                <h1>Welcome back!</h1>
+                <h1>welcome back!</h1>
             </header>
         </div>
     );

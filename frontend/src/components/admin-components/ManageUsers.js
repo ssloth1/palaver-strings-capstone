@@ -66,7 +66,7 @@ function ManageUsers() {
 
     return (
         <div>
-            <h1>Manage Users</h1>
+            <h1>manage users</h1>
             <ul>
                 {users.map(user => (
                     <li key={user._id} onClick={() => navigateToUserDetails(user._id)}>

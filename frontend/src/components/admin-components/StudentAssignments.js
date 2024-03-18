@@ -9,22 +9,21 @@ function StudentAssignments() {
     const [instructors, setInstructors] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const studentsData = await axios.get('/api/students');
+            const instructorsData = await axios.get('/api/instructors');
+            setStudents(studentsData.data);
+            setInstructors(instructorsData.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     useEffect(() => {
-        // Fetch data for students and instructors on component mount
-        const fetchData = async () => {
-            setLoading(true); // Sets loading state to true
-            try {
-                const studentsData = await axios.get('/api/students');
-                const instructorsData = await axios.get('/api/instructors');
-                setStudents(studentsData.data);
-                setInstructors(instructorsData.data);      
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false); // Sets loading state to false
-            }
-        };
-
         fetchData();
     }, []);
 
@@ -102,7 +101,7 @@ function StudentAssignments() {
             {/* Column for student assignments */}
             <div className="column">
                 <div className="student-assignments-container">
-                    <h1 className="student-assignments-title">Assign Students</h1>
+                    <h1 className="student-assignments-title">assign students</h1>
                     {students.map((student) => (
                         <div key={student._id} className="student-item">
                             <span className="student-name">{student.firstName} {student.lastName} -- {student.instrument || 'Instrument not specified'}</span>

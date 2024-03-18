@@ -7,8 +7,9 @@ function PalClass() {
     return (
         <div className="class-container">
             <nav className="class-nav">
-                <Link to="create-class" className={location.pathname.includes("/create-class") ? "active" : ""}>Create a Class</Link> | {" "}
-                <Link to="view-classes" className={location.pathname.includes("/view-classes") ? "active" : ""}>View Classes</Link>
+                <Link to="create-class" className={location.pathname.includes("/create-class") ? "active" : ""}>create a class</Link> | {" "}
+                <Link to="view-classes" className={location.pathname.includes("/view-classes") ? "active" : ""}>view classes</Link> | {" "}
+                <Link to="update-class" className={location.pathname.includes("/update-class") ? "active" : ""}>update class</Link> 
             </nav>
             <Outlet />{}
         </div>

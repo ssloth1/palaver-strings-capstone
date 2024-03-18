@@ -264,9 +264,9 @@ function AddUserForm() {
                         
                         {/*Student specific fields */}
                         {/*Dropdown for instrument selection*/ }
-                        <label for="instrument">Instrument</label>
+                        <label for="instrument">instrument</label>
                         <select name="instrument" value={formData.instrument} onChange={handleChange} required>
-                            <option value="">Select Instrument</option>
+                            <option value="">select instrument</option>
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
@@ -313,7 +313,7 @@ function AddUserForm() {
     return (
         
         <div className={styles.addUserForm}>
-            <h1> Add User </h1>
+            <h1> add user </h1>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
@@ -388,13 +388,14 @@ function AddUserForm() {
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
                 <option value="text">Text</option>
+                <option value="whatsapp">Whatsapp</option>
             </select>
 
             {/* Render role-specific fields based on the selected role */}
             {renderRoleSpecificFields()}
 
             {/* Submit button */}
-            <button type="submit">Add User</button>
+            <button type="submit">add user</button>
             {statusMessage && <p>{statusMessage}</p>}
 
             </form>

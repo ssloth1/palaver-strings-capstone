@@ -20,7 +20,7 @@ function ViewClasses () {
 
     return (
         <div>
-            <h2>All Classes</h2>
+            <h2>all classes</h2>
             <div className="classes-list">
                 {classes.map((classItem) => (
                     <Link to={`/classes/${classItem._id}`} key={classItem._id} >

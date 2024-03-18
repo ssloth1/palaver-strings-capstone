@@ -44,34 +44,34 @@ function Navbar() {
         <div className={`side-menu ${isExpanded ? 'expanded' : ''}`}>
         <button className="menu-button" onClick={toggleMenu}>
             <span className="menu-button-icon"><LuMenu /></span>
-            Menu
+            menu
         </button>
             <div className="menu-content">
                 <nav>
-                    <NavigationLink Icon={IoMdHome} to="/" label="Home" />
+                    <NavigationLink Icon={IoMdHome} to="/" label="home" />
                     {isLoggedIn && isAdmin() && (
                         <>
-                            <NavigationLink Icon={RiUserAddLine} to="/create-user" label="Add User" />
-                            <NavigationLink Icon={FaUserEdit} to="/users" label="Manage users" />
-                            <NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="Student Assignments"/>
+                            <NavigationLink Icon={RiUserAddLine} to="/create-user" label="add user" />
+                            <NavigationLink Icon={FaUserEdit} to="/users" label="manage users" />
+                            <NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="student assignments"/>
                         </>
                     )}
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
-                            <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="Attendance" />
-                            <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="Messaging" />
-                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="Classes" />
+                            <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="attendance" />
+                            <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
+                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
                     )}
                     {isLoggedIn && isInstructor() && (
                         <>
-                            <NavigationLink Icon={FaIndent} to="/mystudents" label="My Students" />
-                            <NavigationLink Icon={FaIndent} to="/prog-report" label="Progress Reports" />
+                            <NavigationLink Icon={FaIndent} to="/mystudents" label="my students" />
+                            <NavigationLink Icon={FaIndent} to="/prog-report" label="progress reports" />
                         </>
                     )}
                     {isLoggedIn && (!isAdmin() && !isInstructor()) && (
                         <>
-                            <NavigationLink Icon={CiMail} to="/messages" label="Read Messages" />
+                            <NavigationLink Icon={CiMail} to="/messages" label="read messages" />
                         </>
                     )}
                     {isLoggedIn && (
@@ -80,7 +80,7 @@ function Navbar() {
                             onClick={handleLogout} 
                             style={{display: isExpanded ? 'block' : 'none'}}
                         >
-                            Logout
+                            logout
                         </button>
                     )}
             </nav>
