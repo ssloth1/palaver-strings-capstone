@@ -3,6 +3,7 @@ import { useParams, useNavigate} from "react-router-dom";
 import axios from 'axios';
 import classService from '../../../services/classServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
+import styles from '../styles/UpdateClass.module.css';
 
 
 function UpdateClass () {
@@ -41,9 +42,10 @@ function UpdateClass () {
         const fetchData = async() => {
             try {
                 const ClassDetails = await classService.getClassById(selectedClassId);
+                console.log("Selected class details:", ClassDetails);
                 setClassData ({
                     name: ClassDetails.name,
-                    instructor: ClassDetails.instructor,
+                    instructor: ClassDetails.instructor._id,
                     meetingDay: ClassDetails.meetingDay,
                     meetingTime: ClassDetails.meetingTime,
                     students: ClassDetails.students.map(student => student._id),
@@ -60,6 +62,7 @@ function UpdateClass () {
         const fetchInstructorsAndStudents = async () => {
             try {
                 const instructorsData = await axios.get('/api/instructors');
+                console.log("instructors fetched:", instructorsData.data);
                 setInstructors(instructorsData.data);
                 const studentsData = await axios.get('/api/students');
                 setStudents(studentsData.data);
@@ -119,6 +122,9 @@ function UpdateClass () {
         }
     };
 
+    console.log("Instructor ID:", classData.instructor, typeof classData.instructor);
+
+
     return (
         <div>
             <h2>update class</h2>
@@ -163,7 +169,7 @@ function UpdateClass () {
                                 type="button"
                                 key={day}
                                 onClick={()=> handleDaySelection(day)}
-                                className={classData.meetingDay.includes(day) ? 'selected' : '' }
+                                className={classData.meetingDay.includes(day) ? styles.selected : '' }
                             >
                                 {day}
                             </button>
