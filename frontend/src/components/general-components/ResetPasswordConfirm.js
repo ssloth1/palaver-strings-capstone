@@ -54,11 +54,11 @@ function ResetPasswordConfirm() {
     return (
         <div className={loginStyles.loginContainer}>
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
-                <h2>Reset Password</h2>
+                <h2>reset password</h2>
                 {error && <p className={loginStyles.errorMessage}>{error}</p>}
                 {message && <p className={loginStyles.successMessage}>{message}</p>}
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>New Password:</label>
+                    <label className={loginStyles.labelStyle}>new password:</label>
                     <input
                         className={loginStyles.inputField}
                         type="password"
@@ -68,7 +68,7 @@ function ResetPasswordConfirm() {
                     />
                 </div>
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>Confirm New Password:</label>
+                    <label className={loginStyles.labelStyle}>confirm new password:</label>
                     <input
                         className={loginStyles.inputField}
                         type="password"

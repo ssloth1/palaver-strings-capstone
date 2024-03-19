@@ -113,7 +113,7 @@ function TakeAttendance() {
         <div className={styles.TakeAttendance}>
             <form onSubmit={onSubmit}>
                 <select name="classId" value={attendanceData.classId} onChange={handleChange} required>
-                    <option value="">Select Class</option>
+                    <option value="">select class</option>
                     {classes.map((classItem) => (
                         <option key={classItem._id} value={classItem._id}>
                             {classItem.name}
@@ -132,7 +132,7 @@ function TakeAttendance() {
                                         checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'present')}
                                         onChange={() => handleAttendanceChange(student._id, 'present')} 
                                     />
-                                    Present
+                                    present
                                 </label>
                                 <label>
                                     <input 
@@ -140,7 +140,7 @@ function TakeAttendance() {
                                         checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'late')}
                                         onChange={() => handleAttendanceChange(student._id, 'late')} 
                                     />
-                                    Late
+                                    late
                                 </label>
                                 <label>
                                     <input 
@@ -148,7 +148,7 @@ function TakeAttendance() {
                                         checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - excused')}
                                         onChange={() => handleAttendanceChange(student._id, 'absent - excused')} 
                                     />
-                                    Absent - Excused
+                                    absent - excused
                                 </label>
                                 <label>
                                     <input 
@@ -156,7 +156,7 @@ function TakeAttendance() {
                                         checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - unexcused')}
                                         onChange={() => handleAttendanceChange(student._id, 'absent - unexcused')} 
                                     />
-                                    Absent - Unexcused
+                                    absent - unexcused
                                 </label>
                             </div>
                         ))}
