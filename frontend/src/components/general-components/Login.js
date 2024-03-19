@@ -69,22 +69,22 @@ function Login() {
     return (
         <div className={loginStyles.loginContainer}>
 
-        <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>Palaver Strings Student Hub</div>
+        <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>palaver learning center</div>
         {error && <p className={loginStyles.errorMessage}>{error}</p>}
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
                 
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>User Type:</label>
+                    <label className={loginStyles.labelStyle}>user type:</label>
                     <select className={loginStyles.dropdownBox} value={userType} onChange={(e) => setUserType(e.target.value)}>
-                        <option value="admin">Admin</option>
-                        <option value="instructor">Instructor</option>
-                        <option value="parent">Parent</option>
-                        <option value="student">Student</option>
+                        <option value="admin">admin</option>
+                        <option value="instructor">instructor</option>
+                        <option value="parent">parent</option>
+                        <option value="student">student</option>
                     </select>
                 </div>
                 
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>Email:</label>
+                    <label className={loginStyles.labelStyle}>email:</label>
                     <input
                         className={loginStyles.inputField}
                         type="email"
@@ -95,7 +95,7 @@ function Login() {
                 </div>
                 
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>Password:</label>
+                    <label className={loginStyles.labelStyle}>password:</label>
                     <input
                         className={loginStyles.inputField}
                         type="password"

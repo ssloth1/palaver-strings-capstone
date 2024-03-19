@@ -9,8 +9,8 @@ function Attendance() {
   return (
     <div className="attendance-container">
       <nav className="attendance-nav">
-        <Link to="take" className={location.pathname.includes("/take") ? "active" : ""}>Take Attendance</Link> |{" "}
-        <Link to="view" className={location.pathname.includes("/view") ? "active" : ""}>View Attendance Records</Link>
+        <Link to="take" className={location.pathname.includes("/take") ? "active" : ""}>take attendance</Link> |{" "}
+        <Link to="view" className={location.pathname.includes("/view") ? "active" : ""}>view attendance records</Link>
       </nav>
       <Outlet /> {/* This renders the matched child route */}
     </div>

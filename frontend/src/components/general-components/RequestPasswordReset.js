@@ -58,11 +58,11 @@ function RequestPasswordReset() {
     return (
         <div className={loginStyles.loginContainer}>
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
-                <h2>Password Reset</h2>
+                <h2>password reset</h2>
                 {error && <p className={loginStyles.errorMessage}>{error}</p>}
                 {message && <p className={loginStyles.successMessage}>{message}</p>}
                 <div className={loginStyles.inputContainer}>
-                    <label className={loginStyles.labelStyle}>Email:</label>
+                    <label className={loginStyles.labelStyle}>email:</label>
                     <input
                         className={loginStyles.inputField}
                         type="email"
@@ -71,7 +71,7 @@ function RequestPasswordReset() {
                         required
                     />
                 </div>
-                <button type="submit" className={loginStyles.basicButton}>Submit</button>
+                <button type="submit" className={loginStyles.basicButton}>submit</button>
             </form>
         </div>
     );

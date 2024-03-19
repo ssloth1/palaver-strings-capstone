@@ -38,11 +38,11 @@ function ViewMessages() {
 
     return (
         <div>
-            <h1>Inbox</h1>
+            <h1>inbox</h1>
             <ul>
                 {messages.map(message => (
                     <li key={message._id}>
-                        <p>From: {message.fromUser} To: {message.toUsers} RE: {message.subjectLine}</p>
+                        <p>from: {message.fromUser} to: {message.toUsers} re: {message.subjectLine}</p>
                         <p>{message.messageText}</p>
                     </li>
                 ))}

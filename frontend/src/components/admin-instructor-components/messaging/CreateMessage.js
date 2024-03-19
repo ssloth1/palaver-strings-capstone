@@ -47,12 +47,12 @@ function WriteMessage() {
                 }
                 setPalaverClasses(nameData);
             } else {
-                console.warn('Received data is not in an array');
+                console.warn('received data is not in an array');
                 setPalaverClasses([]);
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error);
+            console.error('fetch error:', error);
             setStatusMessage(error.toString());
         })
         .finally(() => setLoading(false)); // Stop loading (purely cosmetic)
@@ -116,17 +116,17 @@ function WriteMessage() {
             <form onSubmit={onSubmit}>
 
                 {/*Text input for recipient email*/}
-                <input type='text' name='toUsers' value={formData.toUsers} onChange={handleChange} placeholder="Recipient's Email" />
+                <input type='text' name='toUsers' value={formData.toUsers} onChange={handleChange} placeholder="recipient's email" />
 
                 {/*Dropdown to select a user-group*/}
                 <select name="toCategory" value={formData.toCategory} onChange={handleChange} >
-                <option value="">Do not message a group.</option>
+                <option value="">do not message a group.</option>
                 {USER_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
                 </select>
 
                 {/*Dropdown to select a class*/}
                 <select name="toClass" value={formData.toClass} onChange={handleChange} >
-                <option value="">Do not message a class.</option>
+                <option value="">do not message a class.</option>
                 {palaverClasses.map(item => <option key={item} value={item[1]}>{item[0]}</option>)}
                 </select>
 
@@ -137,7 +137,7 @@ function WriteMessage() {
                 <textarea name="messageText" rows="20" cols="60" value={formData.messageText} onChange={handleChange} placeholder="Type your message here..." required />
                 
                 {/*Submit Button*/}
-                <button type="submit">Send Message</button>
+                <button type="submit">send message</button>
                 {statusMessage && <p>{statusMessage}</p>}
             </form>
         </div>

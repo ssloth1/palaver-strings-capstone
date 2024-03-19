@@ -9,9 +9,11 @@ function CreateClass() {
         instructor: '',
         meetingDay: [],
         meetingTime: '',
+        students: [],
     });
     const [instructors, setInstructors] = useState([]); 
     const [submitStatus, setSubmitStatus] = useState('');
+    const [students, setStudents] = useState([]);
 
     useEffect(() => {
         const fetchInstructors = async () => {
@@ -24,8 +26,19 @@ function CreateClass() {
                 console.error("Failed to fetch instructors:", error);
             }
         };
+
+        const fetchStudents = async () => {
+            try {
+                const { data } = await axios.get('/api/students/');
+                console.log("Fetched students:", data);
+                setStudents(data);
+            } catch (error) {
+                console.error("Failed to fetch students:", error);
+            }
+        };
     
         fetchInstructors();
+        fetchStudents();
     }, []); // Dependency array is empty to run only once on mount
 
     
@@ -36,6 +49,15 @@ function CreateClass() {
             meetingDay: prevState.meetingDay.includes(day)
             ? prevState.meetingDay.filter(d => d !== day) // remove day if already selected
             : [...prevState.meetingDay, day]
+        }));
+    }
+
+    const handleStudentSelection = (studentId) => {
+        setClassData(prevState => ({
+            ...prevState,
+            students: prevState.students.includes(studentId)
+            ? prevState.students.filter(id => id !== studentId)
+            : [...prevState.students, studentId]
         }));
     }
 
@@ -58,6 +80,7 @@ function CreateClass() {
                 instructor: classData.instructor,
                 meetingDay: classData.meetingDay,
                 meetingTime: classData.meetingTime,
+                students: classData.students,
             };
             const response = await classService.addClass(submissionData);
             console.log(response);
@@ -70,7 +93,7 @@ function CreateClass() {
 
     return (
         <div>
-            <h2>Add New Class</h2>
+            <h2>add new class</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -86,7 +109,7 @@ function CreateClass() {
                         onChange={handleChange}
                         required
                     >
-                        <option value="">Select Instructor</option>
+                        <option value="">select instructor</option>
                         {instructors.map(instructor => (
                             <option key={instructor._id} value={instructor._id}>
                                 {`${instructor.firstName} ${instructor.lastName}`} {/* Display full name */}
@@ -112,7 +135,20 @@ function CreateClass() {
                             </button>
                         ))}
                     </div>
-                    <button type="submit">Add Class</button>    
+                    <div>
+                        {students.map(student => (
+                            <div key={student._id}>
+                                <input
+                                    type="checkbox"
+                                    id={`student-${student._id}`}
+                                    checked={classData.students.includes(student._id)}
+                                    onChange={() => handleStudentSelection(student._id)}
+                                />
+                                <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
+                            </div>
+                        ))}
+                        </div>
+                    <button type="submit">add class</button>    
                 </form>
                 {submitStatus && <p>{submitStatus}</p>}
         </div>

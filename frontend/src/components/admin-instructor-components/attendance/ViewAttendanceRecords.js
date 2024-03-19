@@ -26,34 +26,34 @@ function ViewAttendanceRecords () {
     }, []);
 
     if (isLoading) return <Loader/>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div>error: {error}</div>;
 
     return (
         <div className={styles.attendanceRecords}>
-            <h2>Attendance Records</h2>
+            <h2>attendance records</h2>
             {records.length > 0 ? (
                 <ul>
                     {records.map((record) => (
                         <li key={record._id}>
-                            <p>Date: {new Date(record.date).toLocaleDateString()}</p>
-                            <p>Class ID: {record.class && record.class.name}</p>
+                            <p>date: {new Date(record.date).toLocaleDateString()}</p>
+                            <p>class id: {record.class && record.class.name}</p>
                             {record.students && record.students.length > 0 ? (
                                 <ul>
                                     {record.students.map((att, index) => (
                                         <li key={index}>
-                                            <p>Student: {att.student.firstName}  {att.student.lastName}</p> 
-                                            <p>Status: {att.status}</p>
+                                            <p>student: {att.student.firstName}  {att.student.lastName}</p> 
+                                            <p>status: {att.status}</p>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p>No attendance data available.</p>
+                                <p>no attendance data available.</p>
                             )}
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p>No attendance records found.</p>
+                <p>no attendance records found.</p>
             )}
         </div>
     );

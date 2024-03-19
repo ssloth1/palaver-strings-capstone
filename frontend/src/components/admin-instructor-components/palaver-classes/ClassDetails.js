@@ -9,7 +9,10 @@ function ClassDetails () {
 
     useEffect(() => {
         classService.getClassById(classId)
-        .then(data => setClassDetails(data))
+        .then(data => {
+            console.log(data);
+            setClassDetails(data);
+        })
         .catch(error => console.error("Failed to fetch class details:", error));
     }, [classId]);
 
@@ -20,14 +23,20 @@ function ClassDetails () {
     return (
         <div>
             <h2>{ClassDetails.name}</h2>
-            <p>Instructor: {ClassDetails.instructor.firstName} {ClassDetails.instructor.lastName}</p>
-            <p>Meeting Days: {ClassDetails.meetingDay.join(', ')}</p>
-            <p>Meeting Time: {ClassDetails.meetingTime}</p>
-            <p>Students: </p>
+            <p>instructor: {ClassDetails.instructor.firstName} {ClassDetails.instructor.lastName}</p>
+            <p>meeting days: {ClassDetails.meetingDay.join(', ')}</p>
+            <p>meeting time: {ClassDetails.meetingTime}</p>
+            <p>students: </p>
             <ul>
-                {ClassDetails.students.map((student) => (
-                    <li key={student._id}>{student.firstName} {student.lastName} </li>
-                ))}
+            {ClassDetails.students && ClassDetails.students.length > 0 ? (
+                                <ul>
+                                    {ClassDetails.students.map((student) => (
+                                        <li key={student._id}>{`${student.firstName} ${student.lastName}`}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>no students enrolled</p>
+                            )}
             </ul>
         </div>
     );
