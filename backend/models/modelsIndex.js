@@ -4,6 +4,9 @@ const Instructor = require('./user/instructorModel');
 const Parent = require('./user/parentModel');
 const Admin = require('./user/adminModel');
 const ProgressReport = require('./report/progressReportModel');
+const Attendance = require('./attendance/attendanceModel');
+const Course = require('./class/classModel');
+const Message = require('./message/messageModel');
 
 module.exports = {
     User,
@@ -11,5 +14,8 @@ module.exports = {
     Instructor,
     Parent,
     Admin,
-    ProgressReport
+    Course,
+    ProgressReport,
+    Attendance,
+    Message
 };
