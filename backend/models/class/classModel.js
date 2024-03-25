@@ -8,12 +8,13 @@ const classSchema = new Schema ({
 
     //Possibly unnecessary
     meetingDay: [{ type: String, required: true }],
-    meetingTime: { type: String, required: true }
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true}
 
 }, {timestamps: true});
 
 classSchema.index({ instructor: 1});
-classSchema.index({ meetingDay: 1, meetingTime: 1});
+classSchema.index({ meetingDay: 1, startTime: 1, endTime: 1});
 classSchema.index({ name: 'text' });
 
 
