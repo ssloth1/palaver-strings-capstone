@@ -19,12 +19,15 @@ const scheduleRoutes = require('./routes/scheduleRoutes')
 const app = express();
 
 // middleware
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 app.use((req, res, next) => {
-    console.log(req.path, req.method)
-    next()
-})
+    const timestamp = new Date().toLocaleString('en-US', {
+        hour12: true, 
+    });
+    console.log(timestamp, req.method, req.path);
+    next();
+});
 
 // Use the routes
 app.use('/api/users', userRoutes)
