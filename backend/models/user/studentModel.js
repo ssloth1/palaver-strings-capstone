@@ -6,9 +6,15 @@ const { INSTRUMENTS } = require('../constants');
 
 const studentSchema = new Schema({
     
-    //Basic creational student data
-    // Need to make these not required for purposes of updating student from outside of creation
-    instrument: { type: String, enum: INSTRUMENTS, required: function() { return this.isNew; } }, // Required only when new
+    // NOTE BY JIM 3/28/2024:
+    // Originally, we were validating the instrument's value against the INSTRUMENTS constant here in the model level and front end.
+    // However, this was causing issues with the front end, as the value was being passed as a string, and the validation was failing.
+    // In order to fix this, I have removed the validation here but kept it in the front end. 
+    // This should allow the value to be passed as a string and validated properly.
+    // Feel free to remove this comment if you feel it is no longer necessary, or when we pull the latest changes.
+    instrument: { type: String, required: false, trim: true},
+    customInstrument: { type: String, required: false, trim: true},
+
     //age: { type: Number, required: function() { return this.isNew; } }, // Attempting to remove and replace with calculation
     dateOfBirth: { type: Date, required: function() { return this.isNew; } }, // Required only when new
     school: { type: String, required: function() { return this.isNew; } }, // Required only when new
@@ -33,18 +39,14 @@ const studentSchema = new Schema({
 studentSchema.virtual('age').get(function() {
     //Start by counting years from birth to now
     var studentAge = (new Date()).getFullYear() - (new Date(user.dateOfBirth)).getFullYear();
-    
     //If the current month is before the birth month, subtract one (they have not had a birthday this year)
     if ((new Date()).getMonth() < (new Date(user.dateOfBirth)).getMonth()){
         studentAge = studentAge - 1;
     }
-
     //If the current month is the same as the birth month, but we have not yet passed the birth DAY, subtract one.
-    //They have not yet had a birthday this year.
     if ((new Date()).getMonth() === (new Date(user.dateOfBirth)).getMonth() && (new Date()).getDate() < (new Date(user.dateOfBirth)).getDate()){
         studentAge = studentAge - 1;
     }
-
     //Return the age.
     return studentAge;
 });
