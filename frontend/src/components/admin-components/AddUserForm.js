@@ -239,42 +239,44 @@ function AddUserForm() {
             // Admin specific fields
             case 'admin':
                 return (
-                    <>
-                        {/* Admin specific fields */}
-                        <div class="checkbox">
-                            {PERMISSIONS.map((permission) => (
-                                <label key={permission}>
-                                    <input
-                                        type="checkbox"
-                                        name={permission}
-                                        checked={formData.permissions.includes(permission)}
-                                        onChange={handleChange}
-                                    />
-                                    {permission.charAt(0).toUpperCase() + permission.slice(1)}
-                                </label>
-                            ))}
-                        </div>
-                    </>
+                    <div className={styles.checkboxWrapper}>
+                        {PERMISSIONS.map((permission) => (
+                            <label className={styles.checkboxLabel} key={permission}>
+                                <input
+                                    type="checkbox"
+                                    name={permission}
+                                    checked={formData.permissions.includes(permission)}
+                                    onChange={handleChange}
+                                />
+                                {permission.charAt(0).toUpperCase() + permission.slice(1)}
+                            </label>
+                        ))}
+                    </div>
                 );
+            
 
             //Student specific fields
             case 'student':
                 return(
                     <>
-                        
                         {/*Student specific fields */}
                         {/*Dropdown for instrument selection*/ }
-                        <label for="instrument">instrument</label>
+                        <label className={styles["form-label"]} for="instrument">Instrument <span style={{color: "red"}}>*</span></label>
                         <select name="instrument" value={formData.instrument} onChange={handleChange} required>
                             <option value="">select instrument</option>
                             {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
                         </select>
                         {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
-                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
-                        {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
-                        {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> }
-                        {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
+                        <label className={styles["form-label"]} for="dateOfBirth">Date of Birth <span style={{color: "red"}}>*</span></label>
+                        <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+                        <label className={styles["form-label"]} for="school">School <span style={{color: "red"}}>*</span></label>
+                        <input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
+                        <label className={styles["form-label"]} for="grade">Grade <span style={{color: "red"}}>*</span></label>
+                        <input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />
+                        <label className={styles["form-label"]} for="howHeardAboutProgram">How did you hear about the program?</label>
+                        <input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> 
+                        <label className={styles["form-label"]} for="parentEmail">Parent's Email <span style={{color: "red"}}>*</span></label>
+                        <input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />
                     </>
                 );
             // TODO: Parent specific fields
@@ -291,6 +293,7 @@ function AddUserForm() {
                 return (
                     <>
                         {/* Instructor specific fields */}
+                        <label className={styles["form-label"]} for="orgEmail">Palaver Email <span style={{color: "red"}}>*</span></label>
                         <input type="email" name="orgEmail" value={formData.orgEmail} onChange={handleChange} placeholder="Organization Email" required />
                         
                         {/* Uncomment and complete the following select block when the students data is available */}
@@ -313,25 +316,31 @@ function AddUserForm() {
     return (
         
         <div className={styles.addUserForm}>
-            <h1> add user </h1>
+            <h1> Add User </h1>
             <form onSubmit={handleSubmit}>
 
             {/* Text input for the user's first name */}
+            <label className={styles["form-label"]} for="firstName">First Name <span style={{color: "red"}}>*</span></label>
             <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
             
             {/* Text input for the user's last name */}
+            <label className={styles["form-label"]} for="lastName">Last Name <span style={{color: "red"}}>*</span></label>
             <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
             
             {/* Text input for the user's email address */}
+            <label className={styles["form-label"]} for="email">Email <span style={{color: "red"}}>*</span></label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
             
             {/* Text input for the user's password */}
+            <label className={styles["form-label"]} for="password">Password <span style={{color: "red"}}>*</span></label>
             <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
             
             {/* Text input for the user's password confirmation */}
+            <label className={styles["form-label"]} for="confirmPassword">Confirm Password <span style={{color: "red"}}>*</span></label>
             <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
             
             {/* Dropdown for the user's role */}
+            <label className={styles["form-label"]} for="role">Role <span style={{color: "red"}}>*</span></label>
             <select name="role" value={formData.role} onChange={handleChange} required>
                 <option value="" disabled>Select a Role</option>
                 <option value="student">Student</option>
@@ -341,35 +350,47 @@ function AddUserForm() {
             </select>
             
             {/* Dropdown for the user's gender */}
+            <label className={styles["form-label"]} for="gender">Gender <span style={{color: "red"}}>*</span></label>
             <select name="gender" value={formData.gender} onChange={handleChange} required>
                 <option value="">Select Gender</option>
                 {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
             </select>
 
             {/* Dropwon for the user's race */}
+            <label className={styles["form-label"]} for="raceEthnicity">Race/Ethnicity <span style={{color: "red"}}>*</span></label>
             <select name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
                 <option value="">Select Race/Ethnicity</option>
                 {RACE_ETHNICITY.map(race => <option key={race} value={race}>{race}</option>)}
             </select>
 
             {/* Dropdown for the user's primary language */}
+            <label className={styles["form-label"]} for="primaryLanguage">Primary Language <span style={{color: "red"}}>*</span></label>
             <select name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
                 <option value="">Select Primary Language</option>
                 {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
             </select>
 
             {/* Dropdown for the user's country */}
+            <label className={styles["form-label"]} for="country">Country <span style={{color: "red"}}>*</span></label>
             <select name="country" value={formData.country} onChange={handleChange} required>
                 <option value="">Select Country</option>
                 {COUNTRIES.map(country => <option key={country} value={country}>{country}</option>)}
             </select>
 
             {/* Text input for the user's address */}
+            <label className={styles["form-label"]} for="addressLine1">Address Line 1 <span style={{color: "red"}}>*</span></label>
             <input type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
+
+            {/* Text input for the user's address line 2 (not required) */}
+            <label className={styles["form-label"]} for="addressLine2">Address Line 2</label>
             <input type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} placeholder="Address Line 2" />
+
+            {/* Text input for the user's city */}
+            <label className={styles["form-label"]} for="city">City <span style={{color: "red"}}>*</span></label>
             <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
             
             {/* Dropdown for the user's state/province */}
+            <label className={styles["form-label"]} for="state">State/Province <span style={{color: "red"}}>*</span></label>
             <select name="state" value={formData.state} onChange={handleChange} required>
                 <option value="">Select State/Province</option>
                 {formData.country === 'United States' ? US_STATES.map(state => <option key={state} value={state}>{state}</option>) : null}
@@ -377,12 +398,15 @@ function AddUserForm() {
             </select>
 
             {/* Text input for the user's zip code */}
+            <label className={styles["form-label"]} for="zipCode">Zip Code <span style={{color: "red"}}>*</span></label>
             <input type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" required={formData.country === 'United States'} />
             
             {/* Text input for the user's phone number */}
+            <label className={styles["form-label"]} for="phoneNumber">Phone Number </label>
             <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
             
             {/* Dropdown for the user's preferred communication method */}
+            <label className={styles["form-label"]} for="preferredCommunication">Preferred Communication </label>
             <select name="preferredCommunication" value={formData.preferredCommunication} onChange={handleChange}>
                 <option value="">Select Preferred Communication</option>
                 <option value="email">Email</option>

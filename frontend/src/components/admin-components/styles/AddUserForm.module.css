@@ -62,3 +62,44 @@
         font-size: 14px;
     }
 }
+
+.form-label {
+    color: #ffffff;
+    font-size: 1.1em;
+    margin-left: 6px;
+    margin-bottom: 12px;
+}
+
+
+/* adjustments for checkboxes, so admin permission checkboxes line up and are stylized with labels */
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center; /* Ensures vertical center alignment of flex items */
+    margin-bottom: 5px;
+    color: #ffffff; /* Adjust color as needed to match your theme */
+    font-size: 16px; /* Adjust size as needed */
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #ffffff; /* This will color the checkbox white */
+}
+
+
+.checkbox-label span {
+    line-height: 1;
+}
+
+
+@media (max-width: 768px) {
+    .checkbox-label {
+        font-size: 14px;
+    }
+}

@@ -1,14 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './components/general-components/Login';
-import RequestPasswordReset from './components/general-components/RequestPasswordReset';
-import ResetPasswordConfirm from './components/general-components/ResetPasswordConfirm';
 import Navbar from './components/general-components/Navbar';
-import AddUserForm from './components/admin-components/AddUserForm';
-import ManageUsers from './components/admin-components/ManageUsers';
-import UserDetails from './components/admin-components/UserDetails';
-import StudentAssignments from './components/admin-components/StudentAssignments';
 import MessageCenter from './components/admin-instructor-components/messaging/MessageCenter';
 import WriteMessage from './components/admin-instructor-components/messaging/CreateMessage';
 import SentMessages from './components/admin-instructor-components/messaging/Outbox';
@@ -25,6 +18,14 @@ import StudentList from './components/instructor-components/StudentList';
 import ProgressReportForm from './components/instructor-components/ProgressReportForm'
 import UpdateClass from './components/admin-instructor-components/palaver-classes/UpdateClass';
 
+/* Import components from the admin-components directory */
+import { AddUserForm, ManageUsers, StudentAssignments, UserDetails } from './components/admin-components';
+
+/* Import components from the authentication-components directory */
+import { Login, RequestPasswordReset, ResetPasswordConfirm } from './components/authentication-components';
+
+
+
 // This is our main app component, for now it sets up routes and context for the web application
 function App() {
     return (
@@ -34,7 +35,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/request-password-reset" element={<RequestPasswordReset />} />
+                    <Route path="/password-reset-request" element={<RequestPasswordReset />} />
                     <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
                     <Route path="/create-user" element={<AddUserForm />} />
                     <Route path="/users" element={<ManageUsers />} />
