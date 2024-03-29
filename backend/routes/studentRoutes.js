@@ -15,5 +15,8 @@ router.patch('/:id', studentController.updateStudent.bind(studentController));
 // Login route for Student
 router.post('/login', studentController.loginStudent.bind(studentController));
 
+// Get a student's parent
+router.get('/:id/parent', studentController.getParent.bind(studentController));
+
 
 module.exports = router;

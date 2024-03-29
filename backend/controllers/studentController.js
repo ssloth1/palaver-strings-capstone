@@ -164,6 +164,29 @@ class StudentController {
         res.status(200).json(student)
     }
 
+    // Get a student's parent
+    async getParent(req, res){
+        // Get id from params
+        const { id } = req.params
+        // Check if id is valid
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({err: 'Student not found'})
+        }
+        // Find student by id
+        const student = await Student.findById(id)
+        // Check if student exists
+        if (!student) {
+            return res.status(404).json({err: 'Student not found'})
+        }
+        // Find parent by id
+        const parent = await Parent.findById(student.parent)
+        // Check if parent exists
+        if (!parent) {
+            return res.status(404).json({err: 'Parent not found'})
+        }
+        res.status(200).json(parent)
+    }
+    
 }
 
 
