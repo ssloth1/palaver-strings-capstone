@@ -48,7 +48,6 @@
     color: #ffffff;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .addUserForm {
         width: 100%;

@@ -135,6 +135,7 @@ function ManageUsers() {
     return (
         <div className="manage-users">
             <h1>Manage Users</h1>
+            <button className='advanced-view-button' onClick={() => navigate('/advanced-user-view')}>Go to Advanced View</button>
             <input
                 type="text"
                 placeholder="Search users..."

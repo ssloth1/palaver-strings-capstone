@@ -19,7 +19,7 @@ import ProgressReportForm from './components/instructor-components/ProgressRepor
 import UpdateClass from './components/admin-instructor-components/palaver-classes/UpdateClass';
 
 /* Import components from the admin-components directory */
-import { AddUserForm, ManageUsers, StudentAssignments, UserDetails } from './components/admin-components';
+import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUserView } from './components/admin-components';
 
 /* Import components from the authentication-components directory */
 import { Login, RequestPasswordReset, ResetPasswordConfirm } from './components/authentication-components';
@@ -39,8 +39,9 @@ function App() {
                     <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
                     <Route path="/create-user" element={<AddUserForm />} />
                     <Route path="/users" element={<ManageUsers />} />
-                    <Route path="/user/:id" element={<UserDetails />} /> // This is the route for the user details page
-                    <Route path="/user-details/:id" element={<UserDetails />} /> // This is the route for navigating from a user list to the user details page
+                    <Route path="/advanced-user-view" element={<AdvancedUserView />} /> 
+                    <Route path="/user/:id" element={<UserDetails />} />
+                    <Route path="/user-details/:id" element={<UserDetails />} />
                     <Route path="/student-assignments" element={<StudentAssignments />} />
                     <Route path="/admin-instructor/messages" element={<MessageCenter/>}>
                         <Route path="compose" element={<WriteMessage />} />
