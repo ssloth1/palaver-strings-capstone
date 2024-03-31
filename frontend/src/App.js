@@ -39,7 +39,8 @@ function App() {
                     <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
                     <Route path="/create-user" element={<AddUserForm />} />
                     <Route path="/users" element={<ManageUsers />} />
-                    <Route path="/user/:id" element={<UserDetails />} />
+                    <Route path="/user/:id" element={<UserDetails />} /> // This is the route for the user details page
+                    <Route path="/user-details/:id" element={<UserDetails />} /> // This is the route for navigating from a user list to the user details page
                     <Route path="/student-assignments" element={<StudentAssignments />} />
                     <Route path="/admin-instructor/messages" element={<MessageCenter/>}>
                         <Route path="compose" element={<WriteMessage />} />

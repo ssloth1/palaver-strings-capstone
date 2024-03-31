@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Loader from '../general-components/Loader';
 import './styles/UserDetails.css'; 
 
@@ -135,7 +135,11 @@ function renderRoleSpecificFields(user, children, parent) {
                         <span className="user-detail-title">Children:</span>
                         <ul>
                             {children.map((child, index) => (
-                                <li key={index}>{child.firstName} {child.lastName}</li>
+                                <li key={index}>
+                                    <Link to={`/user-details/${child._id}`}>
+                                        {child.firstName} {child.lastName}
+                                    </Link>
+                                </li>
                             ))}
                         </ul>
                     </div>
@@ -149,7 +153,14 @@ function renderRoleSpecificFields(user, children, parent) {
                     <p className="user-detail"><span className="user-detail-title">Date of Birth:</span> {new Date(user.dateOfBirth).toLocaleDateString()}</p>
                     <p className="user-detail"><span className="user-detail-title">School:</span> {user.school}</p>
                     <p className="user-detail"><span className="user-detail-title">Grade:</span> {user.grade}</p>
-                    <p className="user-detail"><span className="user-detail-title">Parent:</span> {parent && `${parent.firstName} ${parent.lastName}`}</p>
+                    {parent && (
+                        <p className="user-detail">
+                            <span className="user-detail-title">Parent:</span> 
+                            <Link to={`/user-details/${parent._id}`}>
+                                {parent.firstName} {parent.lastName}
+                            </Link>
+                        </p>
+                    )}
                 </>
             );
         default:
