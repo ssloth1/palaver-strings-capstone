@@ -92,4 +92,3 @@ If you did not request this, please ignore this email and your password will rem
             res.status(400).json({ message: error.message });
         }
     };
-    
