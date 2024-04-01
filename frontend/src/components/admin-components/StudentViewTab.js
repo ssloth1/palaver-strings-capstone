@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles/StudentViewTab.css';
+import './styles/UserViewTab.css';
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
 import Loader from '../general-components/Loader';
@@ -31,7 +31,7 @@ const exportToExcel = (students) => {
             day: '2-digit',
             year: 'numeric',
         }),
-        'Instrument': student.instrument,
+        'Instrument': student.instrument || student.customInstrument,
         'Date of Birth': new Date(student.dateOfBirth).toLocaleDateString('en-US', {
             month: '2-digit',
             day: '2-digit',
@@ -212,7 +212,7 @@ const StudentViewTab = () => {
                                 })}</td>
 
                                 {/* Student specific fields */}
-                                <td>{student.instrument}</td>
+                                <td>{student.instrument || student.customInstrument}</td>
                                 <td>{new Date(student.dateOfBirth).toLocaleDateString('en-US', {
                                     month: '2-digit',
                                     day: '2-digit',
