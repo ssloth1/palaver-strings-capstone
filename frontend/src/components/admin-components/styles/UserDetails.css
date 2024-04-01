@@ -47,7 +47,7 @@
 
 @media (max-width: 768px) {
     .user-details-container {
-        margin: 20px; /* More margin on smaller screens */
-        padding: 10px; /* Less padding on smaller screens */
+        margin: 20px;
+        padding: 10px;
     }
 }

@@ -1,29 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Loader from '../general-components/Loader';
-import './styles/UserDetails.css'; // Make sure your styles are correctly linked
+import './styles/UserDetails.css'; 
 
+/**
+ * This component fetches and displays the details of a user based on the user's ID.
+ * It also fetches and displays additional details specific to the user's role.
+ * @returns {JSX} elements that render the user's details
+ */
 function UserDetails() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [children, setChildren] = useState([]);
+    const [parent, setParent] = useState([]);
+
 
     useEffect(() => {
         setLoading(true);
+        // Fetch user details
         fetch(`/api/admins/users/${id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 setUser(data);
                 setLoading(false);
+                // If the user is a parent, fetch their children
+                if (data.role === 'parent') {
+                    fetch(`/api/parents/${id}/children`)
+                        .then(response => response.json())
+                        .then(childrenData => {
+                            console.log('Children fetched:', childrenData);
+                            setChildren(childrenData);
+                        })
+                        .catch(error => {
+                            console.error('Fetch children error:', error);
+                        });
+                }
+                // If the user is a student, fetch their parent
+                if (data.role === 'student') {
+                    fetch(`/api/students/${id}/parent`)
+                        .then(response => response.json())
+                        .then(parentData => {
+                            console.log('Parent fetched:', parentData);
+                            setParent(parentData);
+                        })
+                        .catch(error => {
+                            console.error('Fetch parent error:', error);
+                        });
+                }
             })
             .catch(error => {
-                console.error('Fetch error:', error);
+                console.error('Fetch user error:', error);
                 setError(error.toString());
                 setLoading(false);
             });
@@ -52,7 +80,7 @@ function UserDetails() {
             <p className="user-detail"><span className="user-detail-title">Role:</span> {user.role}</p>
             
             {/*Function to help render fields for specific roles*/ }
-            {renderRoleSpecificFields(user)}
+            {renderRoleSpecificFields(user, children, parent)}
             
             <p className="user-detail"><span className="user-detail-title">Phone Number:</span> {user.phoneNumber || 'Not provided'}</p>
             <p className="user-detail"><span className="user-detail-title">Preferred Communication:</span> {user.preferredCommunication || 'Not provided'}</p>
@@ -70,12 +98,18 @@ function UserDetails() {
                     {user.address.country && <div className="user-detail-list-item">{user.address.country}</div>}
                 </address>
             </div>
+            <p className="user-detail">
+                <span className="user-detail-title">Account Created On:</span> 
+                {new Date(user.createdAt).toLocaleString(undefined, {
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short'
+                })}
+            </p>     
         </div>
     );
 }
 
 // Function that helps render details more specific to the user's role.
-function renderRoleSpecificFields(user) {
+function renderRoleSpecificFields(user, children, parent) {
     switch (user.role) {
         case 'admin':
             return (
@@ -97,7 +131,18 @@ function renderRoleSpecificFields(user) {
                 <>
                     <p className="user-detail"><span className="user-detail-title">Parent Email:</span> {user.parentEmail}</p>
                     <p className="user-detail"><span className="user-detail-title">Discount Percentage:</span> {user.discountPercentage}%</p>
-                    <p className="user-detail"><span className="user-detail-title">Children:</span> {user.children}</p>
+                    <div className="user-detail">
+                        <span className="user-detail-title">Children:</span>
+                        <ul>
+                            {children.map((child, index) => (
+                                <li key={index}>
+                                    <Link to={`/user-details/${child._id}`}>
+                                        {child.firstName} {child.lastName}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </>
             );
         case 'student':
@@ -108,7 +153,14 @@ function renderRoleSpecificFields(user) {
                     <p className="user-detail"><span className="user-detail-title">Date of Birth:</span> {new Date(user.dateOfBirth).toLocaleDateString()}</p>
                     <p className="user-detail"><span className="user-detail-title">School:</span> {user.school}</p>
                     <p className="user-detail"><span className="user-detail-title">Grade:</span> {user.grade}</p>
-                    <p className="user-detail"><span className="user-detail-title">Parent:</span> {user.parent}</p>
+                    {parent && (
+                        <p className="user-detail">
+                            <span className="user-detail-title">Parent:</span> 
+                            <Link to={`/user-details/${parent._id}`}>
+                                {parent.firstName} {parent.lastName}
+                            </Link>
+                        </p>
+                    )}
                 </>
             );
         default:

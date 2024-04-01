@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import LoginButton from './LoginButton';
 import PasswordResetRequestButton from './PasswordResetRequestButton';
 import loginStyles from './styles/Login.module.css';
-import Loader from './Loader';
+import Loader from '../general-components/Loader';
 
 function Login() {
 
