@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaUserGraduate, FaUserTie, FaChalkboardTeacher, FaUserShield } from 'react-icons/fa';
+import './styles/AdvancedUserView.css';
 import StudentViewTab from './StudentViewTab';
 import ParentViewTab from './ParentViewTab';
 import InstructorViewTab from './InstructorViewTab';
@@ -20,21 +22,21 @@ const AdvancedUserView = () => {
             case 'instructor':
                 return <InstructorViewTab />;
             case 'admin':
-            return <AdminViewTab />;
+                return <AdminViewTab />;
             default:
                 return <div>Select a tab</div>;
         }
     };
 
     return (
-        <div>
-            <nav style={{ marginBottom: '20px' }}>
-                <button onClick={() => handleTabClick('student')} style={{ marginRight: '10px', padding: '10px', background: activeTab === 'student' ? 'lightgrey' : 'white' }}>Students</button>
-                <button onClick={() => handleTabClick('parent')} style={{ marginRight: '10px', padding: '10px', background: activeTab === 'parent' ? 'lightgrey' : 'white' }}>Parents</button>
-                <button onClick={() => handleTabClick('instructor')} style={{ marginRight: '10px', padding: '10px', background: activeTab === 'instructor' ? 'lightgrey' : "white" }}>Instructors</button>
-                <button onClick={() => handleTabClick('admin')} style={{ marginRight: '10px', padding: '10px', background:activeTab === 'admin' ? 'lightgrey' : 'white' }}>Admins</button>
+        <div className="tabs-container">
+            <nav className="tabs-nav">
+                <button onClick={() => handleTabClick('student')} className={`tab-button ${activeTab === 'student' ? 'active' : ''}`}><FaUserGraduate /> Students</button>
+                <button onClick={() => handleTabClick('parent')} className={`tab-button ${activeTab === 'parent' ? 'active' : ''}`}><FaUserTie /> Parents</button>
+                <button onClick={() => handleTabClick('instructor')} className={`tab-button ${activeTab === 'instructor' ? 'active' : ''}`}><FaChalkboardTeacher /> Instructors</button>
+                <button onClick={() => handleTabClick('admin')} className={`tab-button ${activeTab === 'admin' ? 'active' : ''}`}><FaUserShield /> Admins</button>
             </nav>
-            <div>
+            <div className="tab-content">
                 {renderTabContent()}
             </div>
         </div>
