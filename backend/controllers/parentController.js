@@ -131,8 +131,9 @@ class ParentController {
 
             if (!parent || !student) {
                 return res.status(404).json({ message: 'Parent or Student not found' });
-                // Add student to parent's children array if not already present
             }
+
+            // Add student to parent's children array if not already present
             if (!parent.children.includes(studentId)) {
                 parent.children.push(studentId);
                 await parent.save();
