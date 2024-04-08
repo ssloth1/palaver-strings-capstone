@@ -35,22 +35,31 @@ function TakeAttendance() {
         fetchClasses();
     }, []);
 
-    const fetchStudents = async (classId) => {
+    const fetchStudentsFromClass = async (classId) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/api/students?classId=${classId}`);
-            setStudents(response.data);
+            const response = await axios.get(`http://localhost:4000/api/classes/${classId}`);
+            const studentsInClass = response.data.students || [];
+            console.log(response.data);
+            setStudents(studentsInClass);
 
-            const defaultAttendance = response.data.map(student => ({
-                studentId: student._id,
-                status: 'present'
-            }));
-            setAttendanceData(prevData => ({
-                ...prevData,
-                attendance: defaultAttendance
-            }));
+            // If no students enrolled set default message
+            if(studentsInClass.length === 0) {
+                setStatusMessage("There are no students currently enrolled in this class. Attendance can't be taken.");
+            } else {
+                setStatusMessage("");
+                const defaultAttendance = studentsInClass.map(student => ({
+                    studentId: student._id,
+                    status: 'present'
+                }));
+                setAttendanceData(prevData => ({
+                    ...prevData,
+                    attendance: defaultAttendance
+                }));
+            }
         } catch (error) {
             console.error("Error fetching students", error);
+            setStatusMessage("Failed to fetch students. Please try again later.");
         } finally {
             setIsLoading(false);
         }
@@ -63,7 +72,7 @@ function TakeAttendance() {
             [name]: value
         }));
 
-        fetchStudents(value); // Fetch students for the selected class
+        fetchStudentsFromClass(value); // Fetch students for the selected class
     };
 
     const handleAttendanceChange = (studentId, status) => {
@@ -77,8 +86,21 @@ function TakeAttendance() {
         }));
     };
 
+    const handleDateChange = (e) => {
+        const localDate = new Date(e.target.value + 'T00:00:00');
+        const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+        setAttendanceData(prevData => ({
+            ...prevData,
+            date: adjustedDate.toISOString().split('T')[0]
+        }));
+    };
+
     const onSubmit = async (event) => {
         event.preventDefault();
+
+        console.log('URL being called:', 'http://localhost:4000/api/attendance');
+        console.log("Sending data:", JSON.stringify(attendanceData, null, 2));
+        console.log("Date being sent:", attendanceData.date);
 
         if (!isAdmin && !isInstructor) {
             console.error("Only admins or instructors can take attendance.");
@@ -120,12 +142,12 @@ function TakeAttendance() {
                         </option>
                     ))}
                 </select>
-                <input type="date" name="date" value={attendanceData.date} onChange={(e) => setAttendanceData(prevData => ({...prevData, date: e.target.value}))} required />
+                <input type="date" name="date" value={attendanceData.date} onChange={handleDateChange} required />
                 {students.length > 0 && (
                     <div>
                         {students.map((student) => (
                             <div key={student._id}>
-                                <span>{student.name} - {student.id}</span>
+                                <span>{student.firstName} {student.lastName} - {student._id}</span>
                                 <label>
                                     <input 
                                         type="checkbox" 

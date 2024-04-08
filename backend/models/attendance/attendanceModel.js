@@ -8,7 +8,7 @@ const attendanceSchema = new Schema ({
     class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: false },
     students: [{
         student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-        status: { type: String, enum: ['present', 'absent - unexcused', 'absent - excused'], default: 'present'}
+        status: { type: String, enum: ['present', 'late', 'absent - unexcused', 'absent - excused'], default: 'present'}
     }]
 });
 
