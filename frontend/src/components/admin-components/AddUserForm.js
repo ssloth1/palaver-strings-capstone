@@ -3,16 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import styles from './styles/AddUserForm.module.css';
 
-import { // Constants/dropdown options for the form
-    GENDER,
-    RACE_ETHNICITY,
-    LANGUAGES,
-    COUNTRIES,
-    US_STATES,
-    CANADIAN_PROVINCES,
-    INSTRUMENTS,
-    USER_TYPES,
-} from '../../constants/formconstants';
+import { GENDER, RACE_ETHNICITY, LANGUAGES, COUNTRIES, US_STATES, CANADIAN_PROVINCES, INSTRUMENTS, USER_TYPES } from '../../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
  * NOTES:
@@ -23,6 +14,7 @@ function AddUserForm() {
 
     const { isLoggedIn } = useAuth(); // Checks if the user is actually logged in.
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
+    const [customInstrument, setCustomInstrument] = useState(""); // State to store the custom instrument name if the user selects "Other" as their instrument.
 
     const PERMISSIONS = ['create', 'read', 'update', 'delete'];
 
@@ -69,9 +61,9 @@ function AddUserForm() {
         // Parent specific fields
         // .. TODO: add parent specific fields
         // At the moment, there are no parent-specific fields.
-
-
     });
+
+
 
     /**
      * Handler for the form input changes and updates the state of the form data as the user types
@@ -93,13 +85,36 @@ function AddUserForm() {
         const { name, value, type, checked } = event.target;
     
         if (type === "checkbox") {
+            // Handle the permissions checkboxes differently, as they are an array of permissions
             setFormData(prevFormData => ({
                 ...prevFormData,
                 permissions: checked
                     ? [...prevFormData.permissions, name]
                     : prevFormData.permissions.filter(permission => permission !== name),
             }));
+        } else if (name === "students") {
+            // Handle the students select input differently, as it is a multi-select input
+            const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                students: selectedOptions,
+            }));
+        } else if (name === "instrument") {
+            // When "Other" is selected or any other instrument is selected
+            // Directly set the instrument value and keep customInstrument as it is
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                instrument: value,
+            }));
+            // Additionally, if "Other" is no longer selected, clear the customInstrument
+            if (value !== "Other") {
+                setCustomInstrument("");
+            }
+        } else if (name === "customInstrument") {
+            // Update the customInstrument state when the user types in the custom instrument field
+            setCustomInstrument(value);
         } else {
+            // Handle all other inputs normally
             setFormData(prevFormData => ({
                 ...prevFormData,
                 [name]: value,
@@ -107,13 +122,12 @@ function AddUserForm() {
         }
     };
 
-    /** 
-     * Validates the form before submission.
-     * NOTE: This is not complete and we will need to add more validation for other roles.
-     *      Right now it only includes validation for the admin role, but we will ned to extend it for other roles. 
+    /**
+     * This function validates the form data based on the user's role.
+     * It is incomplete and will need to be updated as we add more fields to the form.
+     * @returns {boolean} - Returns true if the form data is valid, otherwise false.
      */
-        const validateForm = () => {
-        
+    const validateForm = () => {
         // Admin related validation
         if (formData.roles.includes('admin')) {
             if (!formData.permissions.length) {
@@ -130,38 +144,38 @@ function AddUserForm() {
                 setStatusMessage("Parent email must be entered.");
                 return false;
             }
-            
+                
         }
-        
-
-
         // TODO: Parent related validation
-
         // TODO: Instructor related validation
-
         return true;
-
     }
 
     /**
-     * Handles the form submission.
-     * It prevents the default form submission behavior and then sends the form data to the backend.
-     * Validates the form, and then makes a POST request with the form data. 
+     * This function handles the form submission.
+     * It checks if the user is logged in, validates the form data, and then submits the form.
+     * It also checks if the passwords match before submitting the form.
+     * It is incomplete and will need to be updated as we add more fields to the form.
+     * @param {*} event 
+     * @returns 
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+        
+        // Check if the user is logged in before submitting the form, if not, display an error message and return
         if (!isLoggedIn) {
             console.error("You need to be logged in to submit.");
             setStatusMessage("You need to be logged in to submit.");
             return;
         }
-    
+        
+        // Check if the passwords match, if not, display an error message and return
         if (formData.password !== formData.confirmPassword) {
             setStatusMessage("Passwords do not match.");
             return;
         }
-    
+        
+        // Validate the form before submitting
         if (!validateForm()) {
             setStatusMessage("Data did not validate.")
             return;
@@ -170,22 +184,18 @@ function AddUserForm() {
  * Since I'm testing new unified user creation, commenting this out.
      
         let endpoint = "";
-        switch (formData.role) {
+        switch (finalFormData.role) {
             case 'admin':
                 endpoint = 'http://localhost:4000/api/admins';
-                console.log("You're trying to make an admin", formData);
                 break;
             case 'instructor':
                 endpoint = 'http://localhost:4000/api/instructors';
-                console.log("You're trying to make an instructor", formData);
                 break;
             case 'student':
                 endpoint = 'http://localhost:4000/api/students';
-                console.log("You're trying to make a student", formData);
                 break;
             case 'parent':
                 endpoint = 'http://localhost:4000/api/parents';
-
                 break;
             default:
                 break;
@@ -193,27 +203,21 @@ function AddUserForm() {
  */   
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
-            ...formData,
+            ...finalFormData,
             address: {
-                country: formData.country,
-                addressLine1: formData.addressLine1,
-                addressLine2: formData.addressLine2,
-                city: formData.city,
-                state: formData.state,
-                zipCode: formData.zipCode,
+                country: finalFormData.country,
+                addressLine1: finalFormData.addressLine1,
+                addressLine2: finalFormData.addressLine2,
+                city: finalFormData.city,
+                state: finalFormData.state,
+                zipCode: finalFormData.zipCode,
             },
-            
-            // The entered form password will be hashed before being sent to the database
-            // the password hashing is handled within the userModel.js file in the backend directory
-            hashedPassword: formData.password,
+            hashedPassword: finalFormData.password, // Assuming backend hashes the password
         };
-
-        // Remove confirmPassword before sending the form data to the backend
-        // This was only necessary
-        delete submissionData.confirmPassword; 
     
-
-        // Make a POST request to the backend with the form data for the selected role
+        // Remove confirmPassword before sending the form data to the backend
+        delete submissionData.confirmPassword;
+    
         console.log("Submitting Form");
         console.log(submissionData);
         try {
@@ -229,7 +233,7 @@ function AddUserForm() {
     return (
         
         <div className={styles.addUserForm}>
-            <h1> add user </h1>
+            <h1> add new user </h1>
             <form onSubmit={handleSubmit}>
 
             {/* checkboxes for the user's role */}
@@ -258,34 +262,41 @@ function AddUserForm() {
                 */}
 
             {/* Text input for the user's first name */}
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
+            <label className={styles["form-label"]} htmlFor="firstNameInput">First Name <span style={{color: "red"}}>*</span></label>
+            <input id="firstNameInput" type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
             
             {/* Text input for the user's last name */}
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
+            <label className={styles["form-label"]} htmlFor="lastNameInput">Last Name <span style={{color: "red"}}>*</span></label>
+            <input id="lastNameInput" type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
             
             {/* Text input for the user's email address */}
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
+            <label className={styles["form-label"]} htmlFor="emailInput">Email <span style={{color: "red"}}>*</span></label>
+            <input id="emailInput" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
             
             {/* Text input for the user's password */}
-            <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
+            <label className={styles["form-label"]} htmlFor="passwordInput">Password <span style={{color: "red"}}>*</span></label>
+            <input id="passwordInput" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
             
             {/* Text input for the user's password confirmation */}
             <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
             
             {/* Dropdown for the user's gender */}
-            <select name="gender" value={formData.gender} onChange={handleChange} required>
+            <label className={styles["form-label"]} htmlFor="genderSelect">Gender <span style={{color: "red"}}>*</span></label>
+            <select id="genderSelect" name="gender" value={formData.gender} onChange={handleChange} required>
                 <option value="">Select Gender</option>
                 {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
             </select>
 
-            {/* Dropdown for the user's race */}
-            <select name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
+            {/* Dropwon for the user's race */}
+            <label className={styles["form-label"]} htmlFor="raceEthnicitySelect">Race/Ethnicity <span style={{color: "red"}}>*</span></label>
+            <select id="raceEthnicitySelect" name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
                 <option value="">Select Race/Ethnicity</option>
                 {RACE_ETHNICITY.map(race => <option key={race} value={race}>{race}</option>)}
             </select>
 
             {/* Dropdown for the user's primary language */}
-            <select name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
+            <label className={styles["form-label"]} htmlFor="primaryLanguageSelect">Primary Language <span style={{color: "red"}}>*</span></label>
+            <select id="primaryLanguageSelect" name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
                 <option value="">Select Primary Language</option>
                 {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
             </select>
@@ -333,24 +344,35 @@ function AddUserForm() {
             }
 
             {/* Text input for the user's address */}
-            <input type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
-            <input type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} placeholder="Address Line 2" />
-            <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
+            <label className={styles["form-label"]} htmlFor="addressLine1Input">Address Line 1 <span style={{color: "red"}}>*</span></label>
+            <input id="addressLine1Input" type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
+
+            {/* Text input for the user's address line 2 (not required) */}
+            <label className={styles["form-label"]} htmlFor="addressLine2Input">Address Line 2</label>
+            <input id="addressLine2Input" type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} placeholder="Address Line 2" />
+
+            {/* Text input for the user's city */}
+            <label className={styles["form-label"]} htmlFor="cityInput">City <span style={{color: "red"}}>*</span></label>
+            <input id="cityInput" type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
             
             {/* Dropdown for the user's state/province */}
-            <select name="state" value={formData.state} onChange={handleChange} required>
+            <label className={styles["form-label"]} htmlFor="stateSelect">State/Province <span style={{color: "red"}}>*</span></label>
+            <select id="stateSelect" name="state" value={formData.state} onChange={handleChange} required>
                 <option value="">Select State/Province</option>
                 {US_STATES.map(state => <option key={state} value={state}>{state}</option>)}
             </select>
 
             {/* Text input for the user's zip code */}
-            <input type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" required={formData.country === 'United States'} />
+            <label className={styles["form-label"]} htmlFor="zipCodeInput">Zip Code <span style={{color: "red"}}>*</span></label>
+            <input id="zipCodeInput" type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" required={formData.country === 'United States'} />
             
             {/* Text input for the user's phone number */}
-            <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
+            <label className={styles["form-label"]} htmlFor="phoneNumberInput">Phone Number </label>
+            <input id="phoneNumberInput" type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
             
             {/* Dropdown for the user's preferred communication method */}
-            <select name="preferredCommunication" value={formData.preferredCommunication} onChange={handleChange}>
+            <label className={styles["form-label"]} htmlFor="preferredCommunicationSelect">Preferred Communication </label>
+            <select id="preferredCommunicationSelect" name="preferredCommunication" value={formData.preferredCommunication} onChange={handleChange}>
                 <option value="">Select Preferred Communication</option>
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
