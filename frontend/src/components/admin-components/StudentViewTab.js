@@ -71,7 +71,7 @@ const StudentViewTab = () => {
                     let parentDetails = {}, instructorDetails = {};
                     if (student.parent) {
                         try {
-                            const parentResponse = await fetch(`/api/parents/${student.parent}`);
+                            const parentResponse = await fetch(`/api/users/${student.parent}`);
                             if (!parentResponse.ok) throw new Error('Failed to fetch parent details');
                             parentDetails = await parentResponse.json();
                         } catch (error) {
@@ -81,7 +81,7 @@ const StudentViewTab = () => {
                     }
                     if (student.primaryInstructor) {
                         try {
-                            const instructorResponse = await fetch(`/api/instructors/${student.primaryInstructor}`);
+                            const instructorResponse = await fetch(`/api/users/${student.primaryInstructor}`);
                             if (!instructorResponse.ok) throw new Error('Failed to fetch instructor details');
                             instructorDetails = await instructorResponse.json();
                         } catch (error) {

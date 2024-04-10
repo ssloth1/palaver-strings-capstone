@@ -3,8 +3,9 @@ const Schema = mongoose.Schema;
 
 const classSchema = new Schema ({
     name: { type: String, required: true },
-    instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor', required: true, },
-    students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false}],
+    instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, },
+    students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}],
+    //Need validation on instructor and student roles
 
     //Possibly unnecessary
     meetingDay: [{ type: String, required: true }],

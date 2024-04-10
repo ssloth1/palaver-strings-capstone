@@ -20,13 +20,13 @@ function UserDetails() {
     useEffect(() => {
         setLoading(true);
         // Fetch user details
-        fetch(`/api/admins/users/${id}`)
+        fetch(`/api/users/${id}`)
             .then(response => response.json())
             .then(data => {
                 setUser(data);
                 setLoading(false);
                 // If the user is a parent, fetch their children
-                if (data.role === 'parent') {
+                if (data.roles.includes('parent')) {
                     fetch(`/api/parents/${id}/children`)
                         .then(response => response.json())
                         .then(childrenData => {
@@ -38,7 +38,7 @@ function UserDetails() {
                         });
                 }
                 // If the user is a student, fetch their parent
-                if (data.role === 'student') {
+                if (data.roles.includes('student')) {
                     fetch(`/api/students/${id}/parent`)
                         .then(response => response.json())
                         .then(parentData => {
@@ -81,6 +81,64 @@ function UserDetails() {
             
             {/*Function to help render fields for specific roles*/ }
             {renderRoleSpecificFields(user, children, parent)}
+
+            {user.roles.includes('admin') ? 
+                <>
+                <p className="user-detail"><span className="user-detail-title">Org Email:</span> {user.orgEmail}</p>
+                {user.secondaryEmail && <p className="user-detail"><span className="user-detail-title">Secondary Email:</span> {user.secondaryEmail}</p>}
+                <p className="user-detail"><span className="user-detail-title">Permissions:</span> {user.permissions.join(', ')}</p>
+            </>
+                : <></>
+            }
+
+            {user.roles.includes('instructor') ? 
+                <>
+                    <p className="user-detail"><span className="user-detail-title">Org Email:</span> {user.orgEmail}</p>
+                    <p className="user-detail"><span className="user-detail-title">Number of Students:</span> {user.students?.length || 0}</p>
+                </> 
+                : <></>
+            }
+
+            {user.roles.includes('parent') ? 
+                <>
+                <p className="user-detail"><span className="user-detail-title">Parent Email:</span> {user.parentEmail}</p>
+                <p className="user-detail"><span className="user-detail-title">Discount Percentage:</span> {user.discountPercentage}%</p>
+                <div className="user-detail">
+                    <span className="user-detail-title">Children:</span>
+                    <ul>
+                        {children.map((child, index) => (
+                            <li key={index}>
+                                <Link to={`/user-details/${child._id}`}>
+                                    {child.firstName} {child.lastName}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </>
+                : <></>
+            }
+
+            {user.roles.includes('student') ? 
+                <>
+                <p className="user-detail"><span className="user-detail-title">Instrument:</span> {user.instrument}</p>
+                <p className="user-detail"><span className="user-detail-title">Age:</span> {user.age}</p>
+                <p className="user-detail"><span className="user-detail-title">Date of Birth:</span> {new Date(user.dateOfBirth).toLocaleDateString()}</p>
+                <p className="user-detail"><span className="user-detail-title">School:</span> {user.school}</p>
+                <p className="user-detail"><span className="user-detail-title">Grade:</span> {user.grade}</p>
+                {parent && (
+                    <p className="user-detail">
+                        <span className="user-detail-title">Parent:</span> 
+                        <Link to={`/user-details/${parent._id}`}>
+                            {parent.firstName} {parent.lastName}
+                        </Link>
+                    </p>
+                )}
+            </>
+                : <></>
+            }
+
+            
             
             <p className="user-detail"><span className="user-detail-title">Phone Number:</span> {user.phoneNumber || 'Not provided'}</p>
             <p className="user-detail"><span className="user-detail-title">Preferred Communication:</span> {user.preferredCommunication || 'Not provided'}</p>

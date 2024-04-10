@@ -44,7 +44,7 @@ const userSchema = new Schema({
     discountPercentage: { type: Number, required: false, default: 0 }, //May make more sense to associate with student user specifically, not with parent.
 
     //These were originally student fields - specific comments below
-    instrument: { type: String, enum: INSTRUMENTS, required: function() { return this.isNew && (this.roles.includes('student') || this.roles.includes('instructor')); } }, // Required only when new.  May be useful for instructors as well
+    instrument: { type: String, required: function() { return this.isNew && (this.roles.includes('student') || this.roles.includes('instructor')); } }, // Required only when new.  May be useful for instructors as well
     dateOfBirth: { type: Date, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     school: { type: String, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     grade: { type: Number, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new

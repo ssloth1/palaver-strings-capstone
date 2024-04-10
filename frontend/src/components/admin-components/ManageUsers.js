@@ -24,7 +24,7 @@ function ManageUsers() {
     // Fetch users on component mount
     useEffect(() => {
         setLoading(true);
-        fetch('/api/admins/users')
+        fetch('/api/users/')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -68,7 +68,7 @@ function ManageUsers() {
         // Asks for confirmation before deleting user, and then sends a DELETE request to the server
         const isConfirmed = window.confirm("Are you sure you want to remove this user?");
         if (isConfirmed) {
-            fetch(`/api/admins/users/${userId}`, { method: 'DELETE' })
+            fetch(`/api/users/${userId}`, { method: 'DELETE' })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);

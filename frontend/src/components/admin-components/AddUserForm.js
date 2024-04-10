@@ -203,16 +203,16 @@ function AddUserForm() {
  */   
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
-            ...finalFormData,
+            ...formData,
             address: {
-                country: finalFormData.country,
-                addressLine1: finalFormData.addressLine1,
-                addressLine2: finalFormData.addressLine2,
-                city: finalFormData.city,
-                state: finalFormData.state,
-                zipCode: finalFormData.zipCode,
+                country: formData.country,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode,
             },
-            hashedPassword: finalFormData.password, // Assuming backend hashes the password
+            hashedPassword: formData.password, // Assuming backend hashes the password
         };
     
         // Remove confirmPassword before sending the form data to the backend

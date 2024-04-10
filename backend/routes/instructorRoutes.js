@@ -2,6 +2,8 @@ const express = require('express');
 const auth = require('../middleware/auth');
 
 const instructorController = require('../controllers/instructorController');
+const newUserController = require('../controllers/newUserController');
+
 
 // const { 
 //     createInstructor,
@@ -21,11 +23,11 @@ const instructorController = require('../controllers/instructorController');
 const router = express.Router({ mergeParams: true });
 
 // Basic Instructor routes
-router.post('/', instructorController.createInstructor.bind(instructorController));
-router.get('/', instructorController.getInstructors.bind(instructorController));
-router.get('/:id', instructorController.getInstructor.bind(instructorController));
-router.patch('/:id', instructorController.updateInstructor.bind(instructorController));
-router.delete('/:id', instructorController.deleteInstructor.bind(instructorController));
+//router.post('/', instructorController.createInstructor.bind(instructorController));
+router.get('/', newUserController.getInstructors.bind(newUserController));
+//router.get('/:id', instructorController.getInstructor.bind(instructorController));
+//router.patch('/:id', instructorController.updateInstructor.bind(instructorController));
+//router.delete('/:id', instructorController.deleteInstructor.bind(instructorController));
 
 // Blue Square Instructor routes
 router.post('/find', instructorController.getInstuctorByEmail.bind(instructorController));

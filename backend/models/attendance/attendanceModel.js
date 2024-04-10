@@ -7,7 +7,7 @@ const attendanceSchema = new Schema ({
     date: { type: Date, required: true},
     class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: false },
     students: [{
-        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, //Needs validation for student role.
         status: { type: String, enum: ['present', 'absent - unexcused', 'absent - excused'], default: 'present'}
     }]
 });

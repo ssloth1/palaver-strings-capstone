@@ -52,7 +52,7 @@ const StudentList = () => {
                 const response = await axios.post('/api/instructors/find', userEmailJson);
                 const studentArray = new Array();
                 for (const student of response.data.students) {
-                    var nextStudent = await axios.get(`/api/students/${student}`)
+                    var nextStudent = await axios.get(`/api/users/${student}`)
                     studentArray.push(nextStudent.data);
                 }
                 setStudentList(studentArray);
