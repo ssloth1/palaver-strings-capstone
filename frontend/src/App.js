@@ -23,6 +23,7 @@ import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUser
 
 /* Import components from the authentication-components directory */
 import { Login, RequestPasswordReset, ResetPasswordConfirm } from './components/authentication-components';
+import ModifyAttendanceRecord from './components/admin-instructor-components/attendance/UpdateAttendanceRecords';
 
 
 
@@ -54,6 +55,7 @@ function App() {
                     <Route path="/admin-instructor/attendance" element={<Attendance />}>
                         <Route path="take" element={<TakeAttendance />} />
                         <Route path="view" element={<ViewAttendanceRecords />} />
+                        <Route path="update" element={<UpdateAttendanceRecord />} />
                     </Route>
                     <Route path="/classes" element={<PalClass />}>
                         <Route path="create-class" element={<CreateClass />} />
