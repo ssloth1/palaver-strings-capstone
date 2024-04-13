@@ -47,7 +47,13 @@ class AttendanceController {
         const { classId, date } = req.params;
 
         try {
-            const attendanceRecord = await Attendance.findOne({ class: classId, date: date }).populate('students.student');
+            const attendanceRecord = await Attendance.findOne({ class: classId, date: date })
+                .populate({
+                    path: 'students.student',
+                    model: 'Student'
+                });
+            console.log("Populated Attendance Record:", attendanceRecord);
+                
             if (!attendanceRecord) {
                 return res.status(404).send({ message: 'No attendance record found for this class on the specified date' });
             }
@@ -58,22 +64,30 @@ class AttendanceController {
     }
 
     async updateAttendanceRecord(req, res) {
+        console.log(req.body);
         const { attendanceId } = req.params;
-        const updates = req.body;
+        const { attendance } = req.body;
+
+        console.log("Received data for update:", attendance);
 
         try {
-            const attendance = await Attendance.findById(attendanceId);
-
-            if(!attendance){
+            const attendanceRecord = await Attendance.findById(attendanceId);
+            if(!attendanceRecord){
                 return res.status(404).send({error: 'Attendance record not found'});
             }
 
-            Object.keys(updates).forEach(update => attendance[update] = updates[update]);
-            await attendance.save();
-
-            res.send(attendance);
+            attendanceRecord.students = attendanceRecord.students.map(student => {
+                const update = attendance.find(item => item._id.toString() === student._id.toString());
+                if (update) {
+                    return { ...student.toObject(), status: update.status };
+                }
+                return student;
+            });
+            
+            await attendanceRecord.save();
+            res.status(200).send(attendanceRecord);
         } catch (error) {
-            res.status(400).send(error);
+            res.status(400).send({message: 'Error updating attendance record', error });
         }
     }
 

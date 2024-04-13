@@ -23,7 +23,7 @@ import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUser
 
 /* Import components from the authentication-components directory */
 import { Login, RequestPasswordReset, ResetPasswordConfirm } from './components/authentication-components';
-import ModifyAttendanceRecord from './components/admin-instructor-components/attendance/UpdateAttendanceRecords';
+import UpdateAttendanceRecord from './components/admin-instructor-components/attendance/UpdateAttendanceRecords';
 
 
 
