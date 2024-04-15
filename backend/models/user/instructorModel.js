@@ -7,4 +7,5 @@ const instructorSchema = new Schema({
 });
 
 const Instructor = User.discriminator('Instructor', instructorSchema);
+
 module.exports = Instructor;
