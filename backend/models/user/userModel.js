@@ -41,7 +41,7 @@ const userSchema = new Schema({
     //These were originally parent fields - specific comments below
     children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}],
     parentEmail: { type: String, required: false }, //Check logic - may make more sense to use single email from above
-    discountPercentage: { type: Number, required: false, default: 0 }, //May make more sense to associate with student user specifically, not with parent.
+    discountPercentage: { type: Number, required: false, default: 0 }, //May make more sense to associate with student   specifically, not with parent.
 
     //These were originally student fields - specific comments below
     instrument: { type: String, required: function() { return this.isNew && (this.roles.includes('student') || this.roles.includes('instructor')); } }, // Required only when new.  May be useful for instructors as well
@@ -58,6 +58,21 @@ const userSchema = new Schema({
     progressReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProgressReport', required: false }], //Progress reports currently on hold
 
 }, { timestamps: true });
+
+userSchema.virtual('age').get(function() {
+    //Start by counting years from birth to now
+    var studentAge = (new Date()).getFullYear() - (new Date(this.dateOfBirth)).getFullYear();
+    //If the current month is before the birth month, subtract one (they have not had a birthday this year)
+    if ((new Date()).getMonth() < (new Date(this.dateOfBirth)).getMonth()){
+        studentAge = studentAge - 1;
+    }
+    //If the current month is the same as the birth month, but we have not yet passed the birth DAY, subtract one.
+    if ((new Date()).getMonth() === (new Date(this.dateOfBirth)).getMonth() && (new Date()).getDate() < (new Date(this.dateOfBirth)).getDate()){
+        studentAge = studentAge - 1;
+    }
+    //Return the age.
+    return studentAge;
+});
 
 
 // Hash the password before saving it to the database

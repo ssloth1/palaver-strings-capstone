@@ -54,6 +54,9 @@ class UserController {
             if (!user) {
                 return res.status(404).json({ message: "User not found!" });
             }
+            if (user.roles.includes('student')) {
+                console.log(user.age)
+            }
             res.status(200).json(user);
         } catch (error) {
             res.status(400).json({ message: error.message });

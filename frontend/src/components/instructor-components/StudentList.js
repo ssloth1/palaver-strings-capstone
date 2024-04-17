@@ -14,7 +14,7 @@ const StudentList = () => {
         userId
     } = useContext(AuthContext);
 
-    const [studentList, setStudentList] = useState([]);
+    const [studentList, setStudentList] = useState([[]]);
     const [statusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -43,12 +43,22 @@ const StudentList = () => {
 
             // Fetch the list of the current instructor's students using their userId as a reference
             try {
-                const response = await axios.get(`/api/users/${localStorage.getItem('userId')}`);
+                const classes = await axios.get('/api/classes/');
+                console.log(classes);
+                //const response = await axios.get(`/api/users/${localStorage.getItem('userId')}`);
                 const studentArray = new Array();
+                for (const item of classes.data) {
+                    if (item.instructor._id === localStorage.getItem('userId')){
+                        studentArray.push(item.students);
+                    }
+                }
+                console.log(studentArray);
+                /*
                 for (const student of response.data.students) {
                     var nextStudent = await axios.get(`/api/users/${student}`)
                     studentArray.push(nextStudent.data);
                 }
+                */
                 setStudentList(studentArray);
             } catch (error) {
                 console.error("Error retrieving student list: " + error);
@@ -77,8 +87,9 @@ const StudentList = () => {
     return (
         <div>
             <h2>My Students</h2>
+            
             <ul>
-                {studentList.map((student) => (
+                {studentList[0].map((student) => (
                     // Correct the function call here to match the defined function name
                     <li key={student._id} onClick={() => handleStudentClick(student._id)}>
                         Name: {student.firstName} {student.lastName}, Email: {student.email}
@@ -86,6 +97,7 @@ const StudentList = () => {
                 ))}
             </ul>
             <p>{statusMessage}</p>
+            
         </div>
     );
 }

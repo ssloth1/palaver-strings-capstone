@@ -72,6 +72,8 @@ function UserDetails() {
         return <Loader />;
     }
 
+    console.log(user.age);
+
     // Render user details
     return (
         <div className="user-details-container">
