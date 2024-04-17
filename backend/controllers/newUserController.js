@@ -358,8 +358,32 @@ class UserController {
         }
     };
 
+    loginUser = async(req, res) => {
+        try {
+            const { email, password } = req.body;
 
+            // Find user by email
+            const user = await User.findOne({ email: email });
+            if (!user) {
+                return res.status(404).json({ message: "User not found!" });
+            }
 
+            // Check if the provided password matches the hased password in the database
+            const isMatch = await bcrypt.compare(password, user.hashedPassword);
+            if (!isMatch) {
+                return res.status(400).json({ message: "Invalid credentials!" });
+            }
+
+            // Generate the JWT token
+            const token = jwt.sign({ id: user._id, role: user.roles }, 'MY_SECRET_KEY', { expiresIn: '1h' });
+
+            // Send the token in a HTTP-only cookie
+            res.status(200).json({ token: token, roles: user.roles, id: user._id });
+
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new UserController;

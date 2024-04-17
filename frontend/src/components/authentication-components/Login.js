@@ -14,7 +14,7 @@ function Login() {
     // Hooks for managing inputs 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('admin');
+    //const [userType, setUserType] = useState('admin');
     const [error, setError] = useState(null);
 
     // Hook for handling navigation
@@ -30,7 +30,7 @@ function Login() {
         
         try {            
             // Dynamically uses the correct login endpoint based on the selected user type
-            let loginUrl = `/api/${userType}s/login`;
+            let loginUrl = `/api/users/login`;
 
             // Makes a POST request to the login URL with the user's email and password
             const response = await fetch(loginUrl, {
@@ -49,9 +49,9 @@ function Login() {
 
             // Successful login
             if (response.status === 200) {
-                localStorage.setItem(`${userType}Token`, data.token);
-                localStorage.setItem('email', email); 
-                login({ type: userType, id: data.token.id }); // Updates the AuthContext
+                localStorage.setItem(`userToken`, data.token);
+                localStorage.setItem('userId', data.id); 
+                login({ type: data.roles, id: data.id }); // Updates the AuthContext
                 navigate('/'); // Navigates user to the home page
             }
         } catch (err) {
@@ -72,7 +72,7 @@ function Login() {
         <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>palaver learning center</div>
         {error && <p className={loginStyles.errorMessage}>{error}</p>}
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
-                
+                {/*
                 <div className={loginStyles.inputContainer}>
                     <label className={loginStyles.labelStyle}>user type:</label>
                     <select className={loginStyles.dropdownBox} value={userType} onChange={(e) => setUserType(e.target.value)}>
@@ -82,6 +82,7 @@ function Login() {
                         <option value="student">student</option>
                     </select>
                 </div>
+    */}
                 
                 <div className={loginStyles.inputContainer}>
                     <label className={loginStyles.labelStyle}>email:</label>

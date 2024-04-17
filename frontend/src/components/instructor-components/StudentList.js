@@ -39,17 +39,11 @@ const StudentList = () => {
                 setStatusMessage("Only instructors can view students.");
                 setLoading(false);
                 return;
-            }
-
-            //Get user's email to use as a key in the database.
-            const userEmailJson = {
-                email: localStorage.getItem('email'),
-            }
-            
+            }            
 
             // Fetch the list of the current instructor's students using their userId as a reference
             try {
-                const response = await axios.post('/api/instructors/find', userEmailJson);
+                const response = await axios.get(`/api/users/${localStorage.getItem('userId')}`);
                 const studentArray = new Array();
                 for (const student of response.data.students) {
                     var nextStudent = await axios.get(`/api/users/${student}`)
