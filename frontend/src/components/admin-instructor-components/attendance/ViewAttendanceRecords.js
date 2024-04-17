@@ -25,6 +25,12 @@ function ViewAttendanceRecords () {
         fetchRecords();
     }, []);
 
+    const displayDate = (utcDateString) => {
+        const date = new Date(utcDateString);
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        return date.toLocaleDateString();
+    };
+
     if (isLoading) return <Loader/>;
     if (error) return <div>error: {error}</div>;
 
@@ -35,13 +41,13 @@ function ViewAttendanceRecords () {
                 <ul>
                     {records.map((record) => (
                         <li key={record._id}>
-                            <p>date: {new Date(record.date).toLocaleDateString()}</p>
+                            <p>date: {displayDate(record.date)}</p>
                             <p>class id: {record.class && record.class.name}</p>
                             {record.students && record.students.length > 0 ? (
                                 <ul>
                                     {record.students.map((att, index) => (
                                         <li key={index}>
-                                            <p>student: {att.student.firstName}  {att.student.lastName}</p> 
+                                            <p>student: {att.student ? `${att.student.firstName}  ${att.student.lastName}` : `Student data missing`}</p> 
                                             <p>status: {att.status}</p>
                                         </li>
                                     ))}
