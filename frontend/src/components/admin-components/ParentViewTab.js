@@ -59,7 +59,7 @@ const ParentViewTab = () => {
                 // Fetch details for each child of each parent
                 const parentsWithChildren = await Promise.all(parentsData.map(async (parent) => {
                     const childrenDetails = await Promise.all(parent.children.map(async (childId) => {
-                        const childResponse = await fetch(`/api/students/${childId}`);
+                        const childResponse = await fetch(`/api/users/${childId}`);
                         if (!childResponse.ok) {
                             console.error('Failed to fetch child details');
                             return { id: childId, name: 'Unknown', firstName: 'Unknown', lastName: '' };

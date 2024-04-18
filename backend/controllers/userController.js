@@ -50,6 +50,7 @@ If you did not request this, please ignore this email and your password will rem
             res.json({ message: 'Check your email for the password reset link.' });
         })
         .catch((err) => {
+            console.log(err);
             res.status(500).json({ message: 'Failed to send password reset email' });
         });
     };
@@ -92,4 +93,3 @@ If you did not request this, please ignore this email and your password will rem
             res.status(400).json({ message: error.message });
         }
     };
-    

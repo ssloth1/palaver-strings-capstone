@@ -55,7 +55,7 @@ const WEEKDAYS = [
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
 ]
 const USER_TYPES = [
-    'Admin', 'Instructor', 'Parent', 'Student'
+    'admin', 'instructor', 'parent', 'student'
 ];
 
 module.exports = {

@@ -1,24 +1,22 @@
 const express = require('express');
 
 const { 
-    //createUser,
-    //getUsers,
-    getUser, 
-    //deleteUser,
-    //updateUser,
     requestPasswordReset,
     resetPassword
  } = require('../controllers/userController');
+
+ const userController = require('../controllers/newUserController')
 
 
 const router = express.Router()
 
 // General user routes
-//router.get('/', getUsers);
-router.get('/:id', getUser);
-//router.post('/', createUser);
-//router.delete('/:id', deleteUser);
-//router.patch('/:id', updateUser);
+router.get('/', userController.getAllUsers.bind(userController));
+router.get('/:id', userController.getUser.bind(userController));
+router.post('/', userController.createUser.bind(userController));
+router.post('/login', userController.loginUser.bind(userController));
+router.delete('/:id', userController.deleteUser.bind(userController));
+router.patch('/:id', userController.updateUser.bind(userController));
 
 
 router.use('/:userId/admins', require('./adminRoutes'));

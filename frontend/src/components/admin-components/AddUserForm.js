@@ -16,6 +16,8 @@ function AddUserForm() {
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
     const [customInstrument, setCustomInstrument] = useState(""); // State to store the custom instrument name if the user selects "Other" as their instrument.
 
+    const PERMISSIONS = ['create', 'read', 'update', 'delete'];
+
     // State to store the form data
     const [formData, setFormData] = useState({
         
@@ -25,7 +27,7 @@ function AddUserForm() {
         email: "",
         password: "",
         confirmPassword: "",
-        role: "",
+        roles: [],
         country: "",
         addressLine1: "",
         addressLine2: "",
@@ -40,13 +42,6 @@ function AddUserForm() {
 
         // Admin specific fields
         permissions: [],
-        secondaryEmail: "",
-   
-        // Instructor specific fields
-        students: [],
-
-        // Shared by admin and instructor.
-        orgEmail: "",
 
         // Student specific fields
         instrument: "",
@@ -71,13 +66,21 @@ function AddUserForm() {
 
 
     /**
-     * Handles changes to the form inputs.
-     * Specifically, it updates the form data based on the input's name and value.
-     * It handles checkboxes, multi-select inputs, and other inputs differently.
-     * @param {Event} event - The event object.
-     * @returns {void}
-     * NOTE: This function is incomplete and will need to be updated as we add more fields to the form.
+     * Handler for the form input changes and updates the state of the form data as the user types
+     * For checkboxes (permission), it adds or removes the permission from the array of permissions for the new admin.
+     * For other inputs, it updates the value corresponding to the input name.
      */
+    const handleRoleChange = (event) => {
+        const { name, value, type, checked } = event.target;
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            roles: checked
+                    ? [...prevFormData.roles, name]
+                    : prevFormData.roles.filter(role => role !== name),
+        }));
+    };
+    
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
     
@@ -126,16 +129,16 @@ function AddUserForm() {
      */
     const validateForm = () => {
         // Admin related validation
-        if (formData.role === 'admin') {
-            if (!formData.permissions.length || !formData.orgEmail) {
-                console.error("Admins must have permissions and an organization email.")
-                setStatusMessage("Please fill in all required fields for the admin role.");
+        if (formData.roles.includes('admin')) {
+            if (!formData.permissions.length) {
+                console.error("Admins must have permissions")
+                setStatusMessage("Please specify the permissions that this Admin will have.");
                 return false;
             }
         }
 
         // TODO: Student related validation
-        if (formData.role === 'student'){
+        if (formData.roles.includes('student')){
             if (!formData.parentEmail) {
                 console.error("Student cannot be created without a parent.");
                 setStatusMessage("Parent email must be entered.");
@@ -177,15 +180,9 @@ function AddUserForm() {
             setStatusMessage("Data did not validate.")
             return;
         }
-        
-        // Prepare the form data for submission, 
-        // including the custom instrument if the user selected "Other" as their instrument.
-        const finalFormData = {
-            ...formData,
-            instrument: formData.instrument !== "Other" ? formData.instrument : undefined,
-            ...(formData.instrument === "Other" && { customInstrument: customInstrument }),
-        };
-        
+/**
+ * Since I'm testing new unified user creation, commenting this out.
+     
         let endpoint = "";
         switch (finalFormData.role) {
             case 'admin':
@@ -203,146 +200,66 @@ function AddUserForm() {
             default:
                 break;
         }
-    
-        // Prepare the data to be sent to the backend. 
+ */   
+        // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
-            ...finalFormData,
+            ...formData,
             address: {
-                country: finalFormData.country,
-                addressLine1: finalFormData.addressLine1,
-                addressLine2: finalFormData.addressLine2,
-                city: finalFormData.city,
-                state: finalFormData.state,
-                zipCode: finalFormData.zipCode,
+                country: formData.country,
+                addressLine1: formData.addressLine1,
+                addressLine2: formData.addressLine2,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode,
             },
-            hashedPassword: finalFormData.password, // Assuming backend hashes the password
+            hashedPassword: formData.password, // Assuming backend hashes the password
         };
     
         // Remove confirmPassword before sending the form data to the backend
         delete submissionData.confirmPassword;
     
         console.log("Submitting Form");
+        console.log(submissionData);
         try {
-            const response = await axios.post(endpoint, submissionData);
+            const response = await axios.post('http://localhost:4000/api/users', submissionData);
             setStatusMessage("Form submitted successfully!");
             console.log("Form submitted successfully!", response.data);
         } catch (error) {
             setStatusMessage("An error occurred while submitting the form.");
             console.error("Error submitting form", error);
         }
-    };
- 
-    /**
-     * This function renders the role-specific fields based on the selected role (admin, student, parent, or instructor).
-     * @returns {JSX.Element} - Returns the role-specific fields based on the selected role.
-     */
-    const renderRoleSpecificFields = () => {
-        
-        // Constants for the admin permissions
-        const PERMISSIONS = ['create', 'read', 'update', 'delete'];
-
-        // Switch statement for the role-specific fields
-        switch (formData.role) {
-            
-            // Admin specific fields
-            case 'admin':
-                return (
-                    <div className={styles.checkboxWrapper}>
-                        {PERMISSIONS.map((permission) => (
-                            <label className={styles.checkboxLabel} key={permission}>
-                                <input
-                                    type="checkbox"
-                                    name={permission}
-                                    checked={formData.permissions.includes(permission)}
-                                    onChange={handleChange}
-                                />
-                                {permission.charAt(0).toUpperCase() + permission.slice(1)}
-                            </label>
-                        ))}
-                    </div>
-                );
-            
-            //Student specific fields
-            case 'student':
-                return(
-                    <>
-                        {/*Student specific fields */}
-                        {/*Dropdown for instrument selection*/ }
-                        <label className={styles["form-label"]} htmlFor="instrumentSelect">Instrument <span style={{color: "red"}}>*</span></label>
-                        <select id="instrumentSelect" name="instrument" value={formData.instrument} onChange={handleChange} required>
-                            <option value="">Select instrument</option>
-                            {INSTRUMENTS.map(instrument => (
-                                <option key={instrument} value={instrument}>{instrument}</option>
-                            ))}
-                        </select>
-                        {formData.instrument === "Other" && (
-                            <div>
-                                <label className={styles["form-label"]} htmlFor="customInstrumentInput">Custom Instrument Name <span style={{color: "red"}}>*</span></label>
-                                <input
-                                    id="customInstrumentInput"
-                                    type="text" 
-                                    name="customInstrument" 
-                                    value={customInstrument} 
-                                    onChange={handleChange} 
-                                    placeholder="Enter Custom Instrument Name" 
-                                    required 
-                                />
-                            </div>
-                        )}
-
-                        <label className={styles["form-label"]} htmlFor="dateOfBirthInput">Date of Birth <span style={{color: "red"}}>*</span></label>
-                        <input id="dateOfBirthInput" type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
-                        
-                        <label className={styles["form-label"]} htmlFor="schoolInput">School <span style={{color: "red"}}>*</span></label>
-                        <input id="schoolInput" type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
-                        
-                        <label className={styles["form-label"]} htmlFor="gradeInput">Grade <span style={{color: "red"}}>*</span></label>
-                        <input id="gradeInput" type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />
-                        
-                        <label className={styles["form-label"]} htmlFor="howIHeadInput">How did you hear about the program?</label>
-                        <input id="howIHeardInput" type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> 
-                        
-                        <label className={styles["form-label"]} htmlFor="parentEmailInput">Parent's Email <span style={{color: "red"}}>*</span></label>
-                        <input id="howIHeadInput" type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />
-                    </>
-                );
-            // TODO: Parent specific fields
-            case 'parent':
-                return(
-                    <>
-                        {/*Parent specific fields*/}
-                        {/*At this time, there are no parent-specific fields.*/}
-                    </>
-                )
-            // Instructor specific fields
-            case 'instructor':
-                return (
-                    <>
-                        {/* Instructor specific fields */}
-                        <label className={styles["form-label"]} htmlFor="orgEmailInput">Palaver Email <span style={{color: "red"}}>*</span></label>
-                        <input id="orgEmailInput" type="email" name="orgEmail" value={formData.orgEmail} onChange={handleChange} placeholder="Organization Email" required />
-                        
-                        {/* Uncomment and complete the following select block when the students data is available */}
-                        {/* <select multiple name="students" value={formData.students} onChange={handleChange}>
-                            {students.map(student => (
-                                <option key={student._id} value={student._id}>
-                                    {student.firstName} {student.lastName}
-                                </option>
-                            ))}
-                        </select> */}
-                    </>
-                );
-            default:
-                return null;
-        }
-    };
-    
+    };    
 
     return (
         
         <div className={styles.addUserForm}>
             <h1> add new user </h1>
             <form onSubmit={handleSubmit}>
+
+            {/* checkboxes for the user's role */}
+            <div class="checkbox">
+                {USER_TYPES.map((usertype) => (
+                    <label key={usertype}>
+                        <input
+                            type="checkbox"
+                            name={usertype}
+                            checked={formData.roles.includes(usertype)}
+                            onChange={handleRoleChange}
+                        />
+                        {usertype.charAt(0).toUpperCase() + usertype.slice(1)}
+                    </label>
+                ))}
+            </div>
+
+            {/*
+            <select name="role" value={formData.role} onChange={handleChange} required>
+                <option value="" disabled>Select a Role</option>
+                <option value="student">Student</option>
+                <option value="parent">Parent</option>
+                <option value="instructor">Instructor</option>
+                <option value="admin">Admin</option>
+            </select>
+                */}
 
             {/* Text input for the user's first name */}
             <label className={styles["form-label"]} htmlFor="firstNameInput">First Name <span style={{color: "red"}}>*</span></label>
@@ -361,18 +278,7 @@ function AddUserForm() {
             <input id="passwordInput" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
             
             {/* Text input for the user's password confirmation */}
-            <label className={styles["form-label"]} htmlFor="confirmPasswordInput">Confirm Password <span style={{color: "red"}}>*</span></label>
-            <input id="confirmPasswordInput" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
-            
-            {/* Dropdown for the user's role */}
-            <label className={styles["form-label"]} htmlFor="roleSelect">Role <span style={{color: "red"}}>*</span></label>
-            <select id="roleSelect" name="role" value={formData.role} onChange={handleChange} required>
-                <option value="" disabled>Select a Role</option>
-                <option value="student">Student</option>
-                <option value="parent">Parent</option>
-                <option value="instructor">Instructor</option>
-                <option value="admin">Admin</option>
-            </select>
+            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
             
             {/* Dropdown for the user's gender */}
             <label className={styles["form-label"]} htmlFor="genderSelect">Gender <span style={{color: "red"}}>*</span></label>
@@ -395,12 +301,47 @@ function AddUserForm() {
                 {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
             </select>
 
-            {/* Dropdown for the user's country */}
-            <label className={styles["form-label"]} htmlFor="countrySelect">Country <span style={{color: "red"}}>*</span></label>
-            <select id="countrySelect" name="country" value={formData.country} onChange={handleChange} required>
-                <option value="">Select Country</option>
-                {COUNTRIES.map(country => <option key={country} value={country}>{country}</option>)}
-            </select>
+            {/* Only displays if admin role is selected */}
+            {formData.roles.includes('admin') ? 
+                <div class="checkbox">
+                {PERMISSIONS.map((permission) => (
+                    <label key={permission}>
+                        <input
+                            type="checkbox"
+                            name={permission}
+                            checked={formData.permissions.includes(permission)}
+                            onChange={handleChange}
+                        />
+                        {permission.charAt(0).toUpperCase() + permission.slice(1)}
+                    </label>
+                ))}
+                </div>
+                : <></>
+            }
+
+            {/* Only displays if student or instructor role is checked */}
+            {formData.roles.includes('student') || formData.roles.includes('instructor') ? 
+                <>        
+                    {/*Student specific fields */}
+                    {/*Dropdown for instrument selection*/ }
+                    <label for="instrument">instrument</label>
+                    <select name="instrument" value={formData.instrument} onChange={handleChange} required>
+                        <option value="">select instrument</option>
+                        {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
+                    </select>
+                </>
+                :<></>}
+            {formData.roles.includes('student') ?
+                <>
+                    {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
+                    {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
+                    {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
+                    {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
+                    {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> }
+                    {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
+                </>
+                :<></>
+            }
 
             {/* Text input for the user's address */}
             <label className={styles["form-label"]} htmlFor="addressLine1Input">Address Line 1 <span style={{color: "red"}}>*</span></label>
@@ -418,8 +359,7 @@ function AddUserForm() {
             <label className={styles["form-label"]} htmlFor="stateSelect">State/Province <span style={{color: "red"}}>*</span></label>
             <select id="stateSelect" name="state" value={formData.state} onChange={handleChange} required>
                 <option value="">Select State/Province</option>
-                {formData.country === 'United States' ? US_STATES.map(state => <option key={state} value={state}>{state}</option>) : null}
-                {formData.country === 'Canada' ? CANADIAN_PROVINCES.map(province => <option key={province} value={province}>{province}</option>) : null}
+                {US_STATES.map(state => <option key={state} value={state}>{state}</option>)}
             </select>
 
             {/* Text input for the user's zip code */}
@@ -439,9 +379,6 @@ function AddUserForm() {
                 <option value="text">Text</option>
                 <option value="whatsapp">Whatsapp</option>
             </select>
-
-            {/* Render role-specific fields based on the selected role */}
-            {renderRoleSpecificFields()}
 
             {/* Submit button */}
             <button type="submit">add user</button>

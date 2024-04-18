@@ -5,7 +5,7 @@ export const AuthContext = createContext(); // Creates a new context for authent
 // AuthProvider component to provide authentication state and functions
 export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track the login status
-    const [userType, setUserType] = useState(null); // State to track user types
+    const [userType, setUserType] = useState([]); // State to track user types
     const [userId, setUserId] = useState(null); // State to track user details
 
     // Effect to check for saved login status in local storage
@@ -32,17 +32,17 @@ export function AuthProvider({ children }) {
     // Function to handle logout for a user
     const logout = () => {
         setIsLoggedIn(false);
-        setUserType(null);
+        setUserType([]);
         setUserId(null);
         localStorage.removeItem('userType');
         localStorage.removeItem('userId');
     };
 
     // Helper functions to check user's role
-    const isAdmin = () => userType === 'admin';
-    const isInstructor = () => userType === 'instructor';
-    const isStudent = () => userType === 'student';
-    const isParent = () => userType === 'parent';
+    const isAdmin = () => userType.includes('admin');
+    const isInstructor = () => userType.includes('instructor');
+    const isStudent = () => userType.includes('student');
+    const isParent = () => userType.includes('parent');
 
     // Context values that will be accessible to the components that use this context
     const value = {

@@ -11,6 +11,13 @@ function ManageUsers() {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const usersByRole = {
+        'admin':[],
+        'instructor':[],
+        'parent':[],
+        'student':[],
+        'undefined':[]
+    };
 
     // This state is used to keep track of which sections are collapsed
     const initialCollapsedState = {
@@ -24,7 +31,7 @@ function ManageUsers() {
     // Fetch users on component mount
     useEffect(() => {
         setLoading(true);
-        fetch('/api/admins/users')
+        fetch('/api/users/')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -52,7 +59,8 @@ function ManageUsers() {
             user.lastName.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredUsers(result);
-        const rolesInSearchResults = new Set(result.map(user => user.role));
+        /*
+        const rolesInSearchResults = new Set(result.map(user => user.roles));
         setCollapsedSections(prevState => {
             const newState = { ...prevState };
             Object.keys(newState).forEach(role => {
@@ -60,6 +68,7 @@ function ManageUsers() {
             });
             return newState;
         });
+        */
     }, [searchTerm, users]);
 
     // Delete user, and remove from state
@@ -68,7 +77,7 @@ function ManageUsers() {
         // Asks for confirmation before deleting user, and then sends a DELETE request to the server
         const isConfirmed = window.confirm("Are you sure you want to remove this user?");
         if (isConfirmed) {
-            fetch(`/api/admins/users/${userId}`, { method: 'DELETE' })
+            fetch(`/api/users/${userId}`, { method: 'DELETE' })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -104,12 +113,30 @@ function ManageUsers() {
     if (loading) {
         return <Loader />;
     }
-
-    // Group users by role, and create sections for each role
-    const usersByRole = filteredUsers.reduce((acc, user) => {
-        acc[user.role] = acc[user.role] ? [...acc[user.role], user] : [user];
-        return acc;
-    }, {});
+    
+    // Group users by role
+    for (const user of filteredUsers) {
+        var assigned = false;
+        if (user.roles.includes('admin')){
+            usersByRole['admin'].push(user);
+            assigned = true;
+        }
+        if (user.roles.includes('instructor')){
+            usersByRole['instructor'].push(user);
+            assigned = true;
+        }
+        if (user.roles.includes('parent')){
+            usersByRole['parent'].push(user);
+            assigned = true;
+        }
+        if (user.roles.includes('student')){
+            usersByRole['student'].push(user);
+            assigned = true;
+        }
+        if (assigned === false) {
+            usersByRole['undefined'].push(user);
+        }
+    }
 
     // Create sections for each role
     const userSections = Object.entries(usersByRole).map(([role, users]) => (
@@ -131,6 +158,7 @@ function ManageUsers() {
             )}
         </div>
     ));
+    
 
     return (
         <div className="manage-users">
