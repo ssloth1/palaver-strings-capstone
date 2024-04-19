@@ -58,6 +58,7 @@ function Navbar() {
                     )}
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
+                            <NavigationLink Icon={CiMail} to='/admin-instructor/getemails' label="get emails" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="attendance" />
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
                             <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />

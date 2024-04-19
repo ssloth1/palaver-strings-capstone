@@ -17,6 +17,7 @@ import ClassDetails from './components/admin-instructor-components/palaver-class
 import StudentList from './components/instructor-components/StudentList';
 import ProgressReportForm from './components/instructor-components/ProgressReportForm'
 import UpdateClass from './components/admin-instructor-components/palaver-classes/UpdateClass';
+import GetEmails from './components/admin-instructor-components/messaging/GetEmails';
 
 /* Import components from the admin-components directory */
 import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUserView } from './components/admin-components';
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/user/:id" element={<UserDetails />} />
                     <Route path="/user-details/:id" element={<UserDetails />} />
                     <Route path="/student-assignments" element={<StudentAssignments />} />
+                    <Route path="/admin-instructor/getemails" element={<GetEmails/>} />
                     <Route path="/admin-instructor/messages" element={<MessageCenter/>}>
                         <Route path="compose" element={<WriteMessage />} />
                         <Route path="read" element={<ViewMessages />} />
