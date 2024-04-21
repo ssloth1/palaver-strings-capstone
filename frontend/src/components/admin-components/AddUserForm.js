@@ -71,7 +71,7 @@ function AddUserForm() {
      * For other inputs, it updates the value corresponding to the input name.
      */
     const handleRoleChange = (event) => {
-        const { name, value, type, checked } = event.target;
+        const { name, checked } = event.target;
 
         setFormData(prevFormData => ({
             ...prevFormData,
