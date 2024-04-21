@@ -13,22 +13,22 @@ function UpdateAttendanceRecords() {
     const [error, setError] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
 
+    
     useEffect(() => {
+        const fetchClasses = async () => {
+            setIsLoading(true);
+            try {
+                const response = await axios.get('http://localhost:4000/api/classes');
+                setClasses(response.data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching classes:", error);
+                setError("Failed to load classes.");
+                setIsLoading(false);
+            }
+        };
         fetchClasses();
     }, []);
-
-    const fetchClasses = async () => {
-        setIsLoading(true);
-        try {
-            const response = await axios.get('http://localhost:4000/api/classes');
-            setClasses(response.data);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error fetching classes:", error);
-            setError("Failed to load classes.");
-            setIsLoading(false);
-        }
-    };
 
     const handleClassChange = async (e) => {
         const classId = e.target.value;
@@ -40,7 +40,11 @@ function UpdateAttendanceRecords() {
         setIsLoading(true);
         try {
             const response = await axios.get(`http://localhost:4000/api/attendance/dates/${classId}`);
-            setDates(response.data);
+            const localDates = response.data.map(date => {
+                const [year, month, day] = date.split('T')[0].split('-');
+                return `${month}/${day}/${year}`;
+            });
+            setDates(localDates);
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching dates:", error);
@@ -50,14 +54,22 @@ function UpdateAttendanceRecords() {
     };
 
     const handleDateChange = async (e) => {
-        const date = e.target.value;
-        setSelectedDate(date);
-        fetchAttendance(selectedClass, date);
+        const dateString = e.target.value;
+        const [month, day, year] = dateString.split('/');
+        const localDate = new Date(year, month - 1, day);
+        
+        setSelectedDate(dateString);
+        fetchAttendance(selectedClass, localDate.toISOString().split('T')[0]);
+
+        // const localDate = new Date(e.target.value + 'T00:00:00');
+        // const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+        // setSelectedDate(adjustedDate.toISOString().split('T')[0]);
+        // fetchAttendance(selectedClass, adjustedDate.toISOString().split('T')[0]);
     };
 
     const fetchAttendance = async (classId, date) => {
         setAttendance([]);
-        setAttendanceId('');
+        setAttendanceId('');    
         
         setIsLoading(true);
         try {
@@ -88,9 +100,7 @@ function UpdateAttendanceRecords() {
             return att;
         });
         setAttendance(updatedAttendance);
-        console.log(updatedAttendance);
-
-        
+        console.log(updatedAttendance); 
     };
 
     const onSubmit = async (e) => {
@@ -138,19 +148,24 @@ function UpdateAttendanceRecords() {
                 <select value={selectedDate} onChange={handleDateChange} required>
                     <option value="">Select Date</option>
                     {dates.map(date => (
-                        <option key={date} value={date}>{new Date(date).toLocaleDateString()}</option>
+                        <option key={date} value={date}>{date}</option>
                     ))}
                 </select>
                 {attendance.length === 0 && <p>No attendance data available. Please check if the data is correctly loaded.</p>}
                 {attendance.map((att, index) => (
                     <div key={index}>
                         <span>{att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data not available'}</span>
-                        <select value={att.status} onChange={(e) => handleAttendanceChange(att.student._id, e.target.value)}>
-                            <option value="present">Present</option>
-                            <option value="late">Late</option>
-                            <option value="absent - excused">Absent - Excused</option>
-                            <option value="absent - unexcused">Absent - Unexcused</option>
-                        </select>
+                        {['present', 'late', 'absent - excused', 'absent - unexcused'].map((status) => (
+                            <label key={status}>
+                                <input 
+                                    type="radio"
+                                    name={`status-${att.student._id}`}
+                                    checked={att.status === status}
+                                    onChange={() => handleAttendanceChange(att.student._id, status)}
+                                />
+                                {status}
+                            </label> 
+                        ))}
                     </div>
                 ))}
                 <button type="submit">Update Attendance</button>
@@ -165,163 +180,4 @@ export default UpdateAttendanceRecords;
 
 
 
-/*
-import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import Loader from '../../general-components/Loader';
-import classService from '../../../services/classServices';
-import { AuthContext } from '../../../contexts/AuthContext';
 
-
-function UpdateAttendanceRecord() {
-    const { attendanceId } = useParams();
-    const navigate = useNavigate();
-    const [classes, setClasses] = useState([]);
-    const [selectedClassId, setSelectedClass] = useState('');
-    const [dates, setDates] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
-    const [attendanceData, setAttendanceData] = useState({
-        attendance: []
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-
-    const { isLoggedIn, isAdmin, isInstructor } = useContext(AuthContext);
-
-    useEffect(() => {
-        const fetchAllClasses = async () => {
-            try {
-                const response = await axios.get('http://localhost:4000/api/classes');
-                console.log("Fetched classes:", response);
-                if (response && Array.isArray(response.data) && response.data.length > 0) {
-                    setClasses(response.data); // Assuming this is correct and response.data is the array of classes
-                } else {
-                    setClasses([]);
-                    console.error("No data returned from getAllClasses");
-                }
-            } catch (error) {
-                console.error("Failed to fetch class details:", error);
-                setClasses([]);
-            }
-        };
-
-        fetchAllClasses();
-    }, []);
-
-    useEffect(() => {
-        if (!selectedClassId) return;
-        const fetchDatesForClass = async () => {
-            try {
-                const response = await axios.get(`http://localhost:4000/api/attendance/dates/${selectedClassId}`);
-                setDates(response.data);
-                setSelectedDate('');
-            } catch (error) {
-                console.error('Error fetching dates:', error);
-                setError("Failed to load dates.");
-            }
-        };
-
-        fetchDatesForClass();
-    }, [selectedClassId]);
-
-    useEffect(() => {
-        if (!selectedDate || !selectedClassId) return;
-        const fetchAttendanceData = async () => {
-            setIsLoading(true);
-            try {
-                const response = await axios.get(`http://localhost:4000/api/attendance/${selectedClassId}/${selectedDate}`);
-                if(response.data && response.data.attendance) {
-                    setAttendanceData(response.data);
-                } else {
-                    setAttendanceData({ attendance: [] });
-                }
-            } catch (error) {
-                console.error('Error fetching attendance record:', error);
-                setAttendanceData({ attendance: [] });
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchAttendanceData();
-    }, [selectedDate, selectedClassId]);
-
-    const handleClassChange = (event) => {
-        setSelectedClass(event.target.value);
-    };
-
-    const handleDateChange = (event) => {
-        setSelectedDate(event.target.value);
-    };
-
-    const handleStatusChange = (studentId, status) => {
-        const updatedAttendance = attendanceData.attendance.map(item => 
-            item.studentId === studentId ? { ...item, status } : item
-        );
-
-        setAttendanceData(prevData => ({
-            ...prevData,
-            attendance: updatedAttendance
-        }));
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setIsLoading(true);
-        try {
-            const response = await axios.put(`http://localhost:4000/attendance/${selectedClassId}/${selectedDate}`, attendanceData);
-            console.log('Attendance updated:', response.data);
-            setError('');
-        } catch (error) {
-            console.error('Error updating attendance:', error.message);
-            setError('Failed to update attendance.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    if (isLoading) return <Loader />;
-    if (error) return <p className="error">{error}</p>;
-    if (!attendanceData) return <p>Select a class and date to view attendance</p>;
-
-    return (
-        <div className={UpdateAttendanceRecord}>
-            <select value={selectedClassId} onChange={handleClassChange}>
-                <option value="">Select Class</option>
-                {classes.map(cls => (
-                    <option key={cls._id} value={cls._id}>{cls.name}</option>
-                ))}
-            </select>
-
-            <select value={selectedDate} onChange={handleDateChange} disabled={!selectedClassId}>
-                <option value="">Select Date</option>
-                {dates.map(date => (
-                    <option key={date} value={date}>{date}</option>
-                ))}
-            </select>
-
-            <form onSubmit={handleSubmit}>
-                {attendanceData.attendance.map(student => (
-                    <div key={student.studentId}>
-                        <span>{student.name} - {student.studentId}</span>
-                        {['present', 'late', 'absent - excused', 'absent - unexcused'].map(status => (
-                            <label key={status}>
-                                <input
-                                    type="radio"
-                                    checked={student.status === status}
-                                    onChange={() => handleStatusChange(student.studentId, status)}
-                                />  
-                                {status}
-                            </label>
-                        ))}
-                    </div>
-                ))}
-                <button type="submit">Update Attendance</button>
-            </form>
-        </div>
-    );
-}
-
-export default UpdateAttendanceRecord;
-*/

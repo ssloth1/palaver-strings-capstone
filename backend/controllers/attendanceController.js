@@ -55,7 +55,7 @@ class AttendanceController {
             console.log("Populated Attendance Record:", attendanceRecord);
                 
             if (!attendanceRecord) {
-                return res.status(404).send({ message: 'No attendance record found for this class on the specified date' });
+                return res.status(200).send({ message: 'No attendance record found for this class on the specified date', data: null });
             }
             res.status(200).send(attendanceRecord);
         } catch (error) {
