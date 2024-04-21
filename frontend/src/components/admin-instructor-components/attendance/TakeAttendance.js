@@ -3,6 +3,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
 import styles from "../styles/TakeAttendance.module.css";
 import Loader from "../../general-components/Loader";
+//import { set } from "mongoose";
 
 function TakeAttendance() {
     const [isLoading, setIsLoading] = useState(false);
@@ -10,6 +11,7 @@ function TakeAttendance() {
     const [students, setStudents] = useState([]);
     const [classes, setClasses] = useState([]);
     const [statusMessage, setStatusMessage] = useState("");
+    const [canSubmit, setCanSubmit] = useState(true);
 
     const { isLoggedIn, isAdmin, isInstructor } = useContext(AuthContext);
 
@@ -34,6 +36,13 @@ function TakeAttendance() {
 
         fetchClasses();
     }, []);
+
+    useEffect(() => {
+        if (attendanceData.classId && attendanceData.date) {
+            checkForExistingAttendanceRecord(attendanceData.classId, attendanceData.date);
+            fetchStudentsFromClass(attendanceData.classId);
+        }
+    }, [attendanceData.classId, attendanceData.date]);
 
     const fetchStudentsFromClass = async (classId) => {
         setIsLoading(true);
@@ -60,6 +69,30 @@ function TakeAttendance() {
         } catch (error) {
             console.error("Error fetching students", error);
             setStatusMessage("Failed to fetch students. Please try again later.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const checkForExistingAttendanceRecord = async (classId, date) => {
+        setIsLoading(true);
+        console.log(`Checking records for class ${classId} on date ${date}`);
+        try {
+            const response = await axios.get(`http://localhost:4000/api/attendance/${classId}/${date}`);
+            console.log("Check response: ", response.data);
+            if (response.data.data === null || response.data.length === 0) {
+                console.log("No existing record found, can submit new record.");
+                setError('');
+                setCanSubmit(true);
+            } else {
+                console.log("Existing record found, cannot submit.");
+                setError("An attendance record for this class and date already exists. Please modify the existing record or select a different date or class.");
+                setCanSubmit(false);
+            }
+        } catch (error) {
+            console.error("Error checking existing attendance", error);
+            setError("Failed to check for existing attendance. Please try again.");
+            setCanSubmit(true);
         } finally {
             setIsLoading(false);
         }
@@ -147,47 +180,26 @@ function TakeAttendance() {
                     <div>
                         {students.map((student) => (
                             <div key={student._id}>
-                                <span>{student.firstName} {student.lastName} - {student._id}</span>
-                                <label>
+                                <span>{student.firstName} {student.lastName}</span>
+                                {['present', 'late', 'absent - excused', 'absent - unexcused'].map(status => (
+                                <label key={status}>
                                     <input 
-                                        type="checkbox" 
-                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'present')}
-                                        onChange={() => handleAttendanceChange(student._id, 'present')} 
+                                        type="radio" 
+                                        name={`attendance-${student._id}`}
+                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === status)}
+                                        onChange={() => handleAttendanceChange(student._id, status)} 
                                     />
-                                    present
+                                    {status}
                                 </label>
-                                <label>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'late')}
-                                        onChange={() => handleAttendanceChange(student._id, 'late')} 
-                                    />
-                                    late
-                                </label>
-                                <label>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - excused')}
-                                        onChange={() => handleAttendanceChange(student._id, 'absent - excused')} 
-                                    />
-                                    absent - excused
-                                </label>
-                                <label>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === 'absent - unexcused')}
-                                        onChange={() => handleAttendanceChange(student._id, 'absent - unexcused')} 
-                                    />
-                                    absent - unexcused
-                                </label>
+                                ))}
                             </div>
                         ))}
                     </div>
                 )}
-                <button type="submit">Record Attendance</button>
+                <button type="submit" disabled={!canSubmit}>Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
+                {error && <p className="error">{error}</p>}
             </form>
-            {error && <p className="error">{error}</p>}
         </div>
     );
 }
