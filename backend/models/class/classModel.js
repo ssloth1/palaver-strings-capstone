@@ -18,11 +18,11 @@ const classSchema = new Schema ({
     }}],
     //Need validation on instructor and student roles
 
-    //Possibly unnecessary
+   
     meetingDay: [{ type: String, required: true }],
     startTime: { type: String, required: true },
     endTime: { type: String, required: true},
-    classroom: { type: String, required: true}
+    classroom: { type: String, required: true, enum: ['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6']}
 
 }, {timestamps: true});
 

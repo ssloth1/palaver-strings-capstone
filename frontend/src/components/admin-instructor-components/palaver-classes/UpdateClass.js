@@ -172,12 +172,17 @@ function UpdateClass () {
                         onChange={handleChange}
                         required
                     />
-                    <input
-                        type="text"
+                    <select
                         name="classroom"
                         value={classData.classroom}
                         onChange={handleChange}
-                    />
+                        required
+                    >
+                        <option value="">select classroom</option>
+                        {['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6'].map((classroom) => (
+                            <option key={classroom} value={classroom}>{classroom}</option>
+                        ))}
+                    </select>
                     <div>
                         {WEEKDAYS.map(day => (
                             <button 
