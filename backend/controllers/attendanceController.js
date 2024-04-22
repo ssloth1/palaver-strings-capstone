@@ -47,10 +47,11 @@ class AttendanceController {
         const { classId, date } = req.params;
 
         try {
+            console.log(`Querying attendance for class ${classId} on ${date}`);
             const attendanceRecord = await Attendance.findOne({ class: classId, date: date })
                 .populate({
                     path: 'students.student',
-                    model: 'Student'
+                    model: 'User'
                 });
             console.log("Populated Attendance Record:", attendanceRecord);
                 

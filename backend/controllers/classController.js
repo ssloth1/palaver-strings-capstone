@@ -3,7 +3,7 @@ const Class = require('../models/class/classModel');
 
 class classController {
     async addClass (req, res) {
-        const { name, instructor, students, meetingDay, meetingTime } = req.body;
+        const { name, instructor, students, meetingDay, startTime, endTime, classroom } = req.body;
 
         try {
             const newClass = new Class ({
@@ -11,7 +11,9 @@ class classController {
                 instructor,
                 students,
                 meetingDay,
-                meetingTime,
+                startTime,
+                endTime,
+                classroom
             });
             await newClass.save();
             res.status(201).json(newClass);

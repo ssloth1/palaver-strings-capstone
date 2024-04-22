@@ -3,6 +3,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
 import styles from "../styles/TakeAttendance.module.css";
 import Loader from "../../general-components/Loader";
+import moment from 'moment';
 //import { set } from "mongoose";
 
 function TakeAttendance() {
@@ -17,7 +18,8 @@ function TakeAttendance() {
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
-        date: new Date().toISOString().split('T')[0],
+
+        date: moment().format('YYYY-MM-DD'), 
         attendance: []
     });
 
@@ -120,11 +122,9 @@ function TakeAttendance() {
     };
 
     const handleDateChange = (e) => {
-        const localDate = new Date(e.target.value + 'T00:00:00');
-        const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
         setAttendanceData(prevData => ({
             ...prevData,
-            date: adjustedDate.toISOString().split('T')[0]
+            date: e.target.value
         }));
     };
 

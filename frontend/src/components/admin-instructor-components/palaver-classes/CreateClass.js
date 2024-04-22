@@ -8,7 +8,9 @@ function CreateClass() {
         name: '',
         instructor: '',
         meetingDay: [],
-        meetingTime: '',
+        startTime: '',
+        endTime: '',
+        classroom: '',
         students: [],
     });
     const [instructors, setInstructors] = useState([]); 
@@ -79,7 +81,9 @@ function CreateClass() {
                 name: classData.name,
                 instructor: classData.instructor,
                 meetingDay: classData.meetingDay,
-                meetingTime: classData.meetingTime,
+                startTime: classData.startTime,
+                endTime: classData.endTime,
+                classroom: classData.classroom,
                 students: classData.students,
             };
             const response = await classService.addClass(submissionData);
@@ -118,10 +122,23 @@ function CreateClass() {
                     </select>    
                     <input
                         type="time"
-                        name="meetingTime"
-                        value={classData.meetingTime}
+                        name="startTime"
+                        value={classData.startTime}
                         onChange={handleChange} 
                         required
+                    />
+                    <input
+                        type="time"
+                        name="endTime"
+                        value={classData.endTime}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="classroom"
+                        value={classData.classroom}
+                        onChange={handleChange}
                     />
                     <div>
                         {WEEKDAYS.map(day => (

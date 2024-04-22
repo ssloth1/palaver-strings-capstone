@@ -16,7 +16,7 @@ function UpdateClass () {
         name: '',
         instructor: '',
         meetingDay: [],
-        meetingTime: '',
+        startTime: '',
         students: [],
     });
     const [instructors, setInstructors] = useState([]);
@@ -47,7 +47,9 @@ function UpdateClass () {
                     name: ClassDetails.name,
                     instructor: ClassDetails.instructor._id,
                     meetingDay: ClassDetails.meetingDay,
-                    meetingTime: ClassDetails.meetingTime,
+                    startTime: ClassDetails.startTime,
+                    endTime: ClassDetails.endTime,
+                    classroom: ClassDetails.classroom,
                     students: ClassDetails.students.map(student => student._id),
                 });
             } catch (error) {
@@ -158,10 +160,23 @@ function UpdateClass () {
                     </select>    
                     <input
                         type="time"
-                        name="meetingTime"
-                        value={classData.meetingTime}
+                        name="startTime"
+                        value={classData.startTime}
                         onChange={handleChange} 
                         required
+                    />
+                    <input
+                        type="time"
+                        name="endTime"
+                        value={classData.endTime}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="classroom"
+                        value={classData.classroom}
+                        onChange={handleChange}
                     />
                     <div>
                         {WEEKDAYS.map(day => (
