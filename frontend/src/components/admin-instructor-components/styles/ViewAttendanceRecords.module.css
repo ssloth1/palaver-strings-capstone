@@ -1,0 +1,32 @@
+.attendanceRecords {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.attendanceRecords h2 {
+    font-weight: 600;
+    color: #333;
+}
+
+.attendanceRecords .recordCard {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.attendanceRecords ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.attendanceRecords li {
+    margin-bottom: 10px;
+}
+
+.attendanceRecords p {
+    margin: 5px 0;
+}

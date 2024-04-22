@@ -53,26 +53,33 @@ function Navbar() {
                         <>
                             <NavigationLink Icon={RiUserAddLine} to="/create-user" label="add user" />
                             <NavigationLink Icon={FaUserEdit} to="/users" label="manage users" />
-                            <NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="student assignments"/>
+                            {/* Deprecated */}
+                            {/*<NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="student assignments"/>*/}
                         </>
                     )}
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
                             <NavigationLink Icon={CiMail} to='/admin-instructor/getemails' label="get emails" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="attendance" />
+                            {/* Deprecated
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
+                            */}
                             <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
                     )}
                     {isLoggedIn && isInstructor() && (
                         <>
+                        {/* Deprecated
                             <NavigationLink Icon={FaIndent} to="/mystudents" label="my students" />
                             <NavigationLink Icon={FaIndent} to="/prog-report" label="progress reports" />
+                        */}
                         </>
                     )}
                     {isLoggedIn && (!isAdmin() && !isInstructor()) && (
                         <>
+                        {/* Deprecated
                             <NavigationLink Icon={CiMail} to="/messages" label="read messages" />
+                        */}
                         </>
                     )}
                     {isLoggedIn && (

@@ -213,8 +213,8 @@ function GetEmails() {
             {statusMessage && <p>{statusMessage}</p>}
         <div id='emails'>
             {emailsToDisplay.length > 0 ? (
-                emailsToDisplay.map((email, index) =>
-                    (<div key="index">{email}</div>)
+                emailsToDisplay.map((email) =>
+                    (<div>{email}</div>)
                 )
             )
                 

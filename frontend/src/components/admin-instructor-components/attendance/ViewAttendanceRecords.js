@@ -3,12 +3,12 @@ import axios from 'axios';
 import styles from '../styles/ViewAttendanceRecords.module.css';
 import Loader from '../../general-components/Loader';
 
-function ViewAttendanceRecords () {
-    const [ records, setRecords] = useState ([]);
+function ViewAttendanceRecords() {
+    const [records, setRecords] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect (() => {
+    useEffect(() => {
         const fetchRecords = async () => {
             setIsLoading(true);
             try {
@@ -21,7 +21,7 @@ function ViewAttendanceRecords () {
                 setIsLoading(false);
             }
         };
-        
+
         fetchRecords();
     }, []);
 
@@ -31,35 +31,33 @@ function ViewAttendanceRecords () {
         return date.toLocaleDateString();
     };
 
-    if (isLoading) return <Loader/>;
+    if (isLoading) return <Loader />;
     if (error) return <div>error: {error}</div>;
 
     return (
         <div className={styles.attendanceRecords}>
-            <h2>attendance records</h2>
+            <h2>Attendance Records</h2>
             {records.length > 0 ? (
-                <ul>
-                    {records.map((record) => (
-                        <li key={record._id}>
-                            <p>date: {displayDate(record.date)}</p>
-                            <p>class id: {record.class && record.class.name}</p>
-                            {record.students && record.students.length > 0 ? (
-                                <ul>
-                                    {record.students.map((att, index) => (
-                                        <li key={index}>
-                                            <p>student: {att.student ? `${att.student.firstName}  ${att.student.lastName}` : `Student data missing`}</p> 
-                                            <p>status: {att.status}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p>no attendance data available.</p>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                records.map((record) => (
+                    <div key={record._id} className={styles.recordCard}>
+                        <p>Date: {displayDate(record.date)}</p>
+                        <p>Class ID: {record.class && record.class.name}</p>
+                        {record.students && record.students.length > 0 ? (
+                            <ul>
+                                {record.students.map((att, index) => (
+                                    <li key={index}>
+                                        <p>Student: {att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data missing'}</p>
+                                        <p>Status: {att.status}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No attendance data available.</p>
+                        )}
+                    </div>
+                ))
             ) : (
-                <p>no attendance records found.</p>
+                <p>No attendance records found.</p>
             )}
         </div>
     );
