@@ -1,26 +1,32 @@
-.TakeAttendance {
+.UpdateAttendanceRecords {
     font-family: 'Poppins', sans-serif;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
-form {
+.UpdateAttendanceRecords form {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-select,
-input,
-button {
+.UpdateAttendanceRecords select,
+.UpdateAttendanceRecords input[type='radio'],
+.UpdateAttendanceRecords button {
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
     font-family: 'Poppins', sans-serif;
+    margin-right: 10px;
+    width: auto;
 }
 
-button {
+.UpdateAttendanceRecords button {
     background-color: #C69C64;
     color: white;
     border: none;
@@ -28,7 +34,7 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.UpdateAttendanceRecords button:hover {
     background-color: #4972a0;
 }
 
@@ -38,38 +44,28 @@ button:hover {
     margin-top: 10px;
 }
 
-.labelContainer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.checkboxLabel, .radioLabel {
+.radioLabel {
     display: flex;
     align-items: center;
     color: black;
     margin-right: 10px;
 }
 
-.checkboxInput, .radioInput {
+.radioInput[type="radio"] {
     margin-right: 5px;
+    accent-color: #007bff;
 }
 
 .studentName {
     color: black;
     display: block;
-    margin-top: 20px;
     margin-bottom: 5px;
 }
 
-.radioInput[type="radio"] {
-    accent-color: #4972a0;
-}
-
-.checkboxLabel, .radioLabel {
-    color: #333;
+.attendanceEntry {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

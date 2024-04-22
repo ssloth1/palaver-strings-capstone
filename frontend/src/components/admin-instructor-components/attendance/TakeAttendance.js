@@ -17,7 +17,7 @@ function TakeAttendance() {
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
-        date: new Date().toISOString().split('T')[0], 
+        date: new Date().toISOString().split('T')[0],
         attendance: []
     });
 
@@ -53,7 +53,7 @@ function TakeAttendance() {
             setStudents(studentsInClass);
 
             // If no students enrolled set default message
-            if(studentsInClass.length === 0) {
+            if (studentsInClass.length === 0) {
                 setStatusMessage("There are no students currently enrolled in this class. Attendance can't be taken.");
             } else {
                 setStatusMessage("");
@@ -111,7 +111,7 @@ function TakeAttendance() {
     const handleAttendanceChange = (studentId, status) => {
         const filteredAttendance = attendanceData.attendance.filter(item => item.studentId !== studentId);
         const updatedAttendance = [...filteredAttendance, { studentId, status }];
-        
+
 
         setAttendanceData(prevData => ({
             ...prevData,
@@ -180,17 +180,18 @@ function TakeAttendance() {
                     <div>
                         {students.map((student) => (
                             <div key={student._id}>
-                                <span>{student.firstName} {student.lastName}</span>
+                                <span className={styles.studentName}>{student.firstName} {student.lastName}</span>
                                 {['present', 'late', 'absent - excused', 'absent - unexcused'].map(status => (
-                                <label key={status}>
-                                    <input 
-                                        type="radio" 
-                                        name={`attendance-${student._id}`}
-                                        checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === status)}
-                                        onChange={() => handleAttendanceChange(student._id, status)} 
-                                    />
-                                    {status}
-                                </label>
+                                    <label key={status} className={styles.radioLabel}>
+                                        <input
+                                            type="radio"
+                                            name={`attendance-${student._id}`}
+                                            checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === status)}
+                                            onChange={() => handleAttendanceChange(student._id, status)}
+                                            className={styles.radioInput}
+                                        />
+                                        {status}
+                                    </label>
                                 ))}
                             </div>
                         ))}
@@ -198,7 +199,7 @@ function TakeAttendance() {
                 )}
                 <button type="submit" disabled={!canSubmit}>Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
-                {error && <p className="error">{error}</p>}
+                {error && <p className={styles.error}>{error}</p>}
             </form>
         </div>
     );

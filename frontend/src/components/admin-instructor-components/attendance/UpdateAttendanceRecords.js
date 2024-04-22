@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loader from '../../general-components/Loader';
+import styles from '../styles/UpdateAttendanceRecords.module.css';
 
 function UpdateAttendanceRecords() {
     const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +14,7 @@ function UpdateAttendanceRecords() {
     const [error, setError] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
 
-    
+
     useEffect(() => {
         const fetchClasses = async () => {
             setIsLoading(true);
@@ -57,7 +58,7 @@ function UpdateAttendanceRecords() {
         const dateString = e.target.value;
         const [month, day, year] = dateString.split('/');
         const localDate = new Date(year, month - 1, day);
-        
+
         setSelectedDate(dateString);
         fetchAttendance(selectedClass, localDate.toISOString().split('T')[0]);
 
@@ -69,13 +70,13 @@ function UpdateAttendanceRecords() {
 
     const fetchAttendance = async (classId, date) => {
         setAttendance([]);
-        setAttendanceId('');    
-        
+        setAttendanceId('');
+
         setIsLoading(true);
         try {
             const response = await axios.get(`http://localhost:4000/api/attendance/${classId}/${date}`);
             console.log("Received attendance data:", response.data);
-            if(response.data && response.data._id){
+            if (response.data && response.data._id) {
                 setAttendanceId(response.data._id);
                 setAttendance(response.data.students);
             } else {
@@ -94,19 +95,19 @@ function UpdateAttendanceRecords() {
         console.log(`Changing status for ${studentId} to ${status}`);
 
         const updatedAttendance = attendance.map(att => {
-            if(att.student._id === studentId) {
+            if (att.student._id === studentId) {
                 return { ...att, status: status };
             }
             return att;
         });
         setAttendance(updatedAttendance);
-        console.log(updatedAttendance); 
+        console.log(updatedAttendance);
     };
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        if(!attendanceId) {
+        if (!attendanceId) {
             setError('No attendance record selected for the update.');
             return;
         }
@@ -117,7 +118,7 @@ function UpdateAttendanceRecords() {
             _id: att._id
         }));
 
-        console.log("Submitting data:", JSON.stringify(formattedAttendance, null, 2)); // Log data being sent
+        console.log("Submitting data:", JSON.stringify(formattedAttendance, null, 2));
 
         setIsLoading(true);
         try {
@@ -136,8 +137,7 @@ function UpdateAttendanceRecords() {
     if (isLoading) return <Loader />;
 
     return (
-        <div>
-            <h1>update attendance record</h1>
+        <div className={styles.UpdateAttendanceRecords}>
             <form onSubmit={onSubmit}>
                 <select value={selectedClass} onChange={handleClassChange} required>
                     <option value="">Select Class</option>
@@ -153,31 +153,31 @@ function UpdateAttendanceRecords() {
                 </select>
                 {attendance.length === 0 && <p>No attendance data available. Please check if the data is correctly loaded.</p>}
                 {attendance.map((att, index) => (
-                    <div key={index}>
-                        <span>{att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data not available'}</span>
+                    <div key={index} className={styles.attendanceEntry}>
+                        <span className={styles.studentName}>{att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data not available'}</span>
                         {['present', 'late', 'absent - excused', 'absent - unexcused'].map((status) => (
-                            <label key={status}>
-                                <input 
+                            <label key={status} className={styles.radioLabel}>
+                                <input
                                     type="radio"
+                                    className={styles.radioInput}
                                     name={`status-${att.student._id}`}
                                     checked={att.status === status}
                                     onChange={() => handleAttendanceChange(att.student._id, status)}
                                 />
                                 {status}
-                            </label> 
+                            </label>
                         ))}
                     </div>
                 ))}
-                <button type="submit">Update Attendance</button>
+                <button type="submit" className={styles.button}>Update Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
+                {error && <p className={styles.error}>{error}</p>}
             </form>
-            {error && <p className="error">{error}</p>}
         </div>
     );
 }
 
 export default UpdateAttendanceRecords;
-
 
 
 
