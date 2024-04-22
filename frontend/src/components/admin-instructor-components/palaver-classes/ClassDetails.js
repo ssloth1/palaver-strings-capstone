@@ -25,7 +25,9 @@ function ClassDetails () {
             <h2>{ClassDetails.name}</h2>
             <p>instructor: {ClassDetails.instructor.firstName} {ClassDetails.instructor.lastName}</p>
             <p>meeting days: {ClassDetails.meetingDay.join(', ')}</p>
-            <p>meeting time: {ClassDetails.meetingTime}</p>
+            <p>start time: {ClassDetails.startTime}</p>
+            <p>end time: {ClassDetails.endTime}</p>
+            <p>classroom: {ClassDetails.classroom}</p>
             <p>students: </p>
             <ul>
             {ClassDetails.students && ClassDetails.students.length > 0 ? (

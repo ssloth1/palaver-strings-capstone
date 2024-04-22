@@ -91,10 +91,11 @@ function UpdateAttendanceRecords() {
     };
 
     const handleAttendanceChange = (studentId, status) => {
+        if(!studentId) return;
         console.log(`Changing status for ${studentId} to ${status}`);
 
         const updatedAttendance = attendance.map(att => {
-            if(att.student._id === studentId) {
+            if(att.student && att.student._id === studentId) {
                 return { ...att, status: status };
             }
             return att;
@@ -133,6 +134,11 @@ function UpdateAttendanceRecords() {
         }
     };
 
+    useEffect(() => {
+        console.log("Attendance data fetched:", attendance);
+    }, [attendance]);
+    
+
     if (isLoading) return <Loader />;
 
     return (
@@ -159,9 +165,9 @@ function UpdateAttendanceRecords() {
                             <label key={status}>
                                 <input 
                                     type="radio"
-                                    name={`status-${att.student._id}`}
+                                    name={`status-${att.student?._id}`}
                                     checked={att.status === status}
-                                    onChange={() => handleAttendanceChange(att.student._id, status)}
+                                    onChange={() => handleAttendanceChange(att.student?._id, status)}
                                 />
                                 {status}
                             </label> 

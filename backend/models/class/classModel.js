@@ -21,7 +21,8 @@ const classSchema = new Schema ({
     //Possibly unnecessary
     meetingDay: [{ type: String, required: true }],
     startTime: { type: String, required: true },
-    endTime: { type: String, required: true}
+    endTime: { type: String, required: true},
+    classroom: { type: String, required: true}
 
 }, {timestamps: true});
 
