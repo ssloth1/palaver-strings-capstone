@@ -16,7 +16,6 @@ function ManageUsers() {
         'instructor':[],
         'parent':[],
         'student':[],
-        'undefined':[]
     };
 
     // This state is used to keep track of which sections are collapsed
@@ -116,25 +115,17 @@ function ManageUsers() {
     
     // Group users by role
     for (const user of filteredUsers) {
-        var assigned = false;
         if (user.roles.includes('admin')){
             usersByRole['admin'].push(user);
-            assigned = true;
         }
         if (user.roles.includes('instructor')){
             usersByRole['instructor'].push(user);
-            assigned = true;
         }
         if (user.roles.includes('parent')){
             usersByRole['parent'].push(user);
-            assigned = true;
         }
         if (user.roles.includes('student')){
             usersByRole['student'].push(user);
-            assigned = true;
-        }
-        if (assigned === false) {
-            usersByRole['undefined'].push(user);
         }
     }
 
