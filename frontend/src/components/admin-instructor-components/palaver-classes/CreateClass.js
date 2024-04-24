@@ -34,33 +34,6 @@ function CreateClass() {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchInstructors = async () => {
-    //         // Assuming your backend has a route to fetch instructors
-    //         try {
-    //             const { data } = await axios.get('/api/instructors');
-    //             console.log("Fetched instructors:", data);
-    //             setInstructors(data);
-    //         } catch (error) {
-    //             console.error("Failed to fetch instructors:", error);
-    //         }
-    //     };
-
-    //     const fetchStudents = async () => {
-    //         try {
-    //             const { data } = await axios.get('/api/students/');
-    //             console.log("Fetched students:", data);
-    //             setStudents(data);
-    //         } catch (error) {
-    //             console.error("Failed to fetch students:", error);
-    //         }
-    //     };
-    
-    //     fetchInstructors();
-    //     fetchStudents();
-    // }, []); // Dependency array is empty to run only once on mount
-
-    
     const handleDaySelection = (day) => {
         console.log("Selected day:", day);
         setClassData(prevState => ({
@@ -88,30 +61,6 @@ function CreateClass() {
             [name]: value,
         }));
     };
-
-    // Handle form submission
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     setSubmitStatus('Submitting...');
-    //     setIsSubmitting(true);
-    //     try {
-    //         const submissionData = {
-    //             name: classData.name,
-    //             instructor: classData.instructor,
-    //             meetingDay: classData.meetingDay,
-    //             startTime: classData.startTime,
-    //             endTime: classData.endTime,
-    //             classroom: classData.classroom,
-    //             students: classData.students,
-    //         };
-    //         const response = await classService.addClass(submissionData);
-    //         console.log(response);
-    //         setSubmitStatus('Class added successfully!');
-    //     } catch (error) {
-    //         console.error(error);
-    //         setSubmitStatus('Error adding class.');
-    //     }
-    // };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
