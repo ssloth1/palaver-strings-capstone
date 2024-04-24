@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate} from "react-router-dom";
-import axios from 'axios';
-import classService from '../../../services/classServices';
+import ClassService from '../../../services/classServices';
+import UserService from '../../../services/userServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
 import styles from '../styles/UpdateClass.module.css';
 
@@ -10,23 +10,25 @@ function UpdateClass () {
     const { classId } = useParams();
     const navigate = useNavigate();
     const [allClasses, setAllClasses] = useState([]);
-    const [confirmationMessage, setConfirmationMessage] = useState('');
-    const [selectedClassId, setSelectedClassId] = useState('');
+    const [selectedClassId, setSelectedClassId] = useState(classId || '');
     const [classData, setClassData] = useState({
         name: '',
         instructor: '',
         meetingDay: [],
         startTime: '',
+        endTime: '',
+        classroom: '',
         students: [],
     });
     const [instructors, setInstructors] = useState([]);
     const [students, setStudents] = useState([]);
     const [submitStatus, setSubmitStatus] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchAllClasses = async () => {
             try {
-                const data = await classService.getAllClasses();
+                const data = await ClassService.getAllClasses();
                 setAllClasses(data);
             } catch (error) {
                 console.error("Failed to fetch class details:", error);
@@ -37,44 +39,32 @@ function UpdateClass () {
     }, []);
 
     useEffect(() => {
-        if(!selectedClassId) return;
-
-        const fetchData = async() => {
+        setIsLoading(true);
+        const fetchInitialData = async () => {
             try {
-                const ClassDetails = await classService.getClassById(selectedClassId);
-                console.log("Selected class details:", ClassDetails);
-                setClassData ({
-                    name: ClassDetails.name,
-                    instructor: ClassDetails.instructor._id,
-                    meetingDay: ClassDetails.meetingDay,
-                    startTime: ClassDetails.startTime,
-                    endTime: ClassDetails.endTime,
-                    classroom: ClassDetails.classroom,
-                    students: ClassDetails.students.map(student => student._id),
-                });
+                // const fetchedClasses = await classService.getAllClasses();
+                // setAllClasses(fetchedClasses);
+                const fetchedInstructors = await UserService.getInstructors();
+                const fetchedStudents = await UserService.getStudents();
+                setInstructors(fetchedInstructors);
+                setStudents(fetchedStudents);
+                if(selectedClassId) {
+                    const details = await ClassService.getClassById(selectedClassId);
+                    setClassData({
+                        ...details,
+                        instructor: details.instructor._id,
+                        students: details.students.map(student => student._id)
+                    });
+                }
             } catch (error) {
-                console.error("Failed to fetch class details:", error);
+                console.error("Failed to fetch data:", error);
+                setSubmitStatus(`Failed to load data: ${error.message || 'Unknown error'}`);
             }
+            setIsLoading(false);
         };
 
-        fetchData();
+        fetchInitialData();
     }, [selectedClassId]);
-
-    useEffect(() => {
-        const fetchInstructorsAndStudents = async () => {
-            try {
-                const instructorsData = await axios.get('/api/instructors');
-                console.log("instructors fetched:", instructorsData.data);
-                setInstructors(instructorsData.data);
-                const studentsData = await axios.get('/api/students');
-                setStudents(studentsData.data);
-            } catch (error) {
-                console.error("Failed to fetch instructors or students:", error);
-            }
-        };
-
-        fetchInstructorsAndStudents();
-    }, []);
 
     const handleDaySelection = (day) => {
         setClassData(prevState => ({
@@ -96,10 +86,7 @@ function UpdateClass () {
 
     const handleChange = async (event) => {
         const { name, value } = event.target;
-        setClassData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
+        setClassData(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSubmit = async (event) => {
@@ -108,24 +95,19 @@ function UpdateClass () {
             console.error("No class selected for update.");
             return;
         }
-        setSubmitStatus('Submitting...');
+        setIsLoading(true);
         try {
-            const updatedClass = await classService.updateClass(selectedClassId, {
-                ...classData,
-                meetingDay: classData.meetingDay,
-            });
+            const updatedClass = await ClassService.updateClass(selectedClassId, classData);
             setSubmitStatus('Class updated successfully!');
-            // Displaying a detailed confirmation message
-            setConfirmationMessage(`Class '${updatedClass.name}' updated successfully with instructor ${updatedClass.instructor} and meeting time on ${updatedClass.meetingDay.join(", ")} at ${updatedClass.meetingTime}.`);
-            // Optional: Clear the form or reset states if needed here
+            navigate(`/classes/${updatedClass._id}`);
         } catch (error) {
-            console.error(error);
+            console.error("Error updating class:", error);
             setSubmitStatus(`Error updating class: ${error.message}`);
         }
+        setIsLoading(false);
     };
 
     console.log("Instructor ID:", classData.instructor, typeof classData.instructor);
-
 
     return (
         <div>
@@ -135,9 +117,10 @@ function UpdateClass () {
                 {allClasses.map(cls =>(
                     <option key={cls._id} value={cls._id}>{cls.name}</option>
                 ))}
-                </select>        
-            <form onSubmit={handleSubmit}>
-            <input
+            </select>        
+            {isLoading ? <p>loading...</p> : (
+                <form onSubmit={handleSubmit}>
+                    <input
                         type="text"
                         name="name"
                         value={classData.name}
@@ -210,6 +193,7 @@ function UpdateClass () {
                         </div>
                     <button type="submit">update class</button>    
                 </form>
+            )}
                 {submitStatus && <p>{submitStatus}</p>}
         </div>
     );

@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import axios from "axios";
 import styles from "../styles/TakeAttendance.module.css";
 import Loader from "../../general-components/Loader";
 import moment from 'moment';
-//import { set } from "mongoose";
+import AttendanceService from "../../../services/attendanceServices";
+import ClassService from "../../../services/classServices";
+
 
 function TakeAttendance() {
     const [isLoading, setIsLoading] = useState(false);
@@ -27,8 +28,8 @@ function TakeAttendance() {
         const fetchClasses = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/classes');
-                setClasses(response.data);
+                const classData = await ClassService.getAllClasses();
+                setClasses(classData);
             } catch (error) {
                 console.error("Error fetching classes", error);
             } finally {
@@ -49,9 +50,9 @@ function TakeAttendance() {
     const fetchStudentsFromClass = async (classId) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/api/classes/${classId}`);
-            const studentsInClass = response.data.students || [];
-            console.log(response.data);
+            const response = await ClassService.getClassById(classId);
+            const studentsInClass = response.students || [];
+            console.log(response);
             setStudents(studentsInClass);
 
             // If no students enrolled set default message
@@ -80,9 +81,9 @@ function TakeAttendance() {
         setIsLoading(true);
         console.log(`Checking records for class ${classId} on date ${date}`);
         try {
-            const response = await axios.get(`http://localhost:4000/api/attendance/${classId}/${date}`);
-            console.log("Check response: ", response.data);
-            if (response.data.data === null || response.data.length === 0) {
+            const response = await AttendanceService.getAttendanceByClassDate(classId, date);
+            console.log("Check response: ", response);
+            if (!response || !response.length || !response.data) {
                 console.log("No existing record found, can submit new record.");
                 setError('');
                 setCanSubmit(true);
@@ -107,13 +108,14 @@ function TakeAttendance() {
             [name]: value
         }));
 
-        fetchStudentsFromClass(value); // Fetch students for the selected class
+        if(name === 'classId'){
+            fetchStudentsFromClass(value); // Fetch students for the selected class
+        }
     };
 
     const handleAttendanceChange = (studentId, status) => {
         const filteredAttendance = attendanceData.attendance.filter(item => item.studentId !== studentId);
         const updatedAttendance = [...filteredAttendance, { studentId, status }];
-
 
         setAttendanceData(prevData => ({
             ...prevData,
@@ -149,8 +151,8 @@ function TakeAttendance() {
 
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:4000/api/attendance', attendanceData);
-            console.log("Attendance recorded.", response.data);
+            const response = await AttendanceService.createAttendance(attendanceData);
+            console.log("Attendance recorded.", response);
             setStatusMessage("Attendance recorded!");
             setError('');
         } catch (error) {

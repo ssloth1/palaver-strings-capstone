@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import AttendanceService from '../../../services/attendanceServices';
 import styles from '../styles/ViewAttendanceRecords.module.css';
 import Loader from '../../general-components/Loader';
 
@@ -12,8 +12,8 @@ function ViewAttendanceRecords() {
         const fetchRecords = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/attendance');
-                setRecords(response.data);
+                const response = await AttendanceService.getAllAttendance();
+                setRecords(response);
                 setIsLoading(false);
             } catch (err) {
                 console.error('Failed to fetch attendance records:', err);
