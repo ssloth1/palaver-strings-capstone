@@ -1,10 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
-import styles from "../styles/TakeAttendance.module.css";
+import "../styles/TakeAttendance.css";
 import Loader from "../../general-components/Loader";
 import moment from 'moment';
-//import { set } from "mongoose";
 
 function TakeAttendance() {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,8 +17,7 @@ function TakeAttendance() {
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
-
-        date: moment().format('YYYY-MM-DD'), 
+        date: moment().format('YYYY-MM-DD'),
         attendance: []
     });
 
@@ -54,7 +52,6 @@ function TakeAttendance() {
             console.log(response.data);
             setStudents(studentsInClass);
 
-            // If no students enrolled set default message
             if (studentsInClass.length === 0) {
                 setStatusMessage("There are no students currently enrolled in this class. Attendance can't be taken.");
             } else {
@@ -107,13 +104,12 @@ function TakeAttendance() {
             [name]: value
         }));
 
-        fetchStudentsFromClass(value); // Fetch students for the selected class
+        fetchStudentsFromClass(value);  // Fetch students for the selected class
     };
 
     const handleAttendanceChange = (studentId, status) => {
         const filteredAttendance = attendanceData.attendance.filter(item => item.studentId !== studentId);
         const updatedAttendance = [...filteredAttendance, { studentId, status }];
-
 
         setAttendanceData(prevData => ({
             ...prevData,
@@ -165,7 +161,7 @@ function TakeAttendance() {
     if (isLoading) return <Loader />;
 
     return (
-        <div className={styles.TakeAttendance}>
+        <div className="TakeAttendance">
             <form onSubmit={onSubmit}>
                 <select name="classId" value={attendanceData.classId} onChange={handleChange} required>
                     <option value="">select class</option>
@@ -180,15 +176,15 @@ function TakeAttendance() {
                     <div>
                         {students.map((student) => (
                             <div key={student._id}>
-                                <span className={styles.studentName}>{student.firstName} {student.lastName}</span>
+                                <span className="studentName">{student.firstName} {student.lastName}</span>
                                 {['present', 'late', 'absent - excused', 'absent - unexcused'].map(status => (
-                                    <label key={status} className={styles.radioLabel}>
+                                    <label key={status} className="radioLabel">
                                         <input
                                             type="radio"
                                             name={`attendance-${student._id}`}
                                             checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === status)}
                                             onChange={() => handleAttendanceChange(student._id, status)}
-                                            className={styles.radioInput}
+                                            className="radioInput"
                                         />
                                         {status}
                                     </label>
@@ -199,12 +195,11 @@ function TakeAttendance() {
                 )}
                 <button type="submit" disabled={!canSubmit}>Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
-                {error && <p className={styles.error}>{error}</p>}
+                {error && <p className="error">{error}</p>}
             </form>
         </div>
     );
 }
 
 export default TakeAttendance;
-
 

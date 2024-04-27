@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from '../styles/ViewAttendanceRecords.module.css';
+import '../styles/ViewAttendanceRecords.css';
 import Loader from '../../general-components/Loader';
 
 function ViewAttendanceRecords() {
@@ -35,11 +35,11 @@ function ViewAttendanceRecords() {
     if (error) return <div>error: {error}</div>;
 
     return (
-        <div className={styles.attendanceRecords}>
+        <div className="attendanceRecords">
             <h2>Attendance Records</h2>
             {records.length > 0 ? (
                 records.map((record) => (
-                    <div key={record._id} className={styles.recordCard}>
+                    <div key={record._id} className="recordCard">
                         <p>Date: {displayDate(record.date)}</p>
                         <p>Class ID: {record.class && record.class.name}</p>
                         {record.students && record.students.length > 0 ? (

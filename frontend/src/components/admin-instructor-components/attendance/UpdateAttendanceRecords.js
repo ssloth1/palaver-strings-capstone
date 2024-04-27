@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loader from '../../general-components/Loader';
-import styles from '../styles/UpdateAttendanceRecords.module.css';
+import '../styles/UpdateAttendanceRecords.css';
 
 function UpdateAttendanceRecords() {
     const [isLoading, setIsLoading] = useState(false);
@@ -92,12 +92,12 @@ function UpdateAttendanceRecords() {
     };
 
     const handleAttendanceChange = (studentId, status) => {
-        if(!studentId) return;
+        if (!studentId) return;
         console.log(`Changing status for ${studentId} to ${status}`);
 
         const updatedAttendance = attendance.map(att => {
 
-            if(att.student && att.student._id === studentId) {
+            if (att.student && att.student._id === studentId) {
                 return { ...att, status: status };
             }
             return att;
@@ -139,12 +139,12 @@ function UpdateAttendanceRecords() {
     useEffect(() => {
         console.log("Attendance data fetched:", attendance);
     }, [attendance]);
-    
+
 
     if (isLoading) return <Loader />;
 
     return (
-        <div className={styles.UpdateAttendanceRecords}>
+        <div className="UpdateAttendanceRecords">
             <form onSubmit={onSubmit}>
                 <select value={selectedClass} onChange={handleClassChange} required>
                     <option value="">Select Class</option>
@@ -160,10 +160,10 @@ function UpdateAttendanceRecords() {
                 </select>
                 {attendance.length === 0 && <p>No attendance data available. Please check if the data is correctly loaded.</p>}
                 {attendance.map((att, index) => (
-                    <div key={index} className={styles.attendanceEntry}>
-                        <span className={styles.studentName}>{att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data not available'}</span>
+                    <div key={index} className="attendanceEntry">
+                        <span className="studentName">{att.student ? `${att.student.firstName} ${att.student.lastName}` : 'Student data not available'}</span>
                         {['present', 'late', 'absent - excused', 'absent - unexcused'].map((status) => (
-                            <label key={status} className={styles.radioLabel}>
+                            <label key={status} className="radioLabel">
                                 <input
                                     type="radio"
                                     name={`status-${att.student?._id}`}
@@ -175,15 +175,14 @@ function UpdateAttendanceRecords() {
                         ))}
                     </div>
                 ))}
-                <button type="submit" className={styles.button}>Update Attendance</button>
+                <button type="submit" className="button">Update Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
-                {error && <p className={styles.error}>{error}</p>}
+                {error && <p className="error">{error}</p>}
             </form>
         </div>
     );
 }
 
 export default UpdateAttendanceRecords;
-
 
 
