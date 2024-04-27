@@ -324,12 +324,29 @@ function AddUserForm() {
                 {formData.roles.includes('student') || formData.roles.includes('instructor') ?
                     <>
                         {/*Student specific fields */}
-                        {/*Dropdown for instrument selection*/}
-                        <label for="instrument">instrument</label>
-                        <select name="instrument" value={formData.instrument} onChange={handleChange} required>
-                            <option value="">select instrument</option>
-                            {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
+                        <label className="form-label" htmlFor="instrumentSelect">Instrument <span style={{color: "red"}}>*</span></label>
+                        <select id="instrumentSelect" name="instrument" value={formData.instrument} onChange={handleChange} required>
+                            <option value="">Select instrument</option>
+                            {INSTRUMENTS.map(instrument => (
+                                <option key={instrument} value={instrument}>{instrument}</option>
+                            ))}
                         </select>
+
+                        {/* If the user selects "Other" as the instrument, show a text input for the custom instrument name */}
+                        {formData.instrument === "Other" && (
+                            <div>
+                                <label className="form-label" htmlFor="customInstrumentInput">Custom Instrument Name <span style={{color: "red"}}>*</span></label>
+                                <input
+                                    id="customInstrumentInput"
+                                    type="text" 
+                                    name="customInstrument" 
+                                    value={customInstrument} 
+                                    onChange={handleChange} 
+                                    placeholder="Enter Custom Instrument Name" 
+                                    required 
+                                />
+                            </div>
+                        )}
                     </>
                     : <></>}
                 {formData.roles.includes('student') ?
