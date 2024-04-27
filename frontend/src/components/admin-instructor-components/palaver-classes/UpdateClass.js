@@ -1,12 +1,12 @@
-import React, { useState, useEffect} from 'react';
-import { useParams, useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import classService from '../../../services/classServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
-import styles from '../styles/UpdateClass.module.css';
+import '../styles/UpdateClass.css';
 
 
-function UpdateClass () {
+function UpdateClass() {
     const { classId } = useParams();
     const navigate = useNavigate();
     const [allClasses, setAllClasses] = useState([]);
@@ -37,13 +37,13 @@ function UpdateClass () {
     }, []);
 
     useEffect(() => {
-        if(!selectedClassId) return;
+        if (!selectedClassId) return;
 
-        const fetchData = async() => {
+        const fetchData = async () => {
             try {
                 const ClassDetails = await classService.getClassById(selectedClassId);
                 console.log("Selected class details:", ClassDetails);
-                setClassData ({
+                setClassData({
                     name: ClassDetails.name,
                     instructor: ClassDetails.instructor._id,
                     meetingDay: ClassDetails.meetingDay,
@@ -80,8 +80,8 @@ function UpdateClass () {
         setClassData(prevState => ({
             ...prevState,
             meetingDay: prevState.meetingDay.includes(day)
-            ? prevState.meetingDay.filter(d => d !== day)
-            : [...prevState.meetingDay, day],
+                ? prevState.meetingDay.filter(d => d !== day)
+                : [...prevState.meetingDay, day],
         }));
     };
 
@@ -89,8 +89,8 @@ function UpdateClass () {
         setClassData(prevState => ({
             ...prevState,
             students: prevState.students.includes(studentId)
-            ? prevState.students.filter(id => id !== studentId)
-            : [...prevState.students, studentId],
+                ? prevState.students.filter(id => id !== studentId)
+                : [...prevState.students, studentId],
         }));
     };
 
@@ -104,7 +104,7 @@ function UpdateClass () {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if(!selectedClassId) {
+        if (!selectedClassId) {
             console.error("No class selected for update.");
             return;
         }
@@ -128,92 +128,91 @@ function UpdateClass () {
 
 
     return (
-        <div>
+        <div className="updateClassContainer">
             <h2>update class</h2>
             <select onChange={(e) => setSelectedClassId(e.target.value)} value={selectedClassId}>
                 <option value="">select a class</option>
-                {allClasses.map(cls =>(
+                {allClasses.map(cls => (
                     <option key={cls._id} value={cls._id}>{cls.name}</option>
                 ))}
-                </select>        
+            </select>
             <form onSubmit={handleSubmit}>
-            <input
-                        type="text"
-                        name="name"
-                        value={classData.name}
-                        placeholder="Class Name"
-                        onChange={handleChange}
-                        required
-                    />
-                    <select
-                        name="instructor"
-                        value={classData.instructor}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">select instructor</option>
-                        {instructors.map(instructor => (
-                            <option key={instructor._id} value={instructor._id}>
-                                {`${instructor.firstName} ${instructor.lastName}`} {/* Display full name */}
-                            </option>
-                        ))}
-                    </select>    
-                    <input
-                        type="time"
-                        name="startTime"
-                        value={classData.startTime}
-                        onChange={handleChange} 
-                        required
-                    />
-                    <input
-                        type="time"
-                        name="endTime"
-                        value={classData.endTime}
-                        onChange={handleChange}
-                        required
-                    />
-                    <select
-                        name="classroom"
-                        value={classData.classroom}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">select classroom</option>
-                        {['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6'].map((classroom) => (
-                            <option key={classroom} value={classroom}>{classroom}</option>
-                        ))}
-                    </select>
-                    <div>
-                        {WEEKDAYS.map(day => (
-                            <button 
-                                type="button"
-                                key={day}
-                                onClick={()=> handleDaySelection(day)}
-                                className={classData.meetingDay.includes(day) ? styles.selected : '' }
-                            >
-                                {day}
-                            </button>
-                        ))}
-                    </div>
-                    <div>
-                        {students.map(student => (
-                            <div key={student._id}>
-                                <input
-                                    type="checkbox"
-                                    id={`student-${student._id}`}
-                                    checked={classData.students.includes(student._id)}
-                                    onChange={() => handleStudentSelection(student._id)}
-                                />
-                                <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
-                            </div>
-                        ))}
+                <input
+                    type="text"
+                    name="name"
+                    value={classData.name}
+                    placeholder="Class Name"
+                    onChange={handleChange}
+                    required
+                />
+                <select
+                    name="instructor"
+                    value={classData.instructor}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">select instructor</option>
+                    {instructors.map(instructor => (
+                        <option key={instructor._id} value={instructor._id}>
+                            {`${instructor.firstName} ${instructor.lastName}`}
+                        </option>
+                    ))}
+                </select>
+                <input
+                    type="time"
+                    name="startTime"
+                    value={classData.startTime}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="time"
+                    name="endTime"
+                    value={classData.endTime}
+                    onChange={handleChange}
+                    required
+                />
+                <select
+                    name="classroom"
+                    value={classData.classroom}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">select classroom</option>
+                    {['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6'].map((classroom) => (
+                        <option key={classroom} value={classroom}>{classroom}</option>
+                    ))}
+                </select>
+                <div>
+                    {WEEKDAYS.map(day => (
+                        <button
+                            type="button"
+                            key={day}
+                            onClick={() => handleDaySelection(day)}
+                            className={classData.meetingDay.includes(day) ? "selected" : ''}
+                        >
+                            {day}
+                        </button>
+                    ))}
+                </div>
+                <div>
+                    {students.map(student => (
+                        <div key={student._id}>
+                            <input
+                                type="checkbox"
+                                id={`student-${student._id}`}
+                                checked={classData.students.includes(student._id)}
+                                onChange={() => handleStudentSelection(student._id)}
+                            />
+                            <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
                         </div>
-                    <button type="submit">update class</button>    
-                </form>
-                {submitStatus && <p>{submitStatus}</p>}
+                    ))}
+                </div>
+                <button type="submit">update class</button>
+            </form>
+            {submitStatus && <p>{submitStatus}</p>}
         </div>
     );
-
 }
-      
-export default UpdateClass;
+
+export default UpdateClass; 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import styles from './styles/AddUserForm.module.css';
+import './styles/AddUserForm.css';
 
 import { GENDER, RACE_ETHNICITY, LANGUAGES, COUNTRIES, US_STATES, CANADIAN_PROVINCES, INSTRUMENTS, USER_TYPES } from '../../constants/formconstants';
 
@@ -20,7 +20,7 @@ function AddUserForm() {
 
     // State to store the form data
     const [formData, setFormData] = useState({
-        
+
         // Common field for all user roles
         firstName: "",
         lastName: "",
@@ -56,7 +56,7 @@ function AddUserForm() {
         //primaryInstructor: "", // optional for now
         //mentor: "", // optional for now
         //mentees: [], // optional for now
-        
+
 
         // Parent specific fields
         // .. TODO: add parent specific fields
@@ -76,14 +76,14 @@ function AddUserForm() {
         setFormData(prevFormData => ({
             ...prevFormData,
             roles: checked
-                    ? [...prevFormData.roles, name]
-                    : prevFormData.roles.filter(role => role !== name),
+                ? [...prevFormData.roles, name]
+                : prevFormData.roles.filter(role => role !== name),
         }));
     };
-    
+
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
-    
+
         if (type === "checkbox") {
             // Handle the permissions checkboxes differently, as they are an array of permissions
             setFormData(prevFormData => ({
@@ -138,13 +138,13 @@ function AddUserForm() {
         }
 
         // TODO: Student related validation
-        if (formData.roles.includes('student')){
+        if (formData.roles.includes('student')) {
             if (!formData.parentEmail) {
                 console.error("Student cannot be created without a parent.");
                 setStatusMessage("Parent email must be entered.");
                 return false;
             }
-                
+
         }
         // TODO: Parent related validation
         // TODO: Instructor related validation
@@ -161,46 +161,46 @@ function AddUserForm() {
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         // Check if the user is logged in before submitting the form, if not, display an error message and return
         if (!isLoggedIn) {
             console.error("You need to be logged in to submit.");
             setStatusMessage("You need to be logged in to submit.");
             return;
         }
-        
+
         // Check if the passwords match, if not, display an error message and return
         if (formData.password !== formData.confirmPassword) {
             setStatusMessage("Passwords do not match.");
             return;
         }
-        
+
         // Validate the form before submitting
         if (!validateForm()) {
             setStatusMessage("Data did not validate.")
             return;
         }
-/**
- * Since I'm testing new unified user creation, commenting this out.
-     
-        let endpoint = "";
-        switch (finalFormData.role) {
-            case 'admin':
-                endpoint = 'http://localhost:4000/api/admins';
-                break;
-            case 'instructor':
-                endpoint = 'http://localhost:4000/api/instructors';
-                break;
-            case 'student':
-                endpoint = 'http://localhost:4000/api/students';
-                break;
-            case 'parent':
-                endpoint = 'http://localhost:4000/api/parents';
-                break;
-            default:
-                break;
-        }
- */   
+        /**
+         * Since I'm testing new unified user creation, commenting this out.
+             
+                let endpoint = "";
+                switch (finalFormData.role) {
+                    case 'admin':
+                        endpoint = 'http://localhost:4000/api/admins';
+                        break;
+                    case 'instructor':
+                        endpoint = 'http://localhost:4000/api/instructors';
+                        break;
+                    case 'student':
+                        endpoint = 'http://localhost:4000/api/students';
+                        break;
+                    case 'parent':
+                        endpoint = 'http://localhost:4000/api/parents';
+                        break;
+                    default:
+                        break;
+                }
+         */
         // Prepares the form data by putting it in the necessary format for the backend
         const submissionData = {
             ...formData,
@@ -214,10 +214,10 @@ function AddUserForm() {
             },
             hashedPassword: formData.password, // Assuming backend hashes the password
         };
-    
+
         // Remove confirmPassword before sending the form data to the backend
         delete submissionData.confirmPassword;
-    
+
         console.log("Submitting Form");
         console.log(submissionData);
         try {
@@ -228,30 +228,31 @@ function AddUserForm() {
             setStatusMessage("An error occurred while submitting the form.");
             console.error("Error submitting form", error);
         }
-    };    
+    };
 
     return (
-        
-        <div className={styles.addUserForm}>
+
+        <div className="addUserForm">
             <h1> add new user </h1>
             <form onSubmit={handleSubmit}>
 
-            {/* checkboxes for the user's role */}
-            <div class="checkbox">
-                {USER_TYPES.map((usertype) => (
-                    <label key={usertype}>
-                        <input
-                            type="checkbox"
-                            name={usertype}
-                            checked={formData.roles.includes(usertype)}
-                            onChange={handleRoleChange}
-                        />
-                        {usertype.charAt(0).toUpperCase() + usertype.slice(1)}
-                    </label>
-                ))}
-            </div>
+                {/* checkboxes for the user's role */}
+                <div className="checkbox-wrapper">
+                    {USER_TYPES.map((usertype) => (
+                        <div className="checkbox-label" key={usertype}>
+                            <input
+                                type="checkbox"
+                                id={usertype}
+                                name={usertype}
+                                checked={formData.roles.includes(usertype)}
+                                onChange={handleRoleChange}
+                            />
+                            <label htmlFor={usertype}>{usertype.charAt(0).toUpperCase() + usertype.slice(1)}</label>
+                        </div>
+                    ))}
+                </div>
 
-            {/*
+                {/*
             <select name="role" value={formData.role} onChange={handleChange} required>
                 <option value="" disabled>Select a Role</option>
                 <option value="student">Student</option>
@@ -261,132 +262,132 @@ function AddUserForm() {
             </select>
                 */}
 
-            {/* Text input for the user's first name */}
-            <label className={styles["form-label"]} htmlFor="firstNameInput">First Name <span style={{color: "red"}}>*</span></label>
-            <input id="firstNameInput" type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
-            
-            {/* Text input for the user's last name */}
-            <label className={styles["form-label"]} htmlFor="lastNameInput">Last Name <span style={{color: "red"}}>*</span></label>
-            <input id="lastNameInput" type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
-            
-            {/* Text input for the user's email address */}
-            <label className={styles["form-label"]} htmlFor="emailInput">Email <span style={{color: "red"}}>*</span></label>
-            <input id="emailInput" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-            
-            {/* Text input for the user's password */}
-            <label className={styles["form-label"]} htmlFor="passwordInput">Password <span style={{color: "red"}}>*</span></label>
-            <input id="passwordInput" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
-            
-            {/* Text input for the user's password confirmation */}
-            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
-            
-            {/* Dropdown for the user's gender */}
-            <label className={styles["form-label"]} htmlFor="genderSelect">Gender <span style={{color: "red"}}>*</span></label>
-            <select id="genderSelect" name="gender" value={formData.gender} onChange={handleChange} required>
-                <option value="">Select Gender</option>
-                {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
-            </select>
+                {/* Text input for the user's first name */}
+                <label className="form-label" htmlFor="firstNameInput">First Name <span style={{ color: "red" }}>*</span></label>
+                <input id="firstNameInput" type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
 
-            {/* Dropwon for the user's race */}
-            <label className={styles["form-label"]} htmlFor="raceEthnicitySelect">Race/Ethnicity <span style={{color: "red"}}>*</span></label>
-            <select id="raceEthnicitySelect" name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
-                <option value="">Select Race/Ethnicity</option>
-                {RACE_ETHNICITY.map(race => <option key={race} value={race}>{race}</option>)}
-            </select>
+                {/* Text input for the user's last name */}
+                <label className="form-label" htmlFor="lastNameInput">Last Name <span style={{ color: "red" }}>*</span></label>
+                <input id="lastNameInput" type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
 
-            {/* Dropdown for the user's primary language */}
-            <label className={styles["form-label"]} htmlFor="primaryLanguageSelect">Primary Language <span style={{color: "red"}}>*</span></label>
-            <select id="primaryLanguageSelect" name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
-                <option value="">Select Primary Language</option>
-                {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
-            </select>
+                {/* Text input for the user's email address */}
+                <label className="form-label" htmlFor="emailInput">Email <span style={{ color: "red" }}>*</span></label>
+                <input id="emailInput" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
 
-            {/* Only displays if admin role is selected */}
-            {formData.roles.includes('admin') ? 
-                <div class="checkbox">
-                {PERMISSIONS.map((permission) => (
-                    <label key={permission}>
-                        <input
-                            type="checkbox"
-                            name={permission}
-                            checked={formData.permissions.includes(permission)}
-                            onChange={handleChange}
-                        />
-                        {permission.charAt(0).toUpperCase() + permission.slice(1)}
-                    </label>
-                ))}
-                </div>
-                : <></>
-            }
+                {/* Text input for the user's password */}
+                <label className="form-label" htmlFor="passwordInput">Password <span style={{ color: "red" }}>*</span></label>
+                <input id="passwordInput" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
 
-            {/* Only displays if student or instructor role is checked */}
-            {formData.roles.includes('student') || formData.roles.includes('instructor') ? 
-                <>        
-                    {/*Student specific fields */}
-                    {/*Dropdown for instrument selection*/ }
-                    <label for="instrument">instrument</label>
-                    <select name="instrument" value={formData.instrument} onChange={handleChange} required>
-                        <option value="">select instrument</option>
-                        {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
-                    </select>
-                </>
-                :<></>}
-            {formData.roles.includes('student') ?
-                <>
-                    {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
-                    {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
-                    {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
-                    {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                    {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> }
-                    {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
-                </>
-                :<></>
-            }
+                {/* Text input for the user's password confirmation */}
+                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
 
-            {/* Text input for the user's address */}
-            <label className={styles["form-label"]} htmlFor="addressLine1Input">Address Line 1 <span style={{color: "red"}}>*</span></label>
-            <input id="addressLine1Input" type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
+                {/* Dropdown for the user's gender */}
+                <label className="form-label" htmlFor="genderSelect">Gender <span style={{ color: "red" }}>*</span></label>
+                <select id="genderSelect" name="gender" value={formData.gender} onChange={handleChange} required>
+                    <option value="">Select Gender</option>
+                    {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
+                </select>
 
-            {/* Text input for the user's address line 2 (not required) */}
-            <label className={styles["form-label"]} htmlFor="addressLine2Input">Address Line 2</label>
-            <input id="addressLine2Input" type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} placeholder="Address Line 2" />
+                {/* Dropwon for the user's race */}
+                <label className="form-label" htmlFor="raceEthnicitySelect">Race/Ethnicity <span style={{ color: "red" }}>*</span></label>
+                <select id="raceEthnicitySelect" name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
+                    <option value="">Select Race/Ethnicity</option>
+                    {RACE_ETHNICITY.map(race => <option key={race} value={race}>{race}</option>)}
+                </select>
 
-            {/* Text input for the user's city */}
-            <label className={styles["form-label"]} htmlFor="cityInput">City <span style={{color: "red"}}>*</span></label>
-            <input id="cityInput" type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
-            
-            {/* Dropdown for the user's state/province */}
-            <label className={styles["form-label"]} htmlFor="stateSelect">State/Province <span style={{color: "red"}}>*</span></label>
-            <select id="stateSelect" name="state" value={formData.state} onChange={handleChange} required>
-                <option value="">Select State/Province</option>
-                {US_STATES.map(state => <option key={state} value={state}>{state}</option>)}
-            </select>
+                {/* Dropdown for the user's primary language */}
+                <label className="form-label" htmlFor="primaryLanguageSelect">Primary Language <span style={{ color: "red" }}>*</span></label>
+                <select id="primaryLanguageSelect" name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
+                    <option value="">Select Primary Language</option>
+                    {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
+                </select>
 
-            {/* Text input for the user's zip code */}
-            <label className={styles["form-label"]} htmlFor="zipCodeInput">Zip Code <span style={{color: "red"}}>*</span></label>
-            <input id="zipCodeInput" type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" required={formData.country === 'United States'} />
-            
-            {/* Text input for the user's phone number */}
-            <label className={styles["form-label"]} htmlFor="phoneNumberInput">Phone Number </label>
-            <input id="phoneNumberInput" type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
-            
-            {/* Dropdown for the user's preferred communication method */}
-            <label className={styles["form-label"]} htmlFor="preferredCommunicationSelect">Preferred Communication </label>
-            <select id="preferredCommunicationSelect" name="preferredCommunication" value={formData.preferredCommunication} onChange={handleChange}>
-                <option value="">Select Preferred Communication</option>
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-                <option value="text">Text</option>
-                <option value="whatsapp">Whatsapp</option>
-            </select>
+                {/* Only displays if admin role is selected */}
+                {formData.roles.includes('admin') ?
+                    <div class="checkbox">
+                        {PERMISSIONS.map((permission) => (
+                            <label key={permission}>
+                                <input
+                                    type="checkbox"
+                                    name={permission}
+                                    checked={formData.permissions.includes(permission)}
+                                    onChange={handleChange}
+                                />
+                                {permission.charAt(0).toUpperCase() + permission.slice(1)}
+                            </label>
+                        ))}
+                    </div>
+                    : <></>
+                }
 
-            {/* Submit button */}
-            <button type="submit">add user</button>
-            {statusMessage && <p>{statusMessage}</p>}
+                {/* Only displays if student or instructor role is checked */}
+                {formData.roles.includes('student') || formData.roles.includes('instructor') ?
+                    <>
+                        {/*Student specific fields */}
+                        {/*Dropdown for instrument selection*/}
+                        <label for="instrument">instrument</label>
+                        <select name="instrument" value={formData.instrument} onChange={handleChange} required>
+                            <option value="">select instrument</option>
+                            {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
+                        </select>
+                    </>
+                    : <></>}
+                {formData.roles.includes('student') ?
+                    <>
+                        {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
+                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
+                        {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
+                        {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
+                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" />}
+                        {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
+                    </>
+                    : <></>
+                }
+
+                {/* Text input for the user's address */}
+                <label className="form-label" htmlFor="addressLine1Input">Address Line 1 <span style={{ color: "red" }}>*</span></label>
+                <input id="addressLine1Input" type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
+
+                {/* Text input for the user's address line 2 (not required) */}
+                <label className="form-label" htmlFor="addressLine2Input">Address Line 2</label>
+                <input id="addressLine2Input" type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} placeholder="Address Line 2" />
+
+                {/* Text input for the user's city */}
+                <label className="form-label" htmlFor="cityInput">City <span style={{ color: "red" }}>*</span></label>
+                <input id="cityInput" type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
+
+                {/* Dropdown for the user's state/province */}
+                <label className="form-label" htmlFor="stateSelect">State/Province <span style={{ color: "red" }}>*</span></label>
+                <select id="stateSelect" name="state" value={formData.state} onChange={handleChange} required>
+                    <option value="">Select State/Province</option>
+                    {US_STATES.map(state => <option key={state} value={state}>{state}</option>)}
+                </select>
+
+                {/* Text input for the user's zip code */}
+                <label className="form-label" htmlFor="zipCodeInput">Zip Code <span style={{ color: "red" }}>*</span></label>
+                <input id="zipCodeInput" type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" required={formData.country === 'United States'} />
+
+                {/* Text input for the user's phone number */}
+                <label className="form-label" htmlFor="phoneNumberInput">Phone Number </label>
+                <input id="phoneNumberInput" type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
+
+                {/* Dropdown for the user's preferred communication method */}
+                <label className="form-label" htmlFor="preferredCommunicationSelect">Preferred Communication </label>
+                <select id="preferredCommunicationSelect" name="preferredCommunication" value={formData.preferredCommunication} onChange={handleChange}>
+                    <option value="">Select Preferred Communication</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                    <option value="text">Text</option>
+                    <option value="whatsapp">Whatsapp</option>
+                </select>
+
+                {/* Submit button */}
+                <button type="submit">add user</button>
+                {statusMessage && <p>{statusMessage}</p>}
 
             </form>
         </div>
-        );
-    }
+    );
+}
 
 export default AddUserForm;
