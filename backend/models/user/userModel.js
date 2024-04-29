@@ -50,12 +50,17 @@ const userSchema = new Schema({
     grade: { type: Number, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     howHeardAboutProgram: { type: String, required: false },
     parent: { type: mongoose.Schema.Types.ObjectID, ref: 'User', required: false },
+    mediaRelease: { type: Boolean, required: function() { return this.roles.includes('student'); } },
 
     //These are all student fields that are currently not used.  Specific comments below
     primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, //Replaced by class model?
     mentor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, //No mentor module yet
     mentees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}], //No mentor module yet
     progressReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProgressReport', required: false }], //Progress reports currently on hold
+
+    //This field is not used at this time. Included for future functionality
+    //We anticipate archiving being useful as an alternative to deleting
+    archived: { type: Boolean, default: false, required: true }
 
 }, { timestamps: true });
 

@@ -51,6 +51,7 @@ function AddUserForm() {
         grade: "",
         howHeardAboutProgram: "", // optional for now
         parentEmail: "",
+        mediaRelease: false,
         //Commenting the next three parameters out: these are optional in the model and probably best done through
         //an update process rather than the creation process.
         //primaryInstructor: "", // optional for now
@@ -81,6 +82,17 @@ function AddUserForm() {
         }));
     };
     
+    const handleMediaReleaseChange = (event) => {
+        const { checked }= event.target;
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            mediaRelease: prevFormData.mediaRelease === true ? false : true
+        }))
+
+    }
+
+
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
     
@@ -287,7 +299,7 @@ function AddUserForm() {
                 {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
             </select>
 
-            {/* Dropwon for the user's race */}
+            {/* Dropdown for the user's race */}
             <label className={styles["form-label"]} htmlFor="raceEthnicitySelect">Race/Ethnicity <span style={{color: "red"}}>*</span></label>
             <select id="raceEthnicitySelect" name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
                 <option value="">Select Race/Ethnicity</option>
@@ -324,7 +336,7 @@ function AddUserForm() {
                 <>        
                     {/*Student specific fields */}
                     {/*Dropdown for instrument selection*/ }
-                    <label for="instrument">instrument</label>
+                    <label for="instrument" className={styles["form-label"]}>instrument <span style={{color: "red"}}>*</span></label>
                     <select name="instrument" value={formData.instrument} onChange={handleChange} required>
                         <option value="">select instrument</option>
                         {INSTRUMENTS.map(instrument => <option key={instrument} value={instrument}>{instrument}</option>)}
@@ -333,12 +345,24 @@ function AddUserForm() {
                 :<></>}
             {formData.roles.includes('student') ?
                 <>
-                    {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
-                    {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
-                    {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
-                    {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                    {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> }
-                    {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
+                    
+                    <label for="dateOfBirth" className={styles["form-label"]}>date of birth <span style={{color: "red"}}>*</span></label>
+                    <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+                    
+                    <label for="school" className={styles["form-label"]}>school <span style={{color: "red"}}>*</span></label>
+                    <input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
+
+                    <label for="grade" className={styles["form-label"]}>grade <span style={{color: "red"}}>*</span></label>
+                    <input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />
+
+                    <label for='howHeardAboutProgram' className={styles["form-label"]}>how student heard about the program</label>
+                    <input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> 
+                    
+                    <label for="parentEmail" className={styles["form-label"]}>parent email <span style={{color: "red"}}>*</span></label>
+                    <input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />
+
+                    <label for="mediaRelease" className={styles['form-label']}>media release?</label>
+                    <input type="checkbox" name="mediaRelease" value={formData.mediaRelease} onChange={handleMediaReleaseChange} />
                 </>
                 :<></>
             }

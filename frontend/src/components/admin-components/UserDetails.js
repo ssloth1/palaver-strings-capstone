@@ -79,15 +79,13 @@ function UserDetails() {
         <div className="user-details-container">
             <h1 className="user-details-heading">{user.firstName} {user.lastName}</h1>
             <p className="user-detail"><span className="user-detail-title">Email:</span> {user.email}</p>
-            <p className="user-detail"><span className="user-detail-title">Role:</span> {user.role}</p>
+            <p className="user-detail"><span className="user-detail-title">Role:</span> {user.roles.join(', ')}</p>
             
             {/*Function to help render fields for specific roles*/ }
             {renderRoleSpecificFields(user, children, parent)}
 
             {user.roles.includes('admin') ? 
                 <>
-                <p className="user-detail"><span className="user-detail-title">Org Email:</span> {user.orgEmail}</p>
-                {user.secondaryEmail && <p className="user-detail"><span className="user-detail-title">Secondary Email:</span> {user.secondaryEmail}</p>}
                 <p className="user-detail"><span className="user-detail-title">Permissions:</span> {user.permissions.join(', ')}</p>
             </>
                 : <></>
@@ -95,16 +93,15 @@ function UserDetails() {
 
             {user.roles.includes('instructor') ? 
                 <>
-                    <p className="user-detail"><span className="user-detail-title">Org Email:</span> {user.orgEmail}</p>
-                    <p className="user-detail"><span className="user-detail-title">Number of Students:</span> {user.students?.length || 0}</p>
                 </> 
                 : <></>
             }
 
             {user.roles.includes('parent') ? 
                 <>
-                <p className="user-detail"><span className="user-detail-title">Parent Email:</span> {user.parentEmail}</p>
-                <p className="user-detail"><span className="user-detail-title">Discount Percentage:</span> {user.discountPercentage}%</p>
+                {/* Commented out discount percentage for this release */}
+                {/*<p className="user-detail"><span className="user-detail-title">Discount Percentage:</span> {user.discountPercentage}%</p>*/}
+
                 <div className="user-detail">
                     <span className="user-detail-title">Children:</span>
                     <ul>
@@ -128,6 +125,7 @@ function UserDetails() {
                 <p className="user-detail"><span className="user-detail-title">Date of Birth:</span> {new Date(user.dateOfBirth).toLocaleDateString()}</p>
                 <p className="user-detail"><span className="user-detail-title">School:</span> {user.school}</p>
                 <p className="user-detail"><span className="user-detail-title">Grade:</span> {user.grade}</p>
+                <p className="user-detail"><span className="user-detail-title">Media Release:</span> {user.mediaRelease}</p>
                 {parent && (
                     <p className="user-detail">
                         <span className="user-detail-title">Parent:</span> 

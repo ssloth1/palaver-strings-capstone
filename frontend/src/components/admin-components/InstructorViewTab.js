@@ -29,7 +29,6 @@ const exportToExcel = (instructors) => {
             day: '2-digit',
             year: 'numeric',
         }),
-        'Students': instructor.students.map(student => student.name).join(', ')
     })));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Instructors');
@@ -85,6 +84,11 @@ const InstructorViewTab = () => {
         fetchInstructors();
     }, []);
 
+    const handleRowClick = (instructorId) => {
+        console.log(`Clicked on instructor with ID: ${instructorId}`);
+        navigate(`/user-details/${instructorId}`);
+    };
+
     /**
      * Helper function to handle clicking on a students's name, navigating to the students's details page
      * @param {*} studentId 
@@ -139,13 +143,12 @@ const InstructorViewTab = () => {
                             <th>Race/Ethnicity</th>
                             <th>Primary Language</th>
                             <th>Created</th>
-                            <th>Children</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredInstructors.map((instructor) => (
                             <React.Fragment key={instructor._id}>
-                                <tr key={instructor._id}>
+                                <tr key={instructor._id} onClick={() => handleRowClick(instructor._id)} style={{ cursor: 'pointer' }}>
                                     <td>{instructor.firstName}</td>
                                     <td>{instructor.lastName}</td>
                                     <td>{instructor.email}</td>
@@ -164,31 +167,7 @@ const InstructorViewTab = () => {
                                         day: '2-digit',
                                         year: 'numeric',
                                     })}</td>
-                                    <td>
-                                        {instructor.students.length === 1 ? (
-                                            // If there is only one student, display the name and make it clickable
-                                            <div onClick={(e) => handleStudentClick(instructor.students[0].id, e)} style={{ cursor: 'pointer' }}>
-                                                {instructor.students[0].name}
-                                            </div>
-                                        ) : instructor.students.length > 1 ? (
-                                            // If there are multiple students, show a dropdown icon to expand/collapse the list
-                                            <div onClick={() => toggleStudentDisplay(instructor._id)} style={{ cursor: 'pointer' }}>
-                                                {expandedInstructorId === instructor._id ? <FaAngleDown /> : <FaAngleRight />} Multiple Children
-                                            </div>
-                                        ) : (
-                                            // If there are no students
-                                            <div> - </div>
-                                        )}
-                                    </td>
                                 </tr>
-                                {expandedInstructorId === instructor._id && instructor.students.map((student, index) => (
-                                // Render all students in the dropdown when expanded, ensuring they are all clickable
-                                <tr key={student.id} onClick={(e) => handleStudentClick(student.id, e)}>
-                                    <td colSpan="100%" style={{ cursor: 'pointer', paddingLeft: '20px' }}>
-                                        {student.name}
-                                    </td>
-                                </tr>
-                                ))}
                             </React.Fragment>
                         ))}
                     </tbody>
