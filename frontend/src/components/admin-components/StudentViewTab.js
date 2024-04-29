@@ -223,7 +223,7 @@ const StudentViewTab = () => {
                                 <td onClick={student.parentDetails?._id ? (e) => handleParentClick(e, student.parentDetails._id) : undefined}>
                                     {student.parentDetails ? `${student.parentDetails.firstName ?? ''} ${student.parentDetails.lastName ?? ''}`.trim() : ''}
                                 </td>
-                                <td>{student.mediaRelease}</td>
+                                <td>{student.mediaRelease ? 'Yes' : "No Release" }</td>
                             </tr>
                         ))}
                     </tbody>
