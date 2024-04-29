@@ -45,7 +45,7 @@ const userSchema = new Schema({
 
     //These were originally student fields - specific comments below
     instrument: { type: String, required: function() { return this.isNew && (this.roles.includes('student') || this.roles.includes('instructor')); } }, // Required only when new.  May be useful for instructors as well
-    customInstrumet: { type: String, required: false },
+    customInstrument: { type: String, required: false },
     dateOfBirth: { type: Date, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     school: { type: String, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     grade: { type: Number, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new

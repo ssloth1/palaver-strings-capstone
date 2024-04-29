@@ -75,6 +75,7 @@ function UserDetails() {
     }
 
     console.log(user.age);
+    console.log(user);
 
     // Render user details
     return (

@@ -52,6 +52,7 @@ function EditUser() {
 
         // Student specific fields
         instrument: "",
+        customInstrument: "",
         age: "",
         dateOfBirth: "",
         school: "",
@@ -99,6 +100,7 @@ function EditUser() {
 
                 // Student specific fields
                 instrument: user.instrument,
+                customInstrument: user.instrument==="Other" ? user.customInstrument : "",
                 age: user.age,
                 dateOfBirth: user.dateOfBirth,
                 school: user.school,
@@ -168,7 +170,11 @@ function EditUser() {
             }
         } else if (name === "customInstrument") {
             // Update the customInstrument state when the user types in the custom instrument field
-            setCustomInstrument(value);
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                customInstrument: value,
+            }));
+
         } else {
             // Handle all other inputs normally
             setFormData(prevFormData => ({
@@ -354,9 +360,9 @@ function EditUser() {
 
                 {/* Only displays if admin role is selected */}
                 {formData.roles.includes('admin') ?
-                    <div class="checkbox">
+                    <div class="checkbox-wrapper">
                         {PERMISSIONS.map((permission) => (
-                            <label key={permission}>
+                            <label key={permission} class="checkbox-label">
                                 <input
                                     type="checkbox"
                                     name={permission}
@@ -390,7 +396,7 @@ function EditUser() {
                                     id="customInstrumentInput"
                                     type="text" 
                                     name="customInstrument" 
-                                    value={customInstrument} 
+                                    value={formData.customInstrument} 
                                     onChange={handleChange} 
                                     placeholder="Enter Custom Instrument Name" 
                                     required 
