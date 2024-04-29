@@ -18,6 +18,7 @@ import StudentList from './components/instructor-components/StudentList';
 import ProgressReportForm from './components/instructor-components/ProgressReportForm'
 import UpdateClass from './components/admin-instructor-components/palaver-classes/UpdateClass';
 import GetEmails from './components/admin-instructor-components/messaging/GetEmails';
+import EditUser from './components/admin-components/EditUser';
 
 /* Import components from the admin-components directory */
 import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUserView } from './components/admin-components';
@@ -40,6 +41,7 @@ function App() {
                     <Route path="/password-reset-request" element={<RequestPasswordReset />} />
                     <Route path="/reset-password/:token" element={<ResetPasswordConfirm />} />
                     <Route path="/create-user" element={<AddUserForm />} />
+                    <Route path="/edit-user/:id" element={<EditUser />} />
                     <Route path="/users" element={<ManageUsers />} />
                     <Route path="/advanced-user-view" element={<AdvancedUserView />} /> 
                     <Route path="/user/:id" element={<UserDetails />} />

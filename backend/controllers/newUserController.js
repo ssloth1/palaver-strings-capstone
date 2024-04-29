@@ -65,9 +65,12 @@ class UserController {
 
     //Update a user
     async updateUser(req, res) {
+
+        console.log(req.body);
+
         try {
             const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-                new: true,
+                new: false,
                 runValidators: true
             });
             if (!user) {
