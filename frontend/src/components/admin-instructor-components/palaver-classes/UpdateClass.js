@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+
+import React, { useState, useEffect} from 'react';
+import { useParams, useNavigate} from "react-router-dom";
 import axios from 'axios';
-import classService from '../../../services/classServices';
+import ClassService from '../../../services/classServices';
+import UserService from '../../../services/userServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
 import '../styles/UpdateClass.css';
 
@@ -10,23 +12,25 @@ function UpdateClass() {
     const { classId } = useParams();
     const navigate = useNavigate();
     const [allClasses, setAllClasses] = useState([]);
-    const [confirmationMessage, setConfirmationMessage] = useState('');
-    const [selectedClassId, setSelectedClassId] = useState('');
+    const [selectedClassId, setSelectedClassId] = useState(classId || '');
     const [classData, setClassData] = useState({
         name: '',
         instructor: '',
         meetingDay: [],
         startTime: '',
+        endTime: '',
+        classroom: '',
         students: [],
     });
     const [instructors, setInstructors] = useState([]);
     const [students, setStudents] = useState([]);
     const [submitStatus, setSubmitStatus] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchAllClasses = async () => {
             try {
-                const data = await classService.getAllClasses();
+                const data = await ClassService.getAllClasses();
                 setAllClasses(data);
             } catch (error) {
                 console.error("Failed to fetch class details:", error);
@@ -37,44 +41,33 @@ function UpdateClass() {
     }, []);
 
     useEffect(() => {
-        if (!selectedClassId) return;
-
-        const fetchData = async () => {
+        setIsLoading(true);
+        const fetchInitialData = async () => {
             try {
-                const ClassDetails = await classService.getClassById(selectedClassId);
-                console.log("Selected class details:", ClassDetails);
-                setClassData({
-                    name: ClassDetails.name,
-                    instructor: ClassDetails.instructor._id,
-                    meetingDay: ClassDetails.meetingDay,
-                    startTime: ClassDetails.startTime,
-                    endTime: ClassDetails.endTime,
-                    classroom: ClassDetails.classroom,
-                    students: ClassDetails.students.map(student => student._id),
-                });
+                // const fetchedClasses = await classService.getAllClasses();
+                // setAllClasses(fetchedClasses);
+                const fetchedInstructors = await UserService.getInstructors();
+                const fetchedStudents = await UserService.getStudents();
+                setInstructors(fetchedInstructors);
+                setStudents(fetchedStudents);
+                if(selectedClassId) {
+                    const details = await ClassService.getClassById(selectedClassId);
+                    setClassData({
+                        ...details,
+                        instructor: details.instructor._id,
+                        students: details.students.map(student => student._id)
+                    });
+                }
+
             } catch (error) {
-                console.error("Failed to fetch class details:", error);
+                console.error("Failed to fetch data:", error);
+                setSubmitStatus(`Failed to load data: ${error.message || 'Unknown error'}`);
             }
+            setIsLoading(false);
         };
 
-        fetchData();
+        fetchInitialData();
     }, [selectedClassId]);
-
-    useEffect(() => {
-        const fetchInstructorsAndStudents = async () => {
-            try {
-                const instructorsData = await axios.get('/api/instructors');
-                console.log("instructors fetched:", instructorsData.data);
-                setInstructors(instructorsData.data);
-                const studentsData = await axios.get('/api/students');
-                setStudents(studentsData.data);
-            } catch (error) {
-                console.error("Failed to fetch instructors or students:", error);
-            }
-        };
-
-        fetchInstructorsAndStudents();
-    }, []);
 
     const handleDaySelection = (day) => {
         setClassData(prevState => ({
@@ -96,10 +89,7 @@ function UpdateClass() {
 
     const handleChange = async (event) => {
         const { name, value } = event.target;
-        setClassData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
+        setClassData(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSubmit = async (event) => {
@@ -108,24 +98,19 @@ function UpdateClass() {
             console.error("No class selected for update.");
             return;
         }
-        setSubmitStatus('Submitting...');
+        setIsLoading(true);
         try {
-            const updatedClass = await classService.updateClass(selectedClassId, {
-                ...classData,
-                meetingDay: classData.meetingDay,
-            });
+            const updatedClass = await ClassService.updateClass(selectedClassId, classData);
             setSubmitStatus('Class updated successfully!');
-            // Displaying a detailed confirmation message
-            setConfirmationMessage(`Class '${updatedClass.name}' updated successfully with instructor ${updatedClass.instructor} and meeting time on ${updatedClass.meetingDay.join(", ")} at ${updatedClass.meetingTime}.`);
-            // Optional: Clear the form or reset states if needed here
+            navigate(`/classes/${updatedClass._id}`);
         } catch (error) {
-            console.error(error);
+            console.error("Error updating class:", error);
             setSubmitStatus(`Error updating class: ${error.message}`);
         }
+        setIsLoading(false);
     };
 
     console.log("Instructor ID:", classData.instructor, typeof classData.instructor);
-
 
     return (
         <div className="updateClassContainer">
@@ -135,82 +120,85 @@ function UpdateClass() {
                 {allClasses.map(cls => (
                     <option key={cls._id} value={cls._id}>{cls.name}</option>
                 ))}
-            </select>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="name"
-                    value={classData.name}
-                    placeholder="Class Name"
-                    onChange={handleChange}
-                    required
-                />
-                <select
-                    name="instructor"
-                    value={classData.instructor}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">select instructor</option>
-                    {instructors.map(instructor => (
-                        <option key={instructor._id} value={instructor._id}>
-                            {`${instructor.firstName} ${instructor.lastName}`}
-                        </option>
-                    ))}
-                </select>
-                <input
-                    type="time"
-                    name="startTime"
-                    value={classData.startTime}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="time"
-                    name="endTime"
-                    value={classData.endTime}
-                    onChange={handleChange}
-                    required
-                />
-                <select
-                    name="classroom"
-                    value={classData.classroom}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">select classroom</option>
-                    {['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6'].map((classroom) => (
-                        <option key={classroom} value={classroom}>{classroom}</option>
-                    ))}
-                </select>
-                <div>
-                    {WEEKDAYS.map(day => (
-                        <button
-                            type="button"
-                            key={day}
-                            onClick={() => handleDaySelection(day)}
-                            className={classData.meetingDay.includes(day) ? "selected" : ''}
-                        >
-                            {day}
-                        </button>
-                    ))}
-                </div>
-                <div>
-                    {students.map(student => (
-                        <div key={student._id}>
-                            <input
-                                type="checkbox"
-                                id={`student-${student._id}`}
-                                checked={classData.students.includes(student._id)}
-                                onChange={() => handleStudentSelection(student._id)}
-                            />
-                            <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
+            </select>        
+            {isLoading ? <p>loading...</p> : (
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="name"
+                        value={classData.name}
+                        placeholder="Class Name"
+                        onChange={handleChange}
+                        required
+                    />
+                    <select
+                        name="instructor"
+                        value={classData.instructor}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">select instructor</option>
+                        {instructors.map(instructor => (
+                            <option key={instructor._id} value={instructor._id}>
+                                {`${instructor.firstName} ${instructor.lastName}`} {/* Display full name */}
+                            </option>
+                        ))}
+                    </select>    
+                    <input
+                        type="time"
+                        name="startTime"
+                        value={classData.startTime}
+                        onChange={handleChange} 
+                        required
+                    />
+                    <input
+                        type="time"
+                        name="endTime"
+                        value={classData.endTime}
+                        onChange={handleChange}
+                        required
+                    />
+                    <select
+                        name="classroom"
+                        value={classData.classroom}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">select classroom</option>
+                        {['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6'].map((classroom) => (
+                            <option key={classroom} value={classroom}>{classroom}</option>
+                        ))}
+                    </select>
+                    <div>
+                        {WEEKDAYS.map(day => (
+                            <button 
+                                type="button"
+                                key={day}
+                                onClick={()=> handleDaySelection(day)}
+                                className={classData.meetingDay.includes(day) ? styles.selected : '' }
+                            >
+                                {day}
+                            </button>
+                        ))}
+                    </div>
+                    <div>
+                        {students.map(student => (
+                            <div key={student._id}>
+                                <input
+                                    type="checkbox"
+                                    id={`student-${student._id}`}
+                                    checked={classData.students.includes(student._id)}
+                                    onChange={() => handleStudentSelection(student._id)}
+                                />
+                                <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
+                            </div>
+                        ))}
                         </div>
-                    ))}
-                </div>
-                <button type="submit">update class</button>
-            </form>
-            {submitStatus && <p>{submitStatus}</p>}
+                    <button type="submit">update class</button>    
+                </form>
+            )}
+                {submitStatus && <p>{submitStatus}</p>}
+
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import classService from "../../../services/classServices";
+import ClassService from "../../../services/classServices";
 import { WEEKDAYS } from "../../../constants/formconstants";
+import UserService from "../../../services/userServices";
 
 function CreateClass() {
     const [classData, setClassData] = useState({
@@ -16,34 +16,24 @@ function CreateClass() {
     const [instructors, setInstructors] = useState([]); 
     const [submitStatus, setSubmitStatus] = useState('');
     const [students, setStudents] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const fetchInstructors = async () => {
-            // Assuming your backend has a route to fetch instructors
+        const fetchData = async () => {
             try {
-                const { data } = await axios.get('/api/instructors');
-                console.log("Fetched instructors:", data);
-                setInstructors(data);
+                const fetchedInstructors = await UserService.getInstructors();
+                const fetchedStudents = await UserService.getStudents();
+                setInstructors(fetchedInstructors);
+                setStudents(fetchedStudents);
             } catch (error) {
-                console.error("Failed to fetch instructors:", error);
+                console.error("Failed to fetch data:", error);
+                setSubmitStatus(`Failed to fetch data: ${error.message || 'Unknown error'}`);
             }
         };
+        
+        fetchData();
+    }, []);
 
-        const fetchStudents = async () => {
-            try {
-                const { data } = await axios.get('/api/students/');
-                console.log("Fetched students:", data);
-                setStudents(data);
-            } catch (error) {
-                console.error("Failed to fetch students:", error);
-            }
-        };
-    
-        fetchInstructors();
-        fetchStudents();
-    }, []); // Dependency array is empty to run only once on mount
-
-    
     const handleDaySelection = (day) => {
         console.log("Selected day:", day);
         setClassData(prevState => ({
@@ -72,27 +62,20 @@ function CreateClass() {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsSubmitting(true);
         setSubmitStatus('Submitting...');
-        try {
-            const submissionData = {
-                name: classData.name,
-                instructor: classData.instructor,
-                meetingDay: classData.meetingDay,
-                startTime: classData.startTime,
-                endTime: classData.endTime,
-                classroom: classData.classroom,
-                students: classData.students,
-            };
-            const response = await classService.addClass(submissionData);
+        try { 
+            const submissionData = { ...classData };
+            const response = await ClassService.addClass(submissionData);
             console.log(response);
             setSubmitStatus('Class added successfully!');
         } catch (error) {
             console.error(error);
-            setSubmitStatus('Error adding class.');
+            setSubmitStatus(`Error adding class: ${error.message || 'Unknown error'}`);
         }
+        setIsSubmitting(false);
     };
 
     return (
@@ -170,7 +153,7 @@ function CreateClass() {
                             </div>
                         ))}
                         </div>
-                    <button type="submit">add class</button>    
+                    <button type="submit" disabled={isSubmitting}>add class</button>    
                 </form>
                 {submitStatus && <p>{submitStatus}</p>}
         </div>

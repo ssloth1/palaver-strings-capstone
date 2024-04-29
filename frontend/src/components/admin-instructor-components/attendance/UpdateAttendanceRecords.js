@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import AttendanceService from '../../../services/attendanceServices';
+import ClassService from '../../../services/classServices';
 import Loader from '../../general-components/Loader';
 import '../styles/UpdateAttendanceRecords.css';
 
@@ -19,8 +20,8 @@ function UpdateAttendanceRecords() {
         const fetchClasses = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/classes');
-                setClasses(response.data);
+                const response = await ClassService.getAllClasses();
+                setClasses(response);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching classes:", error);
@@ -40,8 +41,8 @@ function UpdateAttendanceRecords() {
     const fetchDates = async (classId) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/api/attendance/dates/${classId}`);
-            const localDates = response.data.map(date => {
+            const response = await AttendanceService.getAttendanceDates(classId);
+            const localDates = response.map(date => {
                 const [year, month, day] = date.split('T')[0].split('-');
                 return `${month}/${day}/${year}`;
             });
@@ -57,15 +58,10 @@ function UpdateAttendanceRecords() {
     const handleDateChange = async (e) => {
         const dateString = e.target.value;
         const [month, day, year] = dateString.split('/');
-        const localDate = new Date(year, month - 1, day);
+        const localDate = new Date(year, month - 1, day).toISOString().split('T')[0];
 
         setSelectedDate(dateString);
-        fetchAttendance(selectedClass, localDate.toISOString().split('T')[0]);
-
-        // const localDate = new Date(e.target.value + 'T00:00:00');
-        // const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-        // setSelectedDate(adjustedDate.toISOString().split('T')[0]);
-        // fetchAttendance(selectedClass, adjustedDate.toISOString().split('T')[0]);
+        fetchAttendance(selectedClass, localDate);
     };
 
     const fetchAttendance = async (classId, date) => {
@@ -74,11 +70,11 @@ function UpdateAttendanceRecords() {
 
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/api/attendance/${classId}/${date}`);
+            const response = await AttendanceService.getAttendanceByClassDate(classId, date);
             console.log("Received attendance data:", response.data);
-            if (response.data && response.data._id) {
-                setAttendanceId(response.data._id);
-                setAttendance(response.data.students);
+            if (response && response._id) {
+                setAttendanceId(response._id);
+                setAttendance(response.students);
             } else {
                 setAttendanceId('');
                 setAttendance([]);
@@ -124,8 +120,8 @@ function UpdateAttendanceRecords() {
 
         setIsLoading(true);
         try {
-            const response = await axios.patch(`http://localhost:4000/api/attendance/${attendanceId}`, { attendance: formattedAttendance });
-            console.log("Attendance updated.", response.data);
+            const updateResponse = await AttendanceService.updateAttendance(attendanceId, { attendance: formattedAttendance});
+            console.log("Attendance updated.", updateResponse);
             setStatusMessage(`Status updated to successfully`);
             setError('');
         } catch (error) {

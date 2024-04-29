@@ -17,7 +17,7 @@ class MessageService {
 
             //make an array of toUsers with names
             //This needs to be a nested for loop, as "toUsers" is an array.
-            const newToUsers = new Array();
+            const newToUsers = [];
             for (const user of element.toUsers) {
                 try {
                     if (newToUsers.length > 0){
