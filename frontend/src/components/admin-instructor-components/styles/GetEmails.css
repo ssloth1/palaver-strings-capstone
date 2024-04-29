@@ -1,0 +1,73 @@
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+select,
+input,
+button {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+    margin: 5px;
+}
+
+button {
+    background-color: #C69C64;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4972a0;
+}
+
+.error {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 10px;
+}
+
+.labelContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.checkbox {
+    padding-right: "10px";
+}
+
+.checkboxLabel, .radioLabel {
+    display: flex;
+    align-items: center;
+    color: black;
+    margin-right: 10px;
+}
+
+.checkboxInput, .radioInput {
+    margin-right: 5px;
+}
+
+.studentName {
+    color: black;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.radioInput[type="radio"] {
+    accent-color: #4972a0;
+}
+
+.checkboxLabel, .radioLabel {
+    color: #333;
+}
