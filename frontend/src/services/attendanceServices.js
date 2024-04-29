@@ -18,6 +18,11 @@ class AttendanceService {
         return AttendanceService.request('get', '/');
     }
 
+    static async getFilteredAttendance(filters) {
+        const query = new URLSearchParams(filters).toString();
+        return AttendanceService.request('get', `/?${query}`);
+    }
+
     static async getAttendanceByClassDate(classId, date) {
         return AttendanceService.request('get', `/${classId}/${date}`);
     }
