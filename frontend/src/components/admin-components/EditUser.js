@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import './styles/AddUserForm.css';
+import styles from './styles/AddUserForm.module.css';
+import { useParams } from 'react-router-dom';
+import Loader from '../general-components/Loader';
+
+
 
 import { GENDER, RACE_ETHNICITY, LANGUAGES, COUNTRIES, US_STATES, CANADIAN_PROVINCES, INSTRUMENTS, USER_TYPES } from '../../constants/formconstants';
 
@@ -10,7 +14,7 @@ import { GENDER, RACE_ETHNICITY, LANGUAGES, COUNTRIES, US_STATES, CANADIAN_PROVI
  * - It checks if the user is logged in before allowing any submissions, although this is just a precaution.
  * - Right now there is some validation for the specific admin role, but it is not complete and we will need to do this with other roles. 
  */
-function AddUserForm() {
+function EditUser() {
 
     const { isLoggedIn } = useAuth(); // Checks if the user is actually logged in.
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
@@ -18,9 +22,12 @@ function AddUserForm() {
 
     const PERMISSIONS = ['create', 'read', 'update', 'delete'];
 
+    const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState(null);
+
     // State to store the form data
     const [formData, setFormData] = useState({
-
         // Common field for all user roles
         firstName: "",
         lastName: "",
@@ -52,18 +59,56 @@ function AddUserForm() {
         howHeardAboutProgram: "", // optional for now
         parentEmail: "",
         mediaRelease: false,
-        //Commenting the next three parameters out: these are optional in the model and probably best done through
-        //an update process rather than the creation process.
-        //primaryInstructor: "", // optional for now
-        //mentor: "", // optional for now
-        //mentees: [], // optional for now
+    })      
 
+    useEffect(() => {
+        setLoading(true);
+        fetch(`/api/users/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            setUser(data);
+            setLoading(false);})
+            .catch(error => {
+                console.error('Fetch user error:', error);
+                setStatusMessage(error.toString());
+                setLoading(false);
+            });
+        }, [id]);
 
-        // Parent specific fields
-        // .. TODO: add parent specific fields
-        // At the moment, there are no parent-specific fields.
-    });
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                firstName : user.firstName,
+                lastName : user.lastName,
+                email: user.email,
+                roles : user.roles,
+                country: user.address ? user.address.country : "",
+                addressLine1: user.address ? user.address.addressLine1 : "",
+                addressLine2: user.address ? user.address.addressLine2 : "",
+                city: user.address ? user.address.city : "",
+                state: user.address ? user.address.state: "",
+                zipCode: user.address ? user.address.zipCode : "",
+                phoneNumber: user.phoneNumber,
+                preferredCommunication: user.preferredCommunication,
+                gender: user.gender,
+                raceEthnicity: user.raceEthnicity,
+                primaryLanguage: user.primaryLanguage,
 
+                // Admin specific fields
+                permissions: user.permissions,
+
+                // Student specific fields
+                instrument: user.instrument,
+                age: user.age,
+                dateOfBirth: user.dateOfBirth,
+                school: user.school,
+                grade: user.grade,
+                howHeardAboutProgram: user.howHeardAboutProgram, // optional for now
+                parentEmail: user.parentEmail,
+            })
+            console.log(formData);
+        }
+    }, [user])
 
 
     /**
@@ -81,7 +126,7 @@ function AddUserForm() {
                 : prevFormData.roles.filter(role => role !== name),
         }));
     };
-    
+
     const handleMediaReleaseChange = (event) => {
         const { checked }= event.target;
 
@@ -223,16 +268,13 @@ function AddUserForm() {
                 state: formData.state,
                 zipCode: formData.zipCode,
             },
-            hashedPassword: formData.password, // Assuming backend hashes the password
         };
 
         // Remove confirmPassword before sending the form data to the backend
-        delete submissionData.confirmPassword;
-
         console.log("Submitting Form");
         console.log(submissionData);
         try {
-            const response = await axios.post('http://localhost:4000/api/users', submissionData);
+            const response = await axios.patch(`http://localhost:4000/api/users/${id}`, submissionData);
             setStatusMessage("Form submitted successfully!");
             console.log("Form submitted successfully!", response.data);
         } catch (error) {
@@ -241,10 +283,14 @@ function AddUserForm() {
         }
     };
 
+    if(loading){
+        return <Loader />;
+    }
+
     return (
 
         <div className="addUserForm">
-            <h1> add new user </h1>
+            <h1> edit user </h1>
             <form onSubmit={handleSubmit}>
 
                 {/* checkboxes for the user's role */}
@@ -277,7 +323,6 @@ function AddUserForm() {
                 <label className="form-label" htmlFor="firstNameInput">First Name <span style={{ color: "red" }}>*</span></label>
                 <input id="firstNameInput" type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
 
-
                 {/* Text input for the user's last name */}
                 <label className="form-label" htmlFor="lastNameInput">Last Name <span style={{ color: "red" }}>*</span></label>
                 <input id="lastNameInput" type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
@@ -286,13 +331,6 @@ function AddUserForm() {
                 <label className="form-label" htmlFor="emailInput">Email <span style={{ color: "red" }}>*</span></label>
                 <input id="emailInput" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
 
-                {/* Text input for the user's password */}
-                <label className="form-label" htmlFor="passwordInput">Password <span style={{ color: "red" }}>*</span></label>
-                <input id="passwordInput" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
-
-                {/* Text input for the user's password confirmation */}
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
-
                 {/* Dropdown for the user's gender */}
                 <label className="form-label" htmlFor="genderSelect">Gender <span style={{ color: "red" }}>*</span></label>
                 <select id="genderSelect" name="gender" value={formData.gender} onChange={handleChange} required>
@@ -300,7 +338,7 @@ function AddUserForm() {
                     {GENDER.map(gender => <option key={gender} value={gender}>{gender}</option>)}
                 </select>
 
-                {/* Dropwon for the user's race */}
+                {/* Dropdown for the user's race */}
                 <label className="form-label" htmlFor="raceEthnicitySelect">Race/Ethnicity <span style={{ color: "red" }}>*</span></label>
                 <select id="raceEthnicitySelect" name="raceEthnicity" value={formData.raceEthnicity} onChange={handleChange} required>
                     <option value="">Select Race/Ethnicity</option>
@@ -361,11 +399,11 @@ function AddUserForm() {
                         )}
                     </>
                     : <></>}
-               {formData.roles.includes('student') ?
+                {formData.roles.includes('student') ?
                 <>
                     
                     <label for="dateOfBirth" className={styles["form-label"]}>date of birth <span style={{color: "red"}}>*</span></label>
-                    <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+                    <input type="date" name="dateOfBirth" value={new Date(formData.dateOfBirth).toISOString().split('T')[0]} onChange={handleChange} required />
                     
                     <label for="school" className={styles["form-label"]}>school <span style={{color: "red"}}>*</span></label>
                     <input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
@@ -384,6 +422,7 @@ function AddUserForm() {
                 </>
                 :<></>
             }
+
                 {/* Text input for the user's address */}
                 <label className="form-label" htmlFor="addressLine1Input">Address Line 1 <span style={{ color: "red" }}>*</span></label>
                 <input id="addressLine1Input" type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} placeholder="Address Line 1" required />
@@ -422,7 +461,7 @@ function AddUserForm() {
                 </select>
 
                 {/* Submit button */}
-                <button type="submit">add user</button>
+                <button type="submit">submit edits</button>
                 {statusMessage && <p>{statusMessage}</p>}
 
             </form>
@@ -430,4 +469,4 @@ function AddUserForm() {
     );
 }
 
-export default AddUserForm;
+export default EditUser;

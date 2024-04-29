@@ -15,7 +15,11 @@ const attendanceSchema = new Schema ({
             },
         } }, //Needs validation for student role.
         status: { type: String, enum: ['present', 'late', 'absent - unexcused', 'absent - excused'], default: 'present'}
-    }]
+    }],
+
+    //This field is not used at this time. Included for future functionality
+    //We anticipate archiving being useful as an alternative to deleting
+    archived: { type: Boolean, default: false, required: true }
 });
 
 

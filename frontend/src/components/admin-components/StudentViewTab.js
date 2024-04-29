@@ -41,7 +41,6 @@ const exportToExcel = (students) => {
         'Grade': student.grade,
         'How Heard About Program': student.howHeardAboutProgram,
         'Parent': student.parentDetails ? `${student.parentDetails.firstName} ${student.parentDetails.lastName}` : '',
-        'Primary Instructor': student.instructorDetails ? `${student.instructorDetails.firstName} ${student.instructorDetails.lastName}` : '',
     })));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Students");
@@ -186,7 +185,7 @@ const StudentViewTab = () => {
                             <th>Grade</th>
                             <th>How Heard About Program</th>
                             <th>Parent</th>
-                            <th>Primary Instructor</th>
+                            <th>Media Release</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -224,9 +223,7 @@ const StudentViewTab = () => {
                                 <td onClick={student.parentDetails?._id ? (e) => handleParentClick(e, student.parentDetails._id) : undefined}>
                                     {student.parentDetails ? `${student.parentDetails.firstName ?? ''} ${student.parentDetails.lastName ?? ''}`.trim() : ''}
                                 </td>
-                                <td onClick={student.instructorDetails?._id ? (e) => handleInstructorClick(e, student.instructorDetails._id) : undefined}>
-                                    {student.instructorDetails ? `${student.instructorDetails.firstName ?? ''} ${student.instructorDetails.lastName ?? ''}`.trim() : ''}
-                                </td>
+                                <td>{student.mediaRelease ? 'Yes' : "No Release" }</td>
                             </tr>
                         ))}
                     </tbody>

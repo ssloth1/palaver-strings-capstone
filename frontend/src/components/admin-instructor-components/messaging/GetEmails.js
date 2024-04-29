@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import Loader from "../../general-components/Loader";
 import { AuthContext } from '../../../contexts/AuthContext';
 import axios from 'axios';
-
+import '../styles/GetEmails.css';
 
 
 
@@ -29,7 +29,6 @@ function GetEmails() {
         setStudentsWanted("false");
         setParentsWanted("false");
         setClassesExpanded("false");
-        console.log(selectedClasses);
         setLoading(true);
         fetch('/api/classes/')
         .then(response => {
@@ -215,13 +214,11 @@ function GetEmails() {
             {emailsToDisplay.length > 0 ? (
                 emailsToDisplay.map((email) =>
                     (<div>{email}</div>)
-                )
-            )
-                
-                :<></>}
+                ))
+            :<></>}
         </div>
 
-        <button type='button' onClick={checkAll}>All Students</button>
+        <button type='button' onClick={checkAll} margin="2px">All Students</button>
 
         <button type="button" onClick={checkMine}>My Students Only</button>
 

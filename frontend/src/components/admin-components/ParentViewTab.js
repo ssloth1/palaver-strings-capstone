@@ -85,6 +85,11 @@ const ParentViewTab = () => {
         fetchParents();
     }, []);
 
+    const handleRowClick = (parentId) => {
+        console.log(`Clicked on parent with ID: ${parentId}`);
+        navigate(`/user-details/${parentId}`);
+    };
+
     /**
      * Helper function to handle clicking on a child's name, navigating to the child's details page
      * @param {*} childId 
@@ -146,7 +151,7 @@ const ParentViewTab = () => {
                     <tbody>
                         {filteredParents.map((parent) => (
                             <React.Fragment key={parent._id}>
-                                <tr key={parent._id}>
+                                <tr key={parent._id} onClick={() => handleRowClick(parent._id)} style={{ cursor: 'pointer' }}>
                                     <td>{parent.firstName}</td>
                                     <td>{parent.lastName}</td>
                                     <td>{parent.email}</td>

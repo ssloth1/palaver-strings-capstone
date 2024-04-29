@@ -33,7 +33,7 @@ const userSchema = new Schema({
 
     //This field is for admins only
     //We need to update this: create - split Admin, Student, Instructor, Parent.  What does read mean? We currently don't have update yet. Split delete.
-    permissions: { type: [String], default: ['create', 'read', 'update', 'delete'], required: function() { return this.roles.includes('admin')} },
+    permissions: { type: [String], default: ['create', 'read', 'update', 'delete'], required: function() { return this.roles && this.roles.includes('admin')} },
 
     //This field is for instructors only
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}], //Replaced by class model?
@@ -45,17 +45,23 @@ const userSchema = new Schema({
 
     //These were originally student fields - specific comments below
     instrument: { type: String, required: function() { return this.isNew && (this.roles.includes('student') || this.roles.includes('instructor')); } }, // Required only when new.  May be useful for instructors as well
+    customInstrumet: { type: String, required: false },
     dateOfBirth: { type: Date, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     school: { type: String, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     grade: { type: Number, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     howHeardAboutProgram: { type: String, required: false },
     parent: { type: mongoose.Schema.Types.ObjectID, ref: 'User', required: false },
+    mediaRelease: { type: Boolean, required: function() { return this.roles && this.roles.includes('student'); } },
 
     //These are all student fields that are currently not used.  Specific comments below
     primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, //Replaced by class model?
     mentor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, //No mentor module yet
     mentees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}], //No mentor module yet
     progressReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProgressReport', required: false }], //Progress reports currently on hold
+
+    //This field is not used at this time. Included for future functionality
+    //We anticipate archiving being useful as an alternative to deleting
+    archived: { type: Boolean, default: false, required: true }
 
 }, { timestamps: true });
 

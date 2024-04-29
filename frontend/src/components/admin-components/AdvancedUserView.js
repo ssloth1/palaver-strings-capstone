@@ -5,9 +5,12 @@ import StudentViewTab from './StudentViewTab';
 import ParentViewTab from './ParentViewTab';
 import InstructorViewTab from './InstructorViewTab';
 import AdminViewTab from './AdminViewTab';
+import { useNavigate } from 'react-router-dom';
+
 
 const AdvancedUserView = () => {
     const [activeTab, setActiveTab] = useState('student');
+    const navigate = useNavigate();
 
     const handleTabClick = (tabName) => {
         setActiveTab(tabName);
@@ -31,6 +34,7 @@ const AdvancedUserView = () => {
     return (
         <div className="tabs-container">
             <nav className="tabs-nav">
+                <button onClick={() => navigate('/users')} className='tab-button'>Back</button>
                 <button onClick={() => handleTabClick('student')} className={`tab-button ${activeTab === 'student' ? 'active' : ''}`}><FaUserGraduate /> Students</button>
                 <button onClick={() => handleTabClick('parent')} className={`tab-button ${activeTab === 'parent' ? 'active' : ''}`}><FaUserTie /> Parents</button>
                 <button onClick={() => handleTabClick('instructor')} className={`tab-button ${activeTab === 'instructor' ? 'active' : ''}`}><FaChalkboardTeacher /> Instructors</button>

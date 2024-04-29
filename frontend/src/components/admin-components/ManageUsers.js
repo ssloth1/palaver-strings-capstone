@@ -117,14 +117,11 @@ function ManageUsers() {
     for (const user of filteredUsers) {
         if (user.roles.includes('admin')){
             usersByRole['admin'].push(user);
-        }
-        if (user.roles.includes('instructor')){
+        } else if (user.roles.includes('instructor')){
             usersByRole['instructor'].push(user);
-        }
-        if (user.roles.includes('parent')){
+        } else if (user.roles.includes('parent')){
             usersByRole['parent'].push(user);
-        }
-        if (user.roles.includes('student')){
+        } else if (user.roles.includes('student')){
             usersByRole['student'].push(user);
         }
     }

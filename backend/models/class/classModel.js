@@ -22,7 +22,11 @@ const classSchema = new Schema ({
     meetingDay: [{ type: String, required: true }],
     startTime: { type: String, required: true },
     endTime: { type: String, required: true},
-    classroom: { type: String, required: true, enum: ['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6']}
+    classroom: { type: String, required: true, enum: ['Studio 1', 'Studio 2', 'Studio 3', 'Studio 4', 'Studio 5', 'Studio 6']},
+
+    //This field is not used at this time. Included for future functionality
+    //We anticipate archiving being useful as an alternative to deleting
+    archived: { type: Boolean, default: false, required: true }
 
 }, {timestamps: true});
 
