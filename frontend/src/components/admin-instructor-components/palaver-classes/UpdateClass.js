@@ -1,12 +1,14 @@
+
 import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate} from "react-router-dom";
+import axios from 'axios';
 import ClassService from '../../../services/classServices';
 import UserService from '../../../services/userServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
-import styles from '../styles/UpdateClass.module.css';
+import '../styles/UpdateClass.css';
 
 
-function UpdateClass () {
+function UpdateClass() {
     const { classId } = useParams();
     const navigate = useNavigate();
     const [allClasses, setAllClasses] = useState([]);
@@ -56,6 +58,7 @@ function UpdateClass () {
                         students: details.students.map(student => student._id)
                     });
                 }
+
             } catch (error) {
                 console.error("Failed to fetch data:", error);
                 setSubmitStatus(`Failed to load data: ${error.message || 'Unknown error'}`);
@@ -70,8 +73,8 @@ function UpdateClass () {
         setClassData(prevState => ({
             ...prevState,
             meetingDay: prevState.meetingDay.includes(day)
-            ? prevState.meetingDay.filter(d => d !== day)
-            : [...prevState.meetingDay, day],
+                ? prevState.meetingDay.filter(d => d !== day)
+                : [...prevState.meetingDay, day],
         }));
     };
 
@@ -79,8 +82,8 @@ function UpdateClass () {
         setClassData(prevState => ({
             ...prevState,
             students: prevState.students.includes(studentId)
-            ? prevState.students.filter(id => id !== studentId)
-            : [...prevState.students, studentId],
+                ? prevState.students.filter(id => id !== studentId)
+                : [...prevState.students, studentId],
         }));
     };
 
@@ -91,7 +94,7 @@ function UpdateClass () {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if(!selectedClassId) {
+        if (!selectedClassId) {
             console.error("No class selected for update.");
             return;
         }
@@ -110,11 +113,11 @@ function UpdateClass () {
     console.log("Instructor ID:", classData.instructor, typeof classData.instructor);
 
     return (
-        <div>
+        <div className="updateClassContainer">
             <h2>update class</h2>
             <select onChange={(e) => setSelectedClassId(e.target.value)} value={selectedClassId}>
                 <option value="">select a class</option>
-                {allClasses.map(cls =>(
+                {allClasses.map(cls => (
                     <option key={cls._id} value={cls._id}>{cls.name}</option>
                 ))}
             </select>        
@@ -195,9 +198,9 @@ function UpdateClass () {
                 </form>
             )}
                 {submitStatus && <p>{submitStatus}</p>}
+
         </div>
     );
-
 }
-      
-export default UpdateClass;
+
+export default UpdateClass; 
