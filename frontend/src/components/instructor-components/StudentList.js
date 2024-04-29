@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
-import axios from 'axios';
 import Loader from '../general-components/Loader';
 import '../admin-components/styles/ManageUsers.css';
+import ClassService from "../../services/classServices";
 
 
 const StudentList = () => {
@@ -45,11 +45,11 @@ const StudentList = () => {
 
             // Fetch the list of the current instructor's students using their userId as a reference
             try {
-                const classes = await axios.get('/api/classes/');
+                const classes = await ClassService.getAllClasses();
                 console.log(classes);
                 //const response = await axios.get(`/api/users/${localStorage.getItem('userId')}`);
-                const studentArray = new Array();
-                for (const item of classes.data) {
+                const studentArray = ([]);
+                for (const item of classes) {
                     if (item.instructor._id === localStorage.getItem('userId')){
                         studentArray.push(item.students);
                     }

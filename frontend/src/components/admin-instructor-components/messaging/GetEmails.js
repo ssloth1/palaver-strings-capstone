@@ -10,8 +10,8 @@ function GetEmails() {
 
     const [statusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const [selectedClasses, setSelectedClasses] = useState(new Array());
-    const [emailsToDisplay, setEmailsToDisplay] = useState(new Array());
+    const [selectedClasses, setSelectedClasses] = useState([]);
+    const [emailsToDisplay, setEmailsToDisplay] = useState([]);
     const [studentsWanted, setStudentsWanted] = useState("false");
     const [parentsWanted, setParentsWanted] = useState("false");
     const [classesExpanded, setClassesExpanded] = useState('false');
@@ -39,7 +39,7 @@ function GetEmails() {
         })
         .then(data => {
             if (Array.isArray(data)) {
-                const selectedData = new Array();
+                const selectedData = ([]);
                 for (const item of data) {
                     selectedData.push({item, selected:"false"});
                 }

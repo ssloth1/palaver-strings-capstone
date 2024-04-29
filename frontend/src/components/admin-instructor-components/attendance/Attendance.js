@@ -9,9 +9,9 @@ function Attendance() {
     return (
         <div className="container">
             <nav className="nav">
-                <Link to="take" className={location.pathname.includes("/take") ? "navLink activeNavLink" : "navLink"}>Take Attendance</Link> |{" "}
-                <Link to="view" className={location.pathname.includes("/view") ? "navLink activeNavLink" : "navLink"}>View Attendance Records</Link> | {" "}
-                <Link to="update" className={location.pathname.includes("/update") ? "navLink activeNavLink" : "navLink"}>Update Attendance Record</Link>
+                <Link to="take" className={location.pathname.includes("/take") ? "navLink activeNavLink" : "navLink"}>take attendance</Link> |{" "}
+                <Link to="view" className={location.pathname.includes("/view") ? "navLink activeNavLink" : "navLink"}>view attendance records</Link> | {" "}
+                <Link to="update" className={location.pathname.includes("/update") ? "navLink activeNavLink" : "navLink"}>update attendance record</Link>
             </nav>
             <Outlet />
         </div>

@@ -1,7 +1,5 @@
-
 import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate} from "react-router-dom";
-import axios from 'axios';
 import ClassService from '../../../services/classServices';
 import UserService from '../../../services/userServices';
 import { WEEKDAYS } from '../../../constants/formconstants';
@@ -175,7 +173,7 @@ function UpdateClass() {
                                 type="button"
                                 key={day}
                                 onClick={()=> handleDaySelection(day)}
-                                className={classData.meetingDay.includes(day) ? styles.selected : '' }
+                                className={classData.meetingDay.includes(day) ? "selected" : '' }
                             >
                                 {day}
                             </button>
@@ -190,7 +188,7 @@ function UpdateClass() {
                                     checked={classData.students.includes(student._id)}
                                     onChange={() => handleStudentSelection(student._id)}
                                 />
-                                <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
+                                <label htmlFor={`student-${student._id}`} className='student-name'>{`${student.firstName} ${student.lastName}`}</label>
                             </div>
                         ))}
                         </div>

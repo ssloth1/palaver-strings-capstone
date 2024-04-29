@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import './styles/AddUserForm.css';
 
-import { GENDER, RACE_ETHNICITY, LANGUAGES, COUNTRIES, US_STATES, CANADIAN_PROVINCES, INSTRUMENTS, USER_TYPES } from '../../constants/formconstants';
+import { GENDER, RACE_ETHNICITY, LANGUAGES, US_STATES, INSTRUMENTS, USER_TYPES } from '../../constants/formconstants';
 
 /** This component renders a form for adding a new user to the database with roles.
  * NOTES:
@@ -310,7 +310,7 @@ function AddUserForm() {
                 {/* Dropdown for the user's primary language */}
                 <label className="form-label" htmlFor="primaryLanguageSelect">Primary Language <span style={{ color: "red" }}>*</span></label>
                 <select id="primaryLanguageSelect" name="primaryLanguage" value={formData.primaryLanguage} onChange={handleChange} required>
-                    <option value="">Select Primary Language</option>
+                    <option className="" value="">Select Primary Language</option>
                     {LANGUAGES.map(language => <option key={language} value={language}>{language}</option>)}
                 </select>
 
@@ -347,7 +347,7 @@ function AddUserForm() {
                         {/* If the user selects "Other" as the instrument, show a text input for the custom instrument name */}
                         {formData.instrument === "Other" && (
                             <div>
-                                <label className="form-label" htmlFor="customInstrumentInput">Custom Instrument Name <span style={{color: "red"}}>*</span></label>
+                                <label className="option" htmlFor="customInstrumentInput">Custom Instrument Name <span style={{color: "red"}}>*</span></label>
                                 <input
                                     id="customInstrumentInput"
                                     type="text" 
@@ -364,22 +364,22 @@ function AddUserForm() {
                {formData.roles.includes('student') ?
                 <>
                     
-                    <label for="dateOfBirth" className={styles["form-label"]}>date of birth <span style={{color: "red"}}>*</span></label>
+                    <label for="dateOfBirth" className="form-label">date of birth <span style={{color: "red"}}>*</span></label>
                     <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
                     
-                    <label for="school" className={styles["form-label"]}>school <span style={{color: "red"}}>*</span></label>
+                    <label for="school" className="form-label">school <span style={{color: "red"}}>*</span></label>
                     <input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
 
-                    <label for="grade" className={styles["form-label"]}>grade <span style={{color: "red"}}>*</span></label>
+                    <label for="grade" className="form-label">grade <span style={{color: "red"}}>*</span></label>
                     <input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />
 
-                    <label for='howHeardAboutProgram' className={styles["form-label"]}>how student heard about the program</label>
+                    <label for='howHeardAboutProgram' className="form-label">how student heard about the program</label>
                     <input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> 
                     
-                    <label for="parentEmail" className={styles["form-label"]}>parent email <span style={{color: "red"}}>*</span></label>
+                    <label for="parentEmail" className="form-label">parent email <span style={{color: "red"}}>*</span></label>
                     <input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />
 
-                    <label for="mediaRelease" className={styles['form-label']}>media release?</label>
+                    <label for="mediaRelease" className="form-label">media release?</label>
                     <input type="checkbox" name="mediaRelease" value={formData.mediaRelease} onChange={handleMediaReleaseChange} />
                 </>
                 :<></>
@@ -396,10 +396,10 @@ function AddUserForm() {
                 <label className="form-label" htmlFor="cityInput">City <span style={{ color: "red" }}>*</span></label>
                 <input id="cityInput" type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" required />
 
-                {/* Dropdown for the user's state/province */}
-                <label className="form-label" htmlFor="stateSelect">State/Province <span style={{ color: "red" }}>*</span></label>
+                {/* Dropdown for the user's state */}
+                <label className="form-label" htmlFor="stateSelect">State<span style={{ color: "red" }}>*</span></label>
                 <select id="stateSelect" name="state" value={formData.state} onChange={handleChange} required>
-                    <option value="">Select State/Province</option>
+                    <option value="">Select State</option>
                     {US_STATES.map(state => <option key={state} value={state}>{state}</option>)}
                 </select>
 

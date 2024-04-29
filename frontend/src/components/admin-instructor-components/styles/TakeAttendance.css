@@ -32,10 +32,14 @@ button:hover {
     background-color: #4972a0;
 }
 
-.error {
+p, .error {
     color: red;
     font-size: 0.875em;
     margin-top: 10px;
+    word-wrap: break-word;
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
 }
 
 .labelContainer {
@@ -72,4 +76,13 @@ button:hover {
 
 .checkboxLabel, .radioLabel {
     color: #333;
+}
+
+.TakeAttendance, form {
+    display: flex;
+    flex-direction: column;
+}
+
+form, .TakeAttendance {
+    overflow: hidden; /* Adds overflow handling to the form and main container */
 }
