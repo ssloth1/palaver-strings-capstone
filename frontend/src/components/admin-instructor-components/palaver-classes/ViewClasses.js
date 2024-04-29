@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { Link} from 'react-router-dom';
 import ClassService from '../../../services/classServices';
+import '../styles/ViewClasses.css';
 
 function ViewClasses () {
     const [classes, setClasses] = useState([]);

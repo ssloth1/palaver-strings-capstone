@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ClassService from "../../../services/classServices";
 import { WEEKDAYS } from "../../../constants/formconstants";
 import UserService from "../../../services/userServices";
+import '../styles/ViewClasses.css';
 
 function CreateClass() {
     const [classData, setClassData] = useState({
@@ -149,7 +150,7 @@ function CreateClass() {
                                     checked={classData.students.includes(student._id)}
                                     onChange={() => handleStudentSelection(student._id)}
                                 />
-                                <label htmlFor={`student-${student._id}`}>{`${student.firstName} ${student.lastName}`}</label>
+                                <label htmlFor={`student-${student._id}`} className="student-label">{`${student.firstName} ${student.lastName}`}</label>
                             </div>
                         ))}
                         </div>

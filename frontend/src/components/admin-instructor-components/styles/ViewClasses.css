@@ -1,0 +1,25 @@
+h2 {
+    color: #333;
+    font-weight: 600;   
+}
+
+.student-label {
+    color: #333; /* Sets the text color to dark grey */
+}
+
+.class-details {
+    color: #333; /* Dark grey, adjust as needed for contrast */
+    background: #fff; /* White background */
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: adds subtle shadow for better layering */
+}
+
+.class-details h2, .class-details p, .class-details ul {
+    margin-bottom: 10px;
+}
+
+.class-details li {
+    color: #555; /* Slightly lighter color for list items */
+}

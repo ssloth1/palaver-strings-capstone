@@ -167,6 +167,7 @@ function TakeAttendance() {
 
     return (
         <div className="TakeAttendance">
+            <h2>take attendance</h2>
             <form onSubmit={onSubmit}>
                 <select name="classId" value={attendanceData.classId} onChange={handleChange} required>
                     <option value="">select class</option>
