@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import axios from "axios";
-import styles from "../styles/TakeAttendance.module.css";
+import "../styles/TakeAttendance.css";
 import Loader from "../../general-components/Loader";
 import moment from 'moment';
-//import { set } from "mongoose";
+import AttendanceService from "../../../services/attendanceServices";
+import ClassService from "../../../services/classServices";
+
 
 function TakeAttendance() {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,8 +19,7 @@ function TakeAttendance() {
 
     const [attendanceData, setAttendanceData] = useState({
         classId: "",
-
-        date: moment().format('YYYY-MM-DD'), 
+        date: moment().format('YYYY-MM-DD'),
         attendance: []
     });
 
@@ -27,8 +27,8 @@ function TakeAttendance() {
         const fetchClasses = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/classes');
-                setClasses(response.data);
+                const classData = await ClassService.getAllClasses();
+                setClasses(classData);
             } catch (error) {
                 console.error("Error fetching classes", error);
             } finally {
@@ -49,12 +49,11 @@ function TakeAttendance() {
     const fetchStudentsFromClass = async (classId) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/api/classes/${classId}`);
-            const studentsInClass = response.data.students || [];
-            console.log(response.data);
+            const response = await ClassService.getClassById(classId);
+            const studentsInClass = response.students || [];
+            console.log(response);
             setStudents(studentsInClass);
 
-            // If no students enrolled set default message
             if (studentsInClass.length === 0) {
                 setStatusMessage("There are no students currently enrolled in this class. Attendance can't be taken.");
             } else {
@@ -80,9 +79,9 @@ function TakeAttendance() {
         setIsLoading(true);
         console.log(`Checking records for class ${classId} on date ${date}`);
         try {
-            const response = await axios.get(`http://localhost:4000/api/attendance/${classId}/${date}`);
-            console.log("Check response: ", response.data);
-            if (response.data.data === null || response.data.length === 0) {
+            const response = await AttendanceService.getAttendanceByClassDate(classId, date);
+            console.log("Check response: ", response);
+            if (response && response.data === null ) {
                 console.log("No existing record found, can submit new record.");
                 setError('');
                 setCanSubmit(true);
@@ -107,13 +106,15 @@ function TakeAttendance() {
             [name]: value
         }));
 
-        fetchStudentsFromClass(value); // Fetch students for the selected class
+        if(name === 'classId'){
+            fetchStudentsFromClass(value); // Fetch students for the selected class
+        }
+
     };
 
     const handleAttendanceChange = (studentId, status) => {
         const filteredAttendance = attendanceData.attendance.filter(item => item.studentId !== studentId);
         const updatedAttendance = [...filteredAttendance, { studentId, status }];
-
 
         setAttendanceData(prevData => ({
             ...prevData,
@@ -149,8 +150,8 @@ function TakeAttendance() {
 
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:4000/api/attendance', attendanceData);
-            console.log("Attendance recorded.", response.data);
+            const response = await AttendanceService.createAttendance(attendanceData);
+            console.log("Attendance recorded.", response);
             setStatusMessage("Attendance recorded!");
             setError('');
         } catch (error) {
@@ -165,7 +166,7 @@ function TakeAttendance() {
     if (isLoading) return <Loader />;
 
     return (
-        <div className={styles.TakeAttendance}>
+        <div className="TakeAttendance">
             <form onSubmit={onSubmit}>
                 <select name="classId" value={attendanceData.classId} onChange={handleChange} required>
                     <option value="">select class</option>
@@ -180,15 +181,15 @@ function TakeAttendance() {
                     <div>
                         {students.map((student) => (
                             <div key={student._id}>
-                                <span className={styles.studentName}>{student.firstName} {student.lastName}</span>
+                                <span className="studentName">{student.firstName} {student.lastName}</span>
                                 {['present', 'late', 'absent - excused', 'absent - unexcused'].map(status => (
-                                    <label key={status} className={styles.radioLabel}>
+                                    <label key={status} className="radioLabel">
                                         <input
                                             type="radio"
                                             name={`attendance-${student._id}`}
                                             checked={attendanceData.attendance.some(item => item.studentId === student._id && item.status === status)}
                                             onChange={() => handleAttendanceChange(student._id, status)}
-                                            className={styles.radioInput}
+                                            className="radioInput"
                                         />
                                         {status}
                                     </label>
@@ -199,12 +200,11 @@ function TakeAttendance() {
                 )}
                 <button type="submit" disabled={!canSubmit}>Record Attendance</button>
                 {statusMessage && <p>{statusMessage}</p>}
-                {error && <p className={styles.error}>{error}</p>}
+                {error && <p className="error">{error}</p>}
             </form>
         </div>
     );
 }
 
 export default TakeAttendance;
-
 

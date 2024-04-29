@@ -1,7 +1,7 @@
 .side-menu {
     width: 50px;
     overflow: hidden;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, visibility 0s, opacity 0.5s linear;
     position: fixed;
     left: 0;
     top: 0;
@@ -15,8 +15,9 @@
 }
 
 .side-menu a > .link-text {
-    transition: display 0.3s, opacity 0.3s ease;
-    visibility: hidden;
+    display: none;
+    opacity: 0;
+    transition: display 0s 0.3s, opacity 0.3s ease;
 }
 
 .side-menu.expanded a > .link-text {
@@ -36,14 +37,13 @@
     border-radius: 5px;
     padding: 10px;
     font-family: Poppins;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 400; 
     height: 100%;
     word-wrap: break-word;
 }
 
 .side-menu .menu-content nav {
-    /* Add some padding around the navigation links */
     padding: 10px;
 }
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { AuthContext } from '../../../contexts/AuthContext';
 import axios from 'axios';
-import styles from '../styles/CreateMessage.module.css';
+import '../styles/CreateMessage.css';
 import { USER_TYPES } from "../../../constants/formconstants";
 import Loader from "../../general-components/Loader";
 
@@ -112,37 +112,24 @@ function WriteMessage() {
     }
 
     return (
-        <div className={styles.createMessage}>
+        <div className="createMessage">
             <form onSubmit={onSubmit}>
-
-                {/*Text input for recipient email*/}
                 <input type='text' name='toUsers' value={formData.toUsers} onChange={handleChange} placeholder="recipient's email" />
-
-                {/*Dropdown to select a user-group*/}
                 <select name="toCategory" value={formData.toCategory} onChange={handleChange} >
-                <option value="">do not message a group.</option>
-                {USER_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+                    <option value="">do not message a group.</option>
+                    {USER_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
                 </select>
-
-                {/*Dropdown to select a class*/}
                 <select name="toClass" value={formData.toClass} onChange={handleChange} >
-                <option value="">do not message a class.</option>
-                {palaverClasses.map(item => <option key={item} value={item[1]}>{item[0]}</option>)}
+                    <option value="">do not message a class.</option>
+                    {palaverClasses.map(item => <option key={item[1]} value={item[1]}>{item[0]}</option>)}
                 </select>
-
-                {/*Text input for subject*/}
                 <input type='text' name='subjectLine' value={formData.subjectLine} onChange={handleChange} placeholder="Subject" />
-
-                {/*Textarea input for message text */}
                 <textarea name="messageText" rows="20" cols="60" value={formData.messageText} onChange={handleChange} placeholder="Type your message here..." required />
-                
-                {/*Submit Button*/}
                 <button type="submit">send message</button>
                 {statusMessage && <p>{statusMessage}</p>}
             </form>
         </div>
     );  
-     
 }
 
 export default WriteMessage;

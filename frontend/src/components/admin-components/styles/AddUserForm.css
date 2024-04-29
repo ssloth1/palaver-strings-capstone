@@ -100,3 +100,40 @@
         font-size: 14px;
     }
 }
+
+.addUserForm .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-bottom: 15px;
+    padding: 5px;
+    width: 100%;
+}
+
+.addUserForm .checkbox-label {
+    margin-right: 20px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
+}
+
+.addUserForm .checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.addUserForm .checkbox-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.addUserForm .checkbox-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.addUserForm .checkbox-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+.addUserForm .checkbox-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

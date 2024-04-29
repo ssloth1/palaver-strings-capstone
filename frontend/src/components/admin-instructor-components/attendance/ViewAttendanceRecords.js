@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import styles from '../styles/ViewAttendanceRecords.module.css';
+import AttendanceService from '../../../services/attendanceServices';
+import '../styles/ViewAttendanceRecords.css';
 import Loader from '../../general-components/Loader';
 
 function ViewAttendanceRecords() {
@@ -12,8 +12,8 @@ function ViewAttendanceRecords() {
         const fetchRecords = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:4000/api/attendance');
-                setRecords(response.data);
+                const response = await AttendanceService.getAllAttendance();
+                setRecords(response);
                 setIsLoading(false);
             } catch (err) {
                 console.error('Failed to fetch attendance records:', err);
@@ -35,11 +35,11 @@ function ViewAttendanceRecords() {
     if (error) return <div>error: {error}</div>;
 
     return (
-        <div className={styles.attendanceRecords}>
+        <div className="attendanceRecords">
             <h2>Attendance Records</h2>
             {records.length > 0 ? (
                 records.map((record) => (
-                    <div key={record._id} className={styles.recordCard}>
+                    <div key={record._id} className="recordCard">
                         <p>Date: {displayDate(record.date)}</p>
                         <p>Class ID: {record.class && record.class.name}</p>
                         {record.students && record.students.length > 0 ? (
