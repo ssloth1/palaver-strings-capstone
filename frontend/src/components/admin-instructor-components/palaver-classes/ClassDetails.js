@@ -40,12 +40,12 @@ function ClassDetails () {
     return (
         <div className="class-details">
             <h2>{ClassDetails.name}</h2>
-            <p>Instructor: {ClassDetails.instructor.firstName} {ClassDetails.instructor.lastName}</p>
-            <p>Meeting days: {ClassDetails.meetingDay.join(', ')}</p>
-            <p>Start time: {ClassDetails.startTime}</p>
-            <p>End time: {ClassDetails.endTime}</p>
-            <p>Classroom: {ClassDetails.classroom}</p>
-            <p>Students: </p>
+            <p><span className="label">Instructor:</span> {ClassDetails.instructor.firstName} {ClassDetails.instructor.lastName}</p>
+            <p><span className="label">Meeting days:</span> {ClassDetails.meetingDay.join(', ')}</p>
+            <p><span className="label">Start time:</span> {ClassDetails.startTime}</p>
+            <p><span className="label">End time:</span> {ClassDetails.endTime}</p>
+            <p><span className="label">Classroom:</span> {ClassDetails.classroom}</p>
+            <p><span className="label">Students</span></p>
             {ClassDetails.students && ClassDetails.students.length > 0 ? (
                 <ul>
                     {ClassDetails.students.map(student => (
