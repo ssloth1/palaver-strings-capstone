@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Attendance = require('../models/attendance/attendanceModel');
+const { Instructor } = require('../models/modelsIndex');
 
 class AttendanceController {
 
@@ -24,8 +25,30 @@ class AttendanceController {
     } 
 
     async getAttendanceRecords(req, res){
-        try {
-            const records = await Attendance.find().populate('class').populate('students.student');
+        const { classId, dateFrom, dateTo, studentId } = req.query;
+        try{
+            let query = {};
+            if (classId) query.class = classId;
+            if (studentId) query["students.student"] = studentId;
+            if (dateFrom || dateTo) {
+                query.date = {};
+                if(dateFrom) query.date.$gte = new Date(dateFrom);
+                if(dateTo) query.date.$lte = new Date(dateTo);
+            }
+    
+            const records = await Attendance.find(query)
+                .populate({
+                    path: 'class',
+                    populate: {
+                        path: 'instructor',
+                        model: 'User',
+                        select: 'firstName lastName'
+                    }
+                })
+                .populate({
+                    path: 'students.student',
+                    select: 'firstName lastName'
+            });
             res.status(200).send(records);
         } catch (error) {
             res.status(500).send(error);
