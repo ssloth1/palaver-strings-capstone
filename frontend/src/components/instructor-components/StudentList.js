@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
 import axios from 'axios';
 import Loader from '../general-components/Loader';
+import '../admin-components/styles/ManageUsers.css';
+
 
 const StudentList = () => {
 
@@ -91,7 +93,7 @@ const StudentList = () => {
             <ul>
                 {studentList[0].map((student) => (
                     // Correct the function call here to match the defined function name
-                    <li key={student._id} onClick={() => handleStudentClick(student._id)}>
+                    <li key={student._id} onClick={() => handleStudentClick(student._id)} className="user-item">
                         Name: {student.firstName} {student.lastName}, Email: {student.email}
                     </li>
                 ))}
