@@ -48,7 +48,7 @@ const StudentList = () => {
                 const classes = await axios.get('/api/classes/');
                 console.log(classes);
                 //const response = await axios.get(`/api/users/${localStorage.getItem('userId')}`);
-                const studentArray = new Array();
+                const studentArray = ([]);
                 for (const item of classes.data) {
                     if (item.instructor._id === localStorage.getItem('userId')){
                         studentArray.push(item.students);

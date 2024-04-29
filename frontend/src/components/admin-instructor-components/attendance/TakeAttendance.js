@@ -87,7 +87,7 @@ function TakeAttendance() {
                 setCanSubmit(true);
             } else {
                 console.log("Existing record found, cannot submit.");
-                setError("An attendance record for this class and date already exists. Please modify the existing record or select a different date or class.");
+                setError("Existing record found. Please modify the existing record or select a different date or class.");
                 setCanSubmit(false);
             }
         } catch (error) {
