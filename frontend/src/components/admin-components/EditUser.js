@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import './styles/AddUserForm.module.css';
+import styles from './styles/AddUserForm.module.css';
 import { useParams } from 'react-router-dom';
 import Loader from '../general-components/Loader';
 
@@ -77,7 +77,6 @@ function EditUser() {
 
     useEffect(() => {
         if (user) {
-            console.log(user);
             setFormData({
                 firstName : user.firstName,
                 lastName : user.lastName,
@@ -107,6 +106,7 @@ function EditUser() {
                 howHeardAboutProgram: user.howHeardAboutProgram, // optional for now
                 parentEmail: user.parentEmail,
             })
+            console.log(formData);
         }
     }, [user])
 
@@ -126,6 +126,16 @@ function EditUser() {
                 : prevFormData.roles.filter(role => role !== name),
         }));
     };
+
+    const handleMediaReleaseChange = (event) => {
+        const { checked }= event.target;
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            mediaRelease: prevFormData.mediaRelease === true ? false : true
+        }))
+
+    }
 
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
@@ -390,16 +400,28 @@ function EditUser() {
                     </>
                     : <></>}
                 {formData.roles.includes('student') ?
-                    <>
-                        {/*<input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Student's Age" required/> Attempting to remove*/}
-                        {<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />}
-                        {<input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />}
-                        {<input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />}
-                        {<input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" />}
-                        {<input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />}
-                    </>
-                    : <></>
-                }
+                <>
+                    
+                    <label for="dateOfBirth" className={styles["form-label"]}>date of birth <span style={{color: "red"}}>*</span></label>
+                    <input type="date" name="dateOfBirth" value={new Date(formData.dateOfBirth).toISOString().split('T')[0]} onChange={handleChange} required />
+                    
+                    <label for="school" className={styles["form-label"]}>school <span style={{color: "red"}}>*</span></label>
+                    <input type="text" name="school" value={formData.school} onChange={handleChange} placeholder="School" required />
+
+                    <label for="grade" className={styles["form-label"]}>grade <span style={{color: "red"}}>*</span></label>
+                    <input type="number" name="grade" value={formData.grade} onChange={handleChange} placeholder="Grade" required />
+
+                    <label for='howHeardAboutProgram' className={styles["form-label"]}>how student heard about the program</label>
+                    <input type="text" name="howHeardAboutProgram" value={formData.howHeardAboutProgram} onChange={handleChange} placeholder="How did you hear about the program?" /> 
+                    
+                    <label for="parentEmail" className={styles["form-label"]}>parent email <span style={{color: "red"}}>*</span></label>
+                    <input type="text" name="parentEmail" value={formData.parentEmail} onChange={handleChange} placeholder="Parent's Email" required />
+
+                    <label for="mediaRelease" className={styles['form-label']}>media release?</label>
+                    <input type="checkbox" name="mediaRelease" value={formData.mediaRelease} onChange={handleMediaReleaseChange} />
+                </>
+                :<></>
+            }
 
                 {/* Text input for the user's address */}
                 <label className="form-label" htmlFor="addressLine1Input">Address Line 1 <span style={{ color: "red" }}>*</span></label>

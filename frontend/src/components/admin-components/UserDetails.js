@@ -126,7 +126,7 @@ function UserDetails() {
                 <p className="user-detail"><span className="user-detail-title">Date of Birth:</span> {new Date(user.dateOfBirth).toLocaleDateString()}</p>
                 <p className="user-detail"><span className="user-detail-title">School:</span> {user.school}</p>
                 <p className="user-detail"><span className="user-detail-title">Grade:</span> {user.grade}</p>
-                <p className="user-detail"><span className="user-detail-title">Media Release:</span> {user.mediaRelease}</p>
+                <p className="user-detail"><span className="user-detail-title">Media Release:</span> {user.mediaRelease ? 'Yes' : "No Release"}</p>
                 {parent && (
                     <p className="user-detail">
                         <span className="user-detail-title">Parent:</span> 

@@ -51,7 +51,7 @@ const userSchema = new Schema({
     grade: { type: Number, required: function() { return this.isNew && this.roles.includes('student'); } }, // Required only when new
     howHeardAboutProgram: { type: String, required: false },
     parent: { type: mongoose.Schema.Types.ObjectID, ref: 'User', required: false },
-    mediaRelease: { type: Boolean, required: function() { return this.roles.includes('student'); } },
+    mediaRelease: { type: Boolean, required: function() { return this.roles && this.roles.includes('student'); } },
 
     //These are all student fields that are currently not used.  Specific comments below
     primaryInstructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, //Replaced by class model?
