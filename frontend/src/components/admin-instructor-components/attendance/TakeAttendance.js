@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import axios from "axios";
-import styles from "../styles/TakeAttendance.css";
+import "../styles/TakeAttendance.css";
 import Loader from "../../general-components/Loader";
 import moment from 'moment';
 import AttendanceService from "../../../services/attendanceServices";

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import AttendanceService from '../../../services/attendanceServices';
-import styles from '../styles/ViewAttendanceRecords.css';
+import '../styles/ViewAttendanceRecords.css';
 import Loader from '../../general-components/Loader';
 
 function ViewAttendanceRecords() {
