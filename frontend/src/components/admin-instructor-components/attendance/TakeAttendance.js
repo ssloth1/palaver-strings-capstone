@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import axios from "axios";
-import styles from "../styles/TakeAttendance.module.css";
+import styles from "../styles/TakeAttendance.css";
 import Loader from "../../general-components/Loader";
 import moment from 'moment';
 import AttendanceService from "../../../services/attendanceServices";
@@ -82,7 +82,7 @@ function TakeAttendance() {
         try {
             const response = await AttendanceService.getAttendanceByClassDate(classId, date);
             console.log("Check response: ", response);
-            if (!response || !response.length || !response.data) {
+            if (response && response.data === null ) {
                 console.log("No existing record found, can submit new record.");
                 setError('');
                 setCanSubmit(true);
