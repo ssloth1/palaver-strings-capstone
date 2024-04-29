@@ -48,24 +48,18 @@ function Navbar() {
             <div className="menu-content">
                 <nav>
                     <NavigationLink Icon={IoMdHome} to="/" label="home" />
-                    {isLoggedIn && isAdmin() && (
-                        <>
-                            <NavigationLink Icon={RiUserAddLine} to="/create-user" label="add user" />
-                            <NavigationLink Icon={FaUserEdit} to="/users" label="manage users" />
-                            {/* Deprecated */}
-                            {/*<NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="student assignments"/>*/}
-                        </>
-                    )}
+                    
                     {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
-                            <NavigationLink Icon={CiMail} to='/admin-instructor/getemails' label="get emails" />
                             <NavigationLink Icon={RiBookletLine} to="/admin-instructor/attendance" label="attendance" />
+                            <NavigationLink Icon={CiMail} to='/admin-instructor/getemails' label="get emails" />
                             {/* Deprecated
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
                             */}
                             <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
                     )}
+                    
                     {isLoggedIn && isInstructor() && (
                         <>
                         <NavigationLink Icon={FaIndent} to="/mystudents" label="my students" />
@@ -75,6 +69,16 @@ function Navbar() {
                         */}
                         </>
                     )}
+
+                    {isLoggedIn && isAdmin() && (
+                        <>
+                            <NavigationLink Icon={FaUserEdit} to="/users" label="manage users" />
+                            <NavigationLink Icon={RiUserAddLine} to="/create-user" label="add user" />
+                            {/* Deprecated */}
+                            {/*<NavigationLink Icon={MdOutlineAssignmentInd} to="/student-assignments" label="student assignments"/>*/}
+                        </>
+                    )}
+                    
                     {isLoggedIn && (!isAdmin() && !isInstructor()) && (
                         <>
                         {/* Deprecated
