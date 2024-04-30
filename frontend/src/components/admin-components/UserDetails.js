@@ -74,8 +74,8 @@ function UserDetails() {
         return <Loader />;
     }
 
-    console.log(user.age);
-    console.log(user);
+    console.log(user.roles);
+    console.log(localStorage.getItem("permissions"));
 
     // Render user details
     return (
@@ -179,7 +179,11 @@ function UserDetails() {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short'
                 })}
             </p> 
-            <button onClick={ () => navigate(`/edit-user/${id}`)}>Edit User</button>    
+            {((!user.roles.includes("admin") || localStorage.getItem("permissions").includes("database admin")) &&
+                (!user.roles.includes("instructor") || localStorage.getItem("permissions").includes("staff manager")) && 
+                (!(user.roles.includes("parent") || user.roles.includes("student")) || localStorage.getItem("permissions").includes("data manager"))) && (
+                <button onClick={ () => navigate(`/edit-user/${id}`)}>Edit User</button>    
+            )}
         </div>
     );
 }

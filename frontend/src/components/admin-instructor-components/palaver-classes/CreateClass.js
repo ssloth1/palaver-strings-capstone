@@ -3,6 +3,7 @@ import ClassService from "../../../services/classServices";
 import { WEEKDAYS } from "../../../constants/formconstants";
 import UserService from "../../../services/userServices";
 import '../styles/ViewClasses.css';
+import axios from 'axios';
 
 function CreateClass() {
     const [classData, setClassData] = useState({
@@ -67,6 +68,20 @@ function CreateClass() {
         event.preventDefault();
         setIsSubmitting(true);
         setSubmitStatus('Submitting...');
+
+        try {
+            const findUser = await axios.get(`http://localhost:4000/api/users/${localStorage.getItem("userId")}`);
+            const foundUser = findUser.data;
+
+            if (!foundUser.permissions.includes("scheduler")) {
+                setSubmitStatus("Admin does not have permissions to create classes");
+                return;
+            }
+        } catch (error) {
+            setSubmitStatus("An error occurred while validating admin permissions", error.message);
+            return;
+        }
+
         try { 
             const submissionData = { ...classData };
             const response = await ClassService.addClass(submissionData);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import messageService from "../../services/messageServices";
-import Loader from './Loader';
+import Loader from '../../components/general-components/Loader';
 
 
 function ViewMessages() {

@@ -33,7 +33,7 @@ const userSchema = new Schema({
 
     //This field is for admins only
     //We need to update this: create - split Admin, Student, Instructor, Parent.  What does read mean? We currently don't have update yet. Split delete.
-    permissions: { type: [String], default: ['create', 'read', 'update', 'delete'], required: function() { return this.roles && this.roles.includes('admin')} },
+    permissions: { type: [String], default: ['database admin', 'staff manager', 'data manager', 'scheduler'], required: function() { return this.roles && this.roles.includes('admin')} },
 
     //This field is for instructors only
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false}], //Replaced by class model?

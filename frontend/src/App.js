@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Navbar from './components/general-components/Navbar';
-import MessageCenter from './components/admin-instructor-components/messaging/MessageCenter';
-import WriteMessage from './components/admin-instructor-components/messaging/CreateMessage';
-import SentMessages from './components/admin-instructor-components/messaging/Outbox';
-import ViewMessages from './components/general-components/ViewMessages';
+//import MessageCenter from './components/admin-instructor-components/messaging/MessageCenter';
+//import WriteMessage from './components/admin-instructor-components/messaging/CreateMessage';
+//import SentMessages from './components/admin-instructor-components/messaging/Outbox';
+//import ViewMessages from './components/general-components/ViewMessages';
 import { AuthProvider } from './contexts/AuthContext';
 import TakeAttendance from './components/admin-instructor-components/attendance/TakeAttendance';
 import ViewAttendanceRecords from './components/admin-instructor-components/attendance/ViewAttendanceRecords';
@@ -27,7 +27,16 @@ import { AddUserForm, ManageUsers, StudentAssignments, UserDetails, AdvancedUser
 import { Login, RequestPasswordReset, ResetPasswordConfirm } from './components/authentication-components';
 import UpdateAttendanceRecord from './components/admin-instructor-components/attendance/UpdateAttendanceRecords';
 
-
+/* Deprecated components
+<Route path="/admin-instructor/messages" element={<MessageCenter/>}>
+                        <Route path="compose" element={<WriteMessage />} />
+                        <Route path="read" element={<ViewMessages />} />
+                        <Route path="sent" element={<SentMessages />} />
+                    </Route>
+                    <Route path="/admin-instructor/write-message" element={<WriteMessage />} />
+                    <Route path="/admin-instructor/sent-messages" element={<SentMessages />} />
+                    <Route path="/messages" element={<ViewMessages />} />
+*/
 
 // This is our main app component, for now it sets up routes and context for the web application
 function App() {
@@ -48,14 +57,7 @@ function App() {
                     <Route path="/user-details/:id" element={<UserDetails />} />
                     <Route path="/student-assignments" element={<StudentAssignments />} />
                     <Route path="/admin-instructor/getemails" element={<GetEmails/>} />
-                    <Route path="/admin-instructor/messages" element={<MessageCenter/>}>
-                        <Route path="compose" element={<WriteMessage />} />
-                        <Route path="read" element={<ViewMessages />} />
-                        <Route path="sent" element={<SentMessages />} />
-                    </Route>
-                    <Route path="/admin-instructor/write-message" element={<WriteMessage />} />
-                    <Route path="/admin-instructor/sent-messages" element={<SentMessages />} />
-                    <Route path="/messages" element={<ViewMessages />} />
+                    
                     <Route path="/admin-instructor/attendance" element={<Attendance />}>
                         <Route path="take" element={<TakeAttendance />} />
                         <Route path="view" element={<ViewAttendanceRecords />} />
