@@ -56,12 +56,7 @@ function Navbar() {
                             {/* Deprecated
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
                             */}
-                        </>
-                    )}
-
-                    {isLoggedIn && (isAdmin() || isInstructor()) && (
-                        <>
-                        <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
+                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
                     )}
                     
