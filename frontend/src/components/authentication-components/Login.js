@@ -70,7 +70,7 @@ function Login() {
     return (
         <div className={loginStyles.loginContainer}>
 
-        <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>palaver learning center</div>
+        <div className={`${loginStyles.loginForm} ${loginStyles.formHeader}`}>palaver music center</div>
         {error && <p className={loginStyles.errorMessage}>{error}</p>}
             <form onSubmit={handleSubmit} className={loginStyles.loginForm}>
                 {/*
