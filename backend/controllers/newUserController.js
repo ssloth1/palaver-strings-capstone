@@ -27,7 +27,7 @@ class UserController {
             if (user.roles.includes('student')) {
                 console.log(user.age)
             }
-            res.status(200).json(user);
+            res.status(200).json(user.toObject({ virtuals: true }));
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
