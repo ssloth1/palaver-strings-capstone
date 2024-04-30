@@ -16,7 +16,7 @@ import { SiGoogleclassroom } from "react-icons/si";
 
 function Navbar() {
     const navigate = useNavigate();
-    const { logout, isLoggedIn, isAdmin, isInstructor, isStudent, isParent, userId } = useAuth ();
+    const { logout, isLoggedIn, isAdmin, isInstructor, isStudent, isParent, userId, isDatabaseAdmin, isDataManager, isStaffManager, isScheduler } = useAuth ();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleMenu = () => {
@@ -56,7 +56,12 @@ function Navbar() {
                             {/* Deprecated
                             <NavigationLink Icon={CiMail} to="/admin-instructor/messages" label="messaging" />
                             */}
-                            <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
+                        </>
+                    )}
+
+                    {isLoggedIn && (isAdmin() || isInstructor()) && isScheduler() && (
+                        <>
+                        <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
                     )}
                     
@@ -70,7 +75,7 @@ function Navbar() {
                         </>
                     )}
 
-                    {isLoggedIn && isAdmin() && (
+                    {isLoggedIn && isAdmin() && (isDatabaseAdmin() || isDataManager() || isStaffManager()) && (
                         <>
                             <NavigationLink Icon={FaUserEdit} to="/users" label="manage users" />
                             <NavigationLink Icon={RiUserAddLine} to="/create-user" label="add user" />

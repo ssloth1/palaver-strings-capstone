@@ -16,7 +16,7 @@ function AddUserForm() {
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
     const [customInstrument, setCustomInstrument] = useState(""); // State to store the custom instrument name if the user selects "Other" as their instrument.
 
-    const PERMISSIONS = ['create', 'read', 'update', 'delete'];
+    const PERMISSIONS = ['database admin', 'staff manager', 'data manager', 'scheduler'];
 
     // State to store the form data
     const [formData, setFormData] = useState({
@@ -196,6 +196,8 @@ function AddUserForm() {
             setStatusMessage("Data did not validate.")
             return;
         }
+
+
         /**
          * Since I'm testing new unified user creation, commenting this out.
              
@@ -233,6 +235,21 @@ function AddUserForm() {
 
         // Remove confirmPassword before sending the form data to the backend
         delete submissionData.confirmPassword;
+
+        try {
+            const findUser = await axios.get(`http://localhost:4000/api/users/${localStorage.getItem("userId")}`);
+            const foundUser = findUser.data;
+
+            if ((formData.roles.includes("admin") && !foundUser.permissions.includes("database admin")) || 
+            (formData.roles.includes("instructor") && !foundUser.permissions.includes("staff manager")) ||
+            ((formData.roles.includes("student") || formData.roles.includes("parent")) && !foundUser.permissions.includes("data manager"))) {
+                setStatusMessage("Admin does not have permissions to make this type of user");
+                return;
+            }
+        } catch (error) {
+            setStatusMessage("An error occurred while validating admin permissions", error.message);
+            return;
+        }
 
         console.log("Submitting Form");
         console.log(submissionData);

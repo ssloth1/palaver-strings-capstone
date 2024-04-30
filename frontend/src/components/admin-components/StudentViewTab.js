@@ -122,8 +122,7 @@ const StudentViewTab = () => {
      */
     const handleParentClick = (e, parentId) => {
         e.stopPropagation();
-        if (!parentId) {
-            console.log(`Clicked on parent with ID: ${parentId}`);
+        if (parentId) {
             navigate(`/user-details/${parentId}`);
         }
     };

@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import messageService from "../../../services/messageServices";
-import Loader from '../../general-components/Loader';
+import messageService from "../../services/messageServices";
+import Loader from '../../components/general-components/Loader';
 
 
-function SentMessages() {
+function ViewMessages() {
 
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setLoading(true);
-
         const email = localStorage.getItem('email');
         const request = { email: email};
         
         const fetchData = async () => {
             try {
-                const messageData = await axios.get("http://localhost:4000/api/messages/fromUser/", request);
+                //Retrieve messages based on user's email
+                const messageData = await axios.post("http://localhost:4000/api/messages/mail", request);
+                //run messages through message render to change user ids to names
                 const messages = await messageService.renderMessages(messageData.data);
                 //update messages
                 setMessages(messages);
@@ -25,8 +26,9 @@ function SentMessages() {
                 setLoading(false);
             } catch (error) {
                 console.error('Fetch error:', error);
-            }
-        };    
+            }            
+        };
+
         fetchData();
     }, []);
 
@@ -36,11 +38,11 @@ function SentMessages() {
 
     return (
         <div>
-            <h1>Outbox</h1>
+            <h1>inbox</h1>
             <ul>
                 {messages.map(message => (
                     <li key={message._id}>
-                        <p>From: {message.fromUser} To: {message.toUsers} RE: {message.subjectLine}</p>
+                        <p>from: {message.fromUser} to: {message.toUsers} re: {message.subjectLine}</p>
                         <p>{message.messageText}</p>
                     </li>
                 ))}
@@ -49,4 +51,4 @@ function SentMessages() {
     )
 }
 
-export default SentMessages;
+export default ViewMessages;

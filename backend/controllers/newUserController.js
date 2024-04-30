@@ -6,37 +6,7 @@ const User = require('../models/user/userModel')
 
 class UserController {
 
-    //This function logs in a user.  On a success, a json webtoken is returned with the user's id, role, and permissions.
-    async loginUser(req, res){
-        try{
-            //Process request
-            const { email, password } = req.body;
-            
-            //Find a user who matches the entered email
-            const user = await User.findOne({ email: email });
-
-            //404 error if no user is found
-            if (!user) {
-                return res.status(404).json({ message:"User not found" });
-            }
-
-            //check the provided password against the hashed password in the database.
-            const isMatch = await bcrypt.compare(password, user.hashedPassword);
-            if (!isMatch) {
-                return res.status(400).json({ message: "Invalid credentials!" });
-            }
-
-            // Generate the JWT token
-            const token = jwt.sign({ id: user._id, role: user.roles, permissions: user.permissions }, 'MY_SECRET_KEY', { expiresIn: '1h' });
-
-            // Send the token in a HTTP-only cookie
-            res.status(200).json({ token: token });
-
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    };
-
+    
     //This function retrieves all users
     async getAllUsers(req, res){
         try {
@@ -57,7 +27,7 @@ class UserController {
             if (user.roles.includes('student')) {
                 console.log(user.age)
             }
-            res.status(200).json(user);
+            res.status(200).json(user.toObject({ virtuals: true }));
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -384,7 +354,7 @@ class UserController {
             const token = jwt.sign({ id: user._id, role: user.roles }, 'MY_SECRET_KEY', { expiresIn: '1h' });
 
             // Send the token in a HTTP-only cookie
-            res.status(200).json({ token: token, roles: user.roles, id: user._id });
+            res.status(200).json({ token: token, roles: user.roles, id: user._id, permissions: user.permissions });
 
         } catch (error) {
             res.status(500).json({ message: error.message });

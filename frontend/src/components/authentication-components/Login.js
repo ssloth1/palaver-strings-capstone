@@ -51,7 +51,8 @@ function Login() {
             if (response.status === 200) {
                 localStorage.setItem(`userToken`, data.token);
                 localStorage.setItem('userId', data.id); 
-                login({ type: data.roles, id: data.id }); // Updates the AuthContext
+                localStorage.setItem('permissions', data.permissions);
+                login({ type: data.roles, id: data.id, permissions: data.permissions}); // Updates the AuthContext
                 navigate('/'); // Navigates user to the home page
             }
         } catch (err) {

@@ -20,7 +20,7 @@ function EditUser() {
     const [statusMessage, setStatusMessage] = useState(""); // Just displays the submission status to the user.
     const [customInstrument, setCustomInstrument] = useState(""); // State to store the custom instrument name if the user selects "Other" as their instrument.
 
-    const PERMISSIONS = ['create', 'read', 'update', 'delete'];
+    const PERMISSIONS = ['database admin', 'staff manager', 'data manager', 'scheduler'];
 
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
@@ -108,7 +108,7 @@ function EditUser() {
                 howHeardAboutProgram: user.howHeardAboutProgram, // optional for now
                 parentEmail: user.parentEmail,
             })
-            console.log(formData);
+
         }
     }, [user])
 
@@ -275,6 +275,21 @@ function EditUser() {
                 zipCode: formData.zipCode,
             },
         };
+
+        try {
+            const findUser = await axios.get(`http://localhost:4000/api/users/${localStorage.getItem("userId")}`);
+            const foundUser = findUser.data;
+
+            if ((formData.roles.includes("admin") && !foundUser.permissions.includes("database admin")) || 
+            (formData.roles.includes("instructor") && !foundUser.permissions.includes("staff manager")) ||
+            ((formData.roles.includes("student") || formData.roles.includes("parent")) && !foundUser.permissions.includes("data manager"))) {
+                setStatusMessage("Admin does not have permissions to edit this type of user");
+                return;
+            }
+        } catch (error) {
+            setStatusMessage("An error occurred while validating admin permissions", error.message);
+            return;
+        }
 
         // Remove confirmPassword before sending the form data to the backend
         console.log("Submitting Form");

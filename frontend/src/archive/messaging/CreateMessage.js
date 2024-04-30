@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from "react";
-import { AuthContext } from '../../../contexts/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import axios from 'axios';
 import '../styles/CreateMessage.css';
-import { USER_TYPES } from "../../../constants/formconstants";
-import Loader from "../../general-components/Loader";
+import { USER_TYPES } from "../../constants/formconstants";
+import Loader from "../../components/general-components/Loader";
 
 function WriteMessage() {
 

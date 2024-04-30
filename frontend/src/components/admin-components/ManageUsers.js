@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Loader from '../general-components/Loader';
 import './styles/ManageUsers.css';
 import {IoClose} from 'react-icons/io5';
+import axios from 'axios';
+
 
 function ManageUsers() {
     const [users, setUsers] = useState([]);
@@ -71,8 +73,22 @@ function ManageUsers() {
     }, [searchTerm, users]);
 
     // Delete user, and remove from state
-    const deleteUser = (userId, event) => {
+    const deleteUser = async(userId, event) => {
         event.stopPropagation();
+
+        try {
+            const findUser = await axios.get(`http://localhost:4000/api/users/${localStorage.getItem("userId")}`);
+            const foundUser = findUser.data;
+
+            if (!foundUser.permissions.includes("database admin")) {
+                setError("Admin does not have permissions to delete this type of user");
+                return;
+            }
+        } catch (error) {
+            setError("An error occurred while validating admin permissions", error.message);
+            return;
+        }
+
         // Asks for confirmation before deleting user, and then sends a DELETE request to the server
         const isConfirmed = window.confirm("Are you sure you want to remove this user?");
         if (isConfirmed) {
@@ -137,9 +153,11 @@ function ManageUsers() {
                     {users.map(user => (
                         <li key={user._id} onClick={() => navigateToUserDetails(user._id)} className="user-item">
                             {user.firstName} {user.lastName} - {user.email}
-                            <button onClick={(e) => deleteUser(user._id, e)} className="delete-button">
-                                <IoClose />
-                            </button>
+                            {localStorage.getItem("permissions").includes("database admin") && (
+                                <button onClick={(e) => deleteUser(user._id, e)} className="delete-button">
+                                    <IoClose />
+                                </button>
+                            )}
                         </li>
                     ))}
                 </ul>
