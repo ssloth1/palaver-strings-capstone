@@ -122,7 +122,7 @@ function UpdateAttendanceRecords() {
         try {
             const updateResponse = await AttendanceService.updateAttendance(attendanceId, { attendance: formattedAttendance});
             console.log("Attendance updated.", updateResponse);
-            setStatusMessage(`Status updated to successfully`);
+            setStatusMessage(`Status updated successfully`);
             setError('');
         } catch (error) {
             console.error("Error updating attendance", error.message);
