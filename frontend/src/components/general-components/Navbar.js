@@ -59,7 +59,7 @@ function Navbar() {
                         </>
                     )}
 
-                    {isLoggedIn && (isAdmin() || isInstructor()) && isScheduler() && (
+                    {isLoggedIn && (isAdmin() || isInstructor()) && (
                         <>
                         <NavigationLink Icon={SiGoogleclassroom} to="/classes" label="classes" />
                         </>
